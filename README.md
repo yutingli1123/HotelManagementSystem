@@ -16,4 +16,6 @@ Group members:
 
 Main scope of the project:
 
-
+Project Documentation:
+- Project Report ‐ Deliverable 1 [Project Report ‐ Deliverable 1](https://github.com/McGill-ECSE321-Fall2023/project-group-06/wiki/Project-Report#project-report--deliverable-1)
+- Meeting Minutes [Meeting Minutes - Meeting 1](https://github.com/McGill-ECSE321-Fall2023/project-group-06/wiki/Meeting-minutes#meeting-minutes---meeting-1)
