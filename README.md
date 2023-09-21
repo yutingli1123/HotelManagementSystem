@@ -1,1 +1,3 @@
-# project-group-06
+# Group 6 Project
+
+Group name:
