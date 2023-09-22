@@ -3,14 +3,15 @@
 ## Main scope of the project
 
 ## Group members
-| No | Names          | Roles | Individual Efforts (hr) |
-|----|----------------|-------|-------------------------|
-| 1  |Jabbour, Clara  |       |                         |
-| 2  |Hing, Hong Way  |       |                         |
-| 3  |Bayoud, Sami    |       |                         |
-| 4  |Li, Yuting      |       |                         |
-| 5  |Rao, Simiao     |       |                         |
-| 6  |Cao, Simon      |       |                         |
+
+| No | Team Member   | Responsibilities | Individual Efforts(hr) |
+|----|---------------|------------------|------------------------|
+| 1  | Clara Jabbour |                  |                        |
+| 2  | Hing Hong Way |                  |                        |
+| 3  | Cao Simon     |                  |                        |
+| 4  | Li Yuting     |                  |                        |
+| 5  | Rao Simiao    |                  |                        |
+| 6  | Sami Bayoud   |                  |                        |
 
 
 
