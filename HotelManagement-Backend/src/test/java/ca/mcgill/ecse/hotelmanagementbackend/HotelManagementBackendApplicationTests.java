@@ -9,5 +9,4 @@ class HotelManagementBackendApplicationTests {
     @Test
     void contextLoads() {
     }
-
 }
