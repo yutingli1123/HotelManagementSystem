@@ -1,0 +1,11 @@
+server:
+  host: localhost
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: postgres
+    url: jdbc:postgresql://${server.host}:5432/hotel_management
+  jpa:
+    hibernate:
+      ddl-auto: update
