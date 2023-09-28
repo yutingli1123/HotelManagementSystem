@@ -5,7 +5,7 @@ The Hotel Management System is a comprehensive web application designed to strea
 
 ## Group members
 
-| No |   Team Member  | Responsibilities | Individual Efforts(hr) |
+| No |  Team Member   | Responsibilities | Individual Efforts(hr) |
 |----|----------------|------------------|------------------------|
 | 1  | Clara, Jabbour |                  |                        |
 | 2  | Hing, Hong Way |                  |                        |
@@ -13,9 +13,6 @@ The Hotel Management System is a comprehensive web application designed to strea
 | 4  | Li, Yuting     |                  |                        |
 | 5  | Rao, Simiao    |                  |                        |
 | 6  | Sami, Bayoud   |                  |                        |
-
-
-
 
 ## Project Documentation
 - Project Report [Project Report ‐ Deliverable 1](https://github.com/McGill-ECSE321-Fall2023/project-group-06/wiki/Project-Report#project-report--deliverable-1)
