@@ -4,6 +4,7 @@ import ca.mcgill.ecse.hotelmanagementbackend.entity.User;
 import ca.mcgill.ecse.hotelmanagementbackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -12,35 +13,43 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public List<User> listAll() {
+    @Transactional(readOnly = true)
+    public List<User> findAll() {
         return userRepository.findAll();
     }
 
-    public User getOneByUsername(String username) {
+    @Transactional(readOnly = true)
+    public User findById(Long id) {
+        return userRepository.findById(id).orElse(null);
+    }
+
+    @Transactional(readOnly = true)
+    public User findByUsername(String username) {
         return userRepository.findByUsername(username).orElse(null);
     }
 
-    public User getOneByEmail(String email) {
+    @Transactional(readOnly = true)
+    public User findByEmail(String email) {
         return userRepository.findByEmail(email).orElse(null);
     }
 
-    public void saveUser(User user) {
+    @Transactional
+    public void save(User user) {
         userRepository.save(user);
     }
 
-    public void deleteUserByUsername(String username) {
-        User user = userRepository.findByUsername(username).orElse(null);
-        if (user != null) {
-            Long id = user.getId();
-            userRepository.deleteById(id);
-        }
+    @Transactional
+    public void deleteById(Long id) {
+        userRepository.deleteById(id);
     }
 
-    public void deleteUserByEmail(String email) {
-        User user = userRepository.findByEmail(email).orElse(null);
-        if (user != null) {
-            Long id = user.getId();
-            userRepository.deleteById(id);
-        }
+    @Transactional
+    public void deleteByUsername(String username) {
+        userRepository.deleteByUsername(username);
+    }
+
+    @Transactional
+    public void deleteByEmail(String email) {
+        userRepository.deleteByEmail(email);
     }
 }
