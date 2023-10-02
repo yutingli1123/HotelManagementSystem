@@ -1,30 +1,26 @@
 package ca.mcgill.ecse.hotelmanagementbackend.entity;
 
 import ca.mcgill.ecse.hotelmanagementbackend.enumeration.RoomType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Data
 @NoArgsConstructor
-@Table(name = "reservations")
 public class Reservation {
     @Id
     @GeneratedValue
     private Long id;
-    private Long guestId;
     private Date date;
-    private RoomType type;
+    @ManyToMany
+    private List<Room> rooms;
 
-    public Reservation(Long guestId, Date date, RoomType type) {
-        this.guestId = guestId;
+
+    public Reservation(Long guestId, Date date) {
         this.date = date;
-        this.type = type;
     }
 }

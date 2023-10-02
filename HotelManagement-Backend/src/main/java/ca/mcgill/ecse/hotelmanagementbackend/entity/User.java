@@ -1,18 +1,14 @@
 package ca.mcgill.ecse.hotelmanagementbackend.entity;
 
-import ca.mcgill.ecse.hotelmanagementbackend.enumeration.UserRole;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Data
 @NoArgsConstructor
-@Table(name = "users")
-public class User {
+@Table(name = "hotel_user")
+public abstract class User {
     @Id
     @GeneratedValue
     private Long id;
@@ -20,13 +16,14 @@ public class User {
     private String username;
     private String email;
     private String password;
-    private UserRole role;
+    @ManyToOne
+    private Hotel hotel;
 
-    public User(String name, String username, String email, String password, UserRole role) {
+    public User(String name, String username, String email, String password, Hotel hotel) {
         this.name = name;
         this.username = username;
         this.email = email;
         this.password = password;
-        this.role = role;
+        this.hotel = hotel;
     }
 }

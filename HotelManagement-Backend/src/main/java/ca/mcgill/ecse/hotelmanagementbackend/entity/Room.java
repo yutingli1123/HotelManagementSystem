@@ -20,11 +20,13 @@ public class Room {
     private RoomType type;
     private Integer fee;
     private List<Amenity> amenities;
+    private boolean isAvailable;
     @ManyToOne
     private Hotel hotel;
 
     public Room(RoomType type, Integer fee) {
         this.type = type;
         this.fee = fee;
+        this.isAvailable = true;
     }
 }

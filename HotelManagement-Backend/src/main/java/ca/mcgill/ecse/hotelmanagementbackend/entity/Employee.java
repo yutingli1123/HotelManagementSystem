@@ -1,29 +1,21 @@
 package ca.mcgill.ecse.hotelmanagementbackend.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+@EqualsAndHashCode(callSuper = false)
 @Entity
 @Data
 @NoArgsConstructor
-@Table(name = "employees")
-public class Employee {
-    @Id
-    @GeneratedValue
-    private Long id;
-    private String name;
-    private Long accountId;
+public class Employee extends Admin {
     private Integer salary;
-    private Long timeTableId;
+    @ManyToOne
+    private TimeTable timeTable;
 
-    public Employee(String name, Long accountId, Integer salary, Long timeTableId) {
-        this.name = name;
-        this.accountId = accountId;
+    public Employee(String name, String username, String email, String password, Hotel hotel, Integer salary) {
+        super(name, username, email, password, hotel);
         this.salary = salary;
-        this.timeTableId = timeTableId;
     }
 }
