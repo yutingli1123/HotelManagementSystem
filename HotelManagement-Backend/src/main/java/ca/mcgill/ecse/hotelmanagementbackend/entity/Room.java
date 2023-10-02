@@ -1,28 +1,30 @@
 package ca.mcgill.ecse.hotelmanagementbackend.entity;
 
+import ca.mcgill.ecse.hotelmanagementbackend.enumeration.Amenity;
 import ca.mcgill.ecse.hotelmanagementbackend.enumeration.RoomType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
 @NoArgsConstructor
-@Table(name = "rooms")
 public class Room {
     @Id
     @GeneratedValue
     private Long id;
+    @Enumerated(EnumType.STRING)
     private RoomType type;
     private Integer fee;
-    private Integer totalNumber;
+    private List<Amenity> amenities;
+    @ManyToOne
+    private Hotel hotel;
 
-    public Room(RoomType type, Integer fee, Integer totalNumber) {
+    public Room(RoomType type, Integer fee) {
         this.type = type;
         this.fee = fee;
-        this.totalNumber = totalNumber;
     }
 }
