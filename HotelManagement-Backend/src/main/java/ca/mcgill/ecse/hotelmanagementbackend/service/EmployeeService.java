@@ -24,13 +24,13 @@ public class EmployeeService {
     }
 
     @Transactional(readOnly = true)
-    public List<Employee> findAllByName(String name) {
-        return employeeRepository.findAllByName(name).orElse(null);
+    public Employee findByUsername(String username) {
+        return employeeRepository.findByUsername(username).orElse(null);
     }
 
     @Transactional(readOnly = true)
-    public Employee findByAccountId(Long id) {
-        return employeeRepository.findByAccountId(id).orElse(null);
+    public Employee findByEmail(String email) {
+        return employeeRepository.findByEmail(email).orElse(null);
     }
 
     @Transactional
@@ -44,7 +44,12 @@ public class EmployeeService {
     }
 
     @Transactional
-    public void deleteByAccountId(Long accountId) {
-        employeeRepository.deleteByAccountId(accountId);
+    public void deleteByUsername(String username) {
+        employeeRepository.deleteByUsername(username);
+    }
+
+    @Transactional
+    public void deleteByEmail(String email) {
+        employeeRepository.deleteByEmail(email);
     }
 }

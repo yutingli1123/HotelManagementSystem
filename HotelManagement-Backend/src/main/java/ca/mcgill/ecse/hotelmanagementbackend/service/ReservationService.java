@@ -1,7 +1,6 @@
 package ca.mcgill.ecse.hotelmanagementbackend.service;
 
 import ca.mcgill.ecse.hotelmanagementbackend.entity.Reservation;
-import ca.mcgill.ecse.hotelmanagementbackend.enumeration.RoomType;
 import ca.mcgill.ecse.hotelmanagementbackend.repository.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,18 +25,8 @@ public class ReservationService {
     }
 
     @Transactional(readOnly = true)
-    public List<Reservation> findAllByGuestId(Long id) {
-        return reservationRepository.findAllByGuestId(id).orElse(null);
-    }
-
-    @Transactional(readOnly = true)
     public List<Reservation> findAllByDate(Date date) {
         return reservationRepository.findAllByDate(date).orElse(null);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Reservation> findAllByRoomType(RoomType type) {
-        return reservationRepository.findAllByType(type).orElse(null);
     }
 
     @Transactional

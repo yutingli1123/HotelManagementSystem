@@ -17,4 +17,14 @@ public class HotelService {
     public List<Hotel> findAll() {
         return hotelRepository.findAll();
     }
+
+    @Transactional
+    public void save(Hotel hotel) {
+        hotelRepository.save(hotel);
+    }
+
+    @Transactional
+    public void deleteById(Long id) {
+        hotelRepository.deleteById(id);
+    }
 }

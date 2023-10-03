@@ -20,8 +20,8 @@ public class RoomService {
     }
 
     @Transactional(readOnly = true)
-    public Room findByRoomType(RoomType type) {
-        return roomRepository.findByType(type).orElse(null);
+    public Room findAllByRoomType(RoomType type) {
+        return roomRepository.findAllByType(type).orElse(null);
     }
 
     @Transactional
@@ -32,10 +32,5 @@ public class RoomService {
     @Transactional
     public void deleteById(Long id) {
         roomRepository.deleteById(id);
-    }
-
-    @Transactional
-    public void deleteByRoomType(RoomType type) {
-        roomRepository.deleteByType(type);
     }
 }

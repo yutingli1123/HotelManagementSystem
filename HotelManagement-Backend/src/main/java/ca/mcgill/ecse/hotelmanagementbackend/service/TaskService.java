@@ -18,11 +18,6 @@ public class TaskService {
         return taskRepository.findAll();
     }
 
-    @Transactional(readOnly = true)
-    public List<Task> findAllByTimeTableId(Long id) {
-        return taskRepository.findAllByTimeTableId(id).orElse(null);
-    }
-
     @Transactional
     public void save(Task task) {
         taskRepository.save(task);
@@ -31,10 +26,5 @@ public class TaskService {
     @Transactional
     public void deleteById(Long id) {
         taskRepository.deleteById(id);
-    }
-
-    @Transactional
-    public void deleteAllByTimeTableId(Long timeTableId) {
-        taskRepository.deleteAllByTimeTableId(timeTableId);
     }
 }

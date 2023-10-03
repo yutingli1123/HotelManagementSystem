@@ -1,16 +1,17 @@
 package ca.mcgill.ecse.hotelmanagementbackend.repository;
 
-import ca.mcgill.ecse.hotelmanagementbackend.entity.User;
+import ca.mcgill.ecse.hotelmanagementbackend.entity.Owner;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByUsername(String username);
+public interface OwnerRepository extends JpaRepository<Owner, Long> {
+    Optional<Owner> findAllByName(String name);
+    Optional<Owner> findByUsername(String username);
 
-    Optional<User> findByEmail(String email);
+    Optional<Owner> findByEmail(String email);
 
     void deleteByEmail(String email);
 
