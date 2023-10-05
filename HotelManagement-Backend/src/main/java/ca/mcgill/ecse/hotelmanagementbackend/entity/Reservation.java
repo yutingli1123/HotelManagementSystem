@@ -1,6 +1,5 @@
 package ca.mcgill.ecse.hotelmanagementbackend.entity;
 
-import ca.mcgill.ecse.hotelmanagementbackend.enumeration.RoomType;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,6 +17,10 @@ public class Reservation {
     private Date date;
     @ManyToMany
     private List<Room> rooms;
+    @ManyToOne
+    private Customer customer;
+    @ManyToMany
+    private List<Admin> admins;
 
 
     public Reservation(Long guestId, Date date) {

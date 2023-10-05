@@ -17,6 +17,8 @@ public class Task {
     private Time endTime;
     private String taskName;
     private String taskDescription;
+    @ManyToOne
+    private TimeTable timeTable;
 
     public Task(Time startTime, Time endTime, String taskName, String taskDescription) {
         this.startTime = startTime;

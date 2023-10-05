@@ -3,8 +3,11 @@ package ca.mcgill.ecse.hotelmanagementbackend.entity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Data
@@ -15,6 +18,8 @@ public class Hotel {
     private Long id;
     private String openTime;
     private String closeTime;
+    @OneToMany
+    private List<User> users;
 
     public Hotel(String openTime, String closeTime) {
         this.openTime = openTime;
