@@ -1,11 +1,14 @@
 package ca.mcgill.ecse.hotelmanagementbackend.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Data
@@ -15,10 +18,13 @@ public class TimeTable {
     @GeneratedValue
     private Long id;
     private String timeTableName;
-    @OneToMany
+    @OneToMany(mappedBy = "timeTable")
     private List<Task> tasks;
+    @OneToMany(mappedBy = "timeTable")
+    private List<Employee> employees;
 
     public TimeTable(String timeTableName) {
         this.timeTableName = timeTableName;
+        this.tasks = new ArrayList<>();
     }
 }

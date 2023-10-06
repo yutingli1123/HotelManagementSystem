@@ -6,8 +6,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Data
@@ -19,14 +19,18 @@ public class Room {
     @Enumerated(EnumType.STRING)
     private RoomType type;
     private Integer fee;
+    @ElementCollection
     private List<Amenity> amenities;
     private boolean isAvailable;
     @ManyToOne
     private Hotel hotel;
+    @ManyToMany(mappedBy = "rooms")
+    private List<Reservation> reservations;
 
     public Room(RoomType type, Integer fee) {
         this.type = type;
         this.fee = fee;
         this.isAvailable = true;
+        this.reservations = new ArrayList<>();
     }
 }

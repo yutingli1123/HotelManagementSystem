@@ -16,6 +16,7 @@ public abstract class User {
     private String username;
     private String email;
     private String password;
+
     @ManyToOne
     private Hotel hotel;
 

@@ -14,6 +14,11 @@ public class HotelService {
     HotelRepository hotelRepository;
 
     @Transactional(readOnly = true)
+    public Hotel findById(Long id) {
+        return hotelRepository.findById(id).orElse(null);
+    }
+
+    @Transactional(readOnly = true)
     public List<Hotel> findAll() {
         return hotelRepository.findAll();
     }
