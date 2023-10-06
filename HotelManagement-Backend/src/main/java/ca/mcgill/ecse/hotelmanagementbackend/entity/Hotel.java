@@ -7,6 +7,7 @@ import jakarta.persistence.OneToMany;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -18,11 +19,12 @@ public class Hotel {
     private Long id;
     private String openTime;
     private String closeTime;
-    @OneToMany
+    @OneToMany(mappedBy = "hotel")
     private List<User> users;
 
     public Hotel(String openTime, String closeTime) {
         this.openTime = openTime;
         this.closeTime = closeTime;
+        this.users = new ArrayList<>();
     }
 }

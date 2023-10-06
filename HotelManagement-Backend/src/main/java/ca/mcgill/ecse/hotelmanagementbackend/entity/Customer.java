@@ -13,8 +13,9 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class Customer extends User {
-    @OneToMany
-    private List<Reservation> reservations;
+    @OneToMany(mappedBy = "customer")
+    private List<Reservation> reservationsForCustomer;
+
     public Customer(String name, String username, String email, String password, Hotel hotel) {
         super(name, username, email, password, hotel);
     }

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Table(name = "hotel_user")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class User {
     @Id
     @GeneratedValue
@@ -16,6 +17,7 @@ public abstract class User {
     private String username;
     private String email;
     private String password;
+
     @ManyToOne
     private Hotel hotel;
 
