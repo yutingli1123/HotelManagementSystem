@@ -16,6 +16,7 @@ import static org.springframework.test.util.AssertionErrors.assertEquals;
 public class OwnerTest {
     @Autowired
     private OwnerService ownerService;
+    @Autowired
     private HotelService hotelService;
 
     @Test
@@ -100,11 +101,17 @@ public class OwnerTest {
     }
 
     void testOwnerReferenceWithHotel(){
-        Hotel hotel = new Hotel();
-        hotelService.save(hotel);
-        Owner owner = new Owner("Test1", "test1", "test1@test.com", "test1", hotel);
+        Hotel hotel1 = new Hotel();
+        Hotel hotel2 = new Hotel();
+        hotelService.save(hotel1);
+        //test read
+        Owner owner = new Owner("Test1", "test1", "test1@test.com", "test1", hotel1);
         ownerService.save(owner);
         Hotel hotelByOwner =  owner.getHotel();
-        assertEquals("checks if the employee class can successfully find the hotel class", hotel, hotelByOwner);
+        assertEquals("checks if the employee class can successfully find the hotel class", hotel1, hotelByOwner);
+        //test write
+        owner.setHotel(hotel2);
+        ownerService.save(owner);
+        assertEquals("checks if owner can write its attribute which is an instance of Hotel class", "hotel2", owner.getHotel());
     }
 }

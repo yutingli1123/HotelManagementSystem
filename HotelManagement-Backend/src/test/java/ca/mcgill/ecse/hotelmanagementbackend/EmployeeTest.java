@@ -2,8 +2,11 @@ package ca.mcgill.ecse.hotelmanagementbackend;
 
 import ca.mcgill.ecse.hotelmanagementbackend.entity.Employee;
 import ca.mcgill.ecse.hotelmanagementbackend.entity.Hotel;
+import ca.mcgill.ecse.hotelmanagementbackend.entity.TimeTable;
 import ca.mcgill.ecse.hotelmanagementbackend.service.EmployeeService;
 import ca.mcgill.ecse.hotelmanagementbackend.service.HotelService;
+import ca.mcgill.ecse.hotelmanagementbackend.service.TimeTableService;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,13 +19,17 @@ import static org.springframework.test.util.AssertionErrors.assertEquals;
 public class EmployeeTest {
     @Autowired
     private EmployeeService employeeService;
+    @Autowired
     private HotelService hotelService;
+    @Autowired
+    private TimeTableService timeTableService;
 
     @Test
     void contextLoads() {
     }
 
     @Test
+    @Transactional
     void testSaveEmployee(){
         List<Employee> originalEmployees = employeeService.findAll();
         Hotel hotel = new Hotel();
@@ -44,6 +51,7 @@ public class EmployeeTest {
     }
 
     @Test
+    @Transactional
     void testSearchEmployeeByEmail(){
         Hotel hotel = new Hotel();
         hotelService.save(hotel);
@@ -58,6 +66,7 @@ public class EmployeeTest {
     }
 
     @Test
+    @Transactional
     void testSearchEmployeeById(){
         Hotel hotel = new Hotel();
         hotelService.save(hotel);
@@ -72,6 +81,8 @@ public class EmployeeTest {
         hotelService.deleteById(hotel.getId());
     }
 
+    @Test
+    @Transactional
     void testSearchEmployeeByUserName(){
         Hotel hotel = new Hotel();
         hotelService.save(hotel);
@@ -85,6 +96,8 @@ public class EmployeeTest {
         hotelService.deleteById(hotel.getId());
     }
 
+    @Test
+    @Transactional
     void testEmployeeReadAndWrite() {
         Hotel hotel = new Hotel();
         hotelService.save(hotel);
@@ -99,12 +112,21 @@ public class EmployeeTest {
         hotelService.deleteById(hotel.getId());
     }
 
+    @Test
+    @Transactional
     void testEmployeeReferenceWithHotel(){
         Hotel hotel = new Hotel();
         hotelService.save(hotel);
         Employee employee = new Employee("Test1", "test1", "test1@test.com", "test1", hotel, 668);
         employeeService.save(employee);
+        //read
         Hotel hotelByEmployee =  employee.getHotel();
         assertEquals("checks if the employee class can successfully find the hotel class", hotel, hotelByEmployee);
+        //write
+        TimeTable timeTable = new TimeTable();
+        timeTableService.save(timeTable);
+        employee.setTimeTable(timeTable);
+        employeeService.save(employee);
+        assertEquals("checks if employee can write its attribute which is an instance of TimeTable class", timeTable, employee.getTimeTable());
     }
 }
