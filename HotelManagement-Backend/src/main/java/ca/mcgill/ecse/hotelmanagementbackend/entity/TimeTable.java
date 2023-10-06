@@ -20,6 +20,8 @@ public class TimeTable {
     private String timeTableName;
     @OneToMany(mappedBy = "timeTable")
     private List<Task> tasks;
+    @OneToMany(mappedBy = "timeTable")
+    private List<Employee> employees;
 
     public TimeTable(String timeTableName) {
         this.timeTableName = timeTableName;
