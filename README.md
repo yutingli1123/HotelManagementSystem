@@ -8,7 +8,7 @@ The Hotel Management System is a comprehensive web application designed to strea
 | No |  Team Member   |     Responsibilities                | Individual Efforts(hr) |
 |----|----------------|-------------------------------------|------------------------|
 | 1  | Clara, Jabbour |                                     |                        |
-| 2  | Hing, Hong Way | Project Report & Usecase            |                        |
+| 2  | Hing, Hong Way | Project Report & Usecase            |         6 hours        |
 | 3  | Cao, Simon     | Persistence Layer Tests & Usecase   |         8 hours        |
 | 4  | Li, Yuting     | Persistence Layer & Usecase         |         8.5 hours      |
 | 5  | Rao, Simiao    | Entities & Enumerations & Usecase   |         6 hours        |
