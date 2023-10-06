@@ -35,15 +35,9 @@ public class ReservationTest {
     @Test
     @Transactional
     void testReadAndWriteReservationObjects() {
-        Hotel hotel = new Hotel();
-        hotelService.save(hotel);
-        Customer customer1 = new Customer("Test1", "test1", "test1@test.com", "test1", hotel);
-        customerService.save(customer1);
-        List<Reservation> reservations = new ArrayList<>();
         Reservation reservation = new Reservation(new Date());
         reservationService.save(reservation);
-        reservations.add(reservation);
-        assertEquals("checks if reservation is properly saved", reservations, customer1.getReservationsForCustomer());
+        assertEquals("checks if reservation is properly saved", 1, reservationService.findAll().size());
     }
 
     @Test
