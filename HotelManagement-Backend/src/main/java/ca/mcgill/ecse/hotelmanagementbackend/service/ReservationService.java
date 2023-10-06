@@ -1,5 +1,6 @@
 package ca.mcgill.ecse.hotelmanagementbackend.service;
 
+import ca.mcgill.ecse.hotelmanagementbackend.entity.Owner;
 import ca.mcgill.ecse.hotelmanagementbackend.entity.Reservation;
 import ca.mcgill.ecse.hotelmanagementbackend.repository.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,5 +38,10 @@ public class ReservationService {
     @Transactional
     public void deleteAllByDate(Date date) {
         reservationRepository.deleteAllByDate(date);
+    }
+
+    @Transactional
+    public void save(Reservation reservation) {
+        reservationRepository.save(reservation);
     }
 }
