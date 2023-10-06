@@ -24,7 +24,7 @@ public class RoomServiceTest {
     void testReadAndWriteRoomObjects() {
         Room room = new Room(RoomType.DELUXE, 800);
         roomService.save(room);
-        assertEquals("checks if room object is saved and if can be read", 1, roomService.findAll());
+        assertEquals("checks if room object is saved and if can be read", 1, roomService.findAll().size());
     }
 
     @Test
