@@ -20,7 +20,7 @@ public class RoomService {
     }
 
     @Transactional(readOnly = true)
-    public Room findAllByRoomType(RoomType type) {
+    public List<Room> findAllByRoomType(RoomType type) {
         return roomRepository.findAllByType(type).orElse(null);
     }
 
