@@ -45,12 +45,21 @@ import static org.mockito.Mockito.*;
             // Mock the behavior of customerRepository.findByUsername()
             when(customerRepository.findByUsername("John")).thenReturn(Optional.of(customer));
 
-            Customer foundCustomer = customerService.findByUsername("John");
+            // Define a username that doesn't exist in the repository
+            String nonExistentUsername = "nonexistentUser";
 
-            // Verify that the service returns the expected customer
+            // Mock the behavior of customerRepository.findByUsername() when the username is not found
+            when(customerRepository.findByUsername(nonExistentUsername)).thenReturn(Optional.empty());
+
+            // Verify that the service returns the expected customer when found
+            Customer foundCustomer = customerService.findByUsername("John");
             assertNotNull(foundCustomer);
             assertEquals(customer.getId(), foundCustomer.getId());
             assertEquals(customer.getUsername(), foundCustomer.getUsername());
+
+            // Verify that the service returns null when the username is not found
+            Customer nonExistentCustomer = customerService.findByUsername(nonExistentUsername);
+            assertNull(nonExistentCustomer);
         }
 
         @Test
@@ -63,13 +72,23 @@ import static org.mockito.Mockito.*;
             // Mock the behavior of customerRepository.findById()
             when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
 
-            Customer foundCustomer = customerService.findById(1L);
+            // Define an ID that doesn't exist in the repository
+            Long nonExistentId = 2L;
 
-            // Verify that the service returns the expected customer
+            // Mock the behavior of customerRepository.findById() when the ID is not found
+            when(customerRepository.findById(nonExistentId)).thenReturn(Optional.empty());
+
+            // Verify that the service returns the expected customer when found
+            Customer foundCustomer = customerService.findById(1L);
             assertNotNull(foundCustomer);
             assertEquals(customer.getId(), foundCustomer.getId());
             assertEquals(customer.getUsername(), foundCustomer.getUsername());
+
+            // Verify that the service returns null when the ID is not found
+            Customer nonExistentCustomer = customerService.findById(nonExistentId);
+            assertNull(nonExistentCustomer);
         }
+
 
         @Test
         public void testFindByEmail() {
@@ -78,19 +97,28 @@ import static org.mockito.Mockito.*;
             customer.setId(1L);
             customer.setUsername("John");
             customer.setEmail("john@example.com");
-
+        
             // Mock the behavior of customerRepository.findByEmail()
             when(customerRepository.findByEmail("john@example.com")).thenReturn(Optional.of(customer));
-
+        
+            // Define an email that doesn't exist in the repository
+            String nonExistentEmail = "nonexistent@example.com";
+        
+            // Mock the behavior of customerRepository.findByEmail() when the email is not found
+            when(customerRepository.findByEmail(nonExistentEmail)).thenReturn(Optional.empty());
+        
+            // Verify that the service returns the expected customer when found
             Customer foundCustomer = customerService.findByEmail("john@example.com");
-
-            // Verify that the service returns the expected customer
             assertNotNull(foundCustomer);
             assertEquals(customer.getId(), foundCustomer.getId());
             assertEquals(customer.getUsername(), foundCustomer.getUsername());
             assertEquals(customer.getEmail(), foundCustomer.getEmail());
+        
+            // Verify that the service returns null when the email is not found
+            Customer nonExistentCustomer = customerService.findByEmail(nonExistentEmail);
+            assertNull(nonExistentCustomer);
         }
-
+        
         @Test
         public void testSave() {
             // Define a sample customer to be saved
@@ -98,17 +126,17 @@ import static org.mockito.Mockito.*;
             customer.setId(1L);
             customer.setUsername("John");
             customer.setEmail("john@example.com");
-
+        
             // Mock the behavior of customerRepository.save()
             doNothing().when(customerRepository).save(any(Customer.class));
-
+        
             // Call the service to save the customer
             customerService.save(customer);
-
+        
             // Verify that the service calls customerRepository.save with the correct argument
             verify(customerRepository, times(1)).save(customer);
         }
-
+        
         @Test
         public void testDeleteById() {
             // Mock the behavior of customerRepository.deleteById()
