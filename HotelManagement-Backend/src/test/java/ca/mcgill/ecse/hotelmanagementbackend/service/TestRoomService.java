@@ -17,6 +17,10 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * Test for Room Service class
+ * @author Clara Jabbour
+ */
 @ExtendWith(MockitoExtension.class)
 public class TestRoomService {
 

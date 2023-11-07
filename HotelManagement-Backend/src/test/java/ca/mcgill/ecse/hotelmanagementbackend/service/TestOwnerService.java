@@ -14,6 +14,10 @@ import static org.mockito.Mockito.*;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Test for Owner Service class
+ * @author Clara Jabbour
+ */
 @ExtendWith(MockitoExtension.class)
 public class TestOwnerService {
 

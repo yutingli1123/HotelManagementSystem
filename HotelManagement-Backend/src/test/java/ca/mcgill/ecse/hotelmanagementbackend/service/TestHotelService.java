@@ -17,6 +17,10 @@ import ca.mcgill.ecse.hotelmanagementbackend.repository.HotelRepository;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * Test for Hotel service class
+ * @author Clara Jabbour and Sami Bayoud
+ */
 
 @ExtendWith(MockitoExtension.class)
 public class TestHotelService {
