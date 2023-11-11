@@ -24,9 +24,10 @@ public class OwnerController {
     }
 
     @PostMapping
-    public void saveOwner(@Valid @RequestBody Owner owner) {
+    public Long saveOwner(@Valid @RequestBody Owner owner) {
         owner.setPassword(passwordEncoder.encode(owner.getPassword()));
         ownerService.save(owner);
+        return owner.getId();
     }
 
     @GetMapping("/by-username/{username}")

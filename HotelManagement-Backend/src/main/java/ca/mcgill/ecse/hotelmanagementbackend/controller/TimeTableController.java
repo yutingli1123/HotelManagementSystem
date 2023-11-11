@@ -26,8 +26,9 @@ public class TimeTableController {
     }
 
     @PostMapping
-    public void saveTimeTable(@Valid @RequestBody TimeTable timeTable) {
+    public Long saveTimeTable(@Valid @RequestBody TimeTable timeTable) {
         timeTableService.save(timeTable);
+        return timeTable.getId();
     }
 
     @DeleteMapping("/by-id/{id}")

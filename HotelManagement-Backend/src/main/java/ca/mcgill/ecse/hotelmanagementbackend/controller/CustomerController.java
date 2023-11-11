@@ -24,9 +24,10 @@ public class CustomerController {
     }
 
     @PostMapping // Updated endpoint
-    public void saveCustomer(@Valid @RequestBody Customer customer) {
+    public Long saveCustomer(@Valid @RequestBody Customer customer) {
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
         customerService.save(customer);
+        return customer.getId();
     }
 
     @GetMapping("/by-username/{username}") // Updated endpoint

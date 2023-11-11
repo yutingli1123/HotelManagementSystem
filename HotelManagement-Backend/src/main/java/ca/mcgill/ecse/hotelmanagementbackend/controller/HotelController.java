@@ -21,8 +21,9 @@ public class HotelController {
     }
 
     @PostMapping
-    public void saveHotel(@Valid @RequestBody Hotel hotel) {
+    public Long saveHotel(@Valid @RequestBody Hotel hotel) {
         hotelService.save(hotel);
+        return hotel.getId();
     }
 
     @GetMapping("/{id}")

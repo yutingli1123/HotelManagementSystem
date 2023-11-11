@@ -33,8 +33,9 @@ public class ReservationController {
     }
 
     @PostMapping
-    public void saveReservation(@Valid @RequestBody Reservation reservation) {
+    public Long saveReservation(@Valid @RequestBody Reservation reservation) {
         reservationService.save(reservation);
+        return reservation.getId();
     }
 
     @GetMapping("/by-id/{id}")

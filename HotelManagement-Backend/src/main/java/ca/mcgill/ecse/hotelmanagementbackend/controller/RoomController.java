@@ -22,8 +22,9 @@ public class RoomController {
     }
 
     @PostMapping
-    public void saveRoom(@Valid @RequestBody Room room) {
+    public Long saveRoom(@Valid @RequestBody Room room) {
         roomService.save(room);
+        return room.getId();
     }
 
     @GetMapping("/by-type/{roomType}")

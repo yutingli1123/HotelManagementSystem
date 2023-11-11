@@ -4,11 +4,9 @@ import ca.mcgill.ecse.hotelmanagementbackend.entity.Task;
 import ca.mcgill.ecse.hotelmanagementbackend.service.TaskService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalTime;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -49,8 +47,9 @@ public class TaskController {
     }
 
     @PostMapping
-    public void saveTask(@Valid @RequestBody Task task) {
+    public Long saveTask(@Valid @RequestBody Task task) {
         taskService.save(task);
+        return task.getId();
     }
 
     @DeleteMapping("/by-id/{id}")

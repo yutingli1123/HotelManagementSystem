@@ -4,6 +4,7 @@ import ca.mcgill.ecse.hotelmanagementbackend.entity.Employee;
 import ca.mcgill.ecse.hotelmanagementbackend.service.EmployeeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
 @CrossOrigin
 @RequestMapping("/api/v1/employees")
 public class EmployeeController {
+    private final Argon2PasswordEncoder passwordEncoder = new Argon2PasswordEncoder(16,32,1,60000,10);
 
     @Autowired
     private EmployeeService employeeService;
@@ -22,8 +24,10 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public void saveEmployee(@Valid @RequestBody Employee employee) {
+    public Long saveEmployee(@Valid @RequestBody Employee employee) {
+        employee.setPassword(passwordEncoder.encode(employee.getPassword()));
         employeeService.save(employee);
+        return employee.getId();
     }
 
     @GetMapping("/by-username/{username}")
