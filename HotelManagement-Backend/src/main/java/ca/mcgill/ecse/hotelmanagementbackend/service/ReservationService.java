@@ -1,6 +1,5 @@
 package ca.mcgill.ecse.hotelmanagementbackend.service;
 
-import ca.mcgill.ecse.hotelmanagementbackend.entity.Owner;
 import ca.mcgill.ecse.hotelmanagementbackend.entity.Reservation;
 import ca.mcgill.ecse.hotelmanagementbackend.repository.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +24,6 @@ public class ReservationService {
         return reservationRepository.findById(id).orElse(null);
     }
 
-    @Transactional(readOnly = true)
-    public List<Reservation> findAllByDate(Date date) {
-        return reservationRepository.findAllByDate(date).orElse(null);
-    }
 
     @Transactional(readOnly = true)
     public List<Reservation> findAllByDateBetween(Date startDate, Date endDate) {
@@ -38,11 +33,6 @@ public class ReservationService {
     @Transactional
     public void deleteById(Long id) {
         reservationRepository.deleteById(id);
-    }
-
-    @Transactional
-    public void deleteAllByDate(Date date) {
-        reservationRepository.deleteAllByDate(date);
     }
 
     @Transactional

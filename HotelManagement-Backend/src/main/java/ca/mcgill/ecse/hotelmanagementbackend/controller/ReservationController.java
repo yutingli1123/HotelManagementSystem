@@ -4,7 +4,6 @@ import ca.mcgill.ecse.hotelmanagementbackend.entity.Reservation;
 import ca.mcgill.ecse.hotelmanagementbackend.service.ReservationService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -22,14 +21,9 @@ public class ReservationController {
         return reservationService.findAll();
     }
 
-    @GetMapping("/by-date")
-    public List<Reservation> getAllReservationsByDate(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date date) {
-        return reservationService.findAllByDate(date);
-    }
-
     @GetMapping("/by-date-range")
-    public List<Reservation> getAllReservationsByDateBetween(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate) {
-        return reservationService.findAllByDateBetween(startDate,endDate);
+    public List<Reservation> getAllReservationsByDateBetween(@RequestParam Date startDate, @RequestParam Date endDate) {
+        return reservationService.findAllByDateBetween(startDate, endDate);
     }
 
     @PostMapping
@@ -49,7 +43,7 @@ public class ReservationController {
     }
 
     @DeleteMapping("/by-date-range")
-    public void deleteReservation(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate) {
+    public void deleteReservation(@RequestParam Date startDate, @RequestParam Date endDate) {
         reservationService.deleteAllByDateBetween(startDate, endDate);
     }
 }

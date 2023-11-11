@@ -13,7 +13,7 @@ import java.util.List;
 @CrossOrigin
 @RequestMapping("/api/v1/owners")
 public class OwnerController {
-    private final Argon2PasswordEncoder passwordEncoder = new Argon2PasswordEncoder(16,32,1,60000,10);
+    private final Argon2PasswordEncoder passwordEncoder = new Argon2PasswordEncoder(16, 32, 1, 60000, 10);
 
     @Autowired
     private OwnerService ownerService;
@@ -21,6 +21,11 @@ public class OwnerController {
     @GetMapping
     public List<Owner> getAllOwners() {
         return ownerService.findAll();
+    }
+
+    @GetMapping("/by-name/{name}") // Updated endpoint
+    public List<Owner> getAllOwnersByName(@PathVariable String name) {
+        return ownerService.findAllByName(name);
     }
 
     @PostMapping
