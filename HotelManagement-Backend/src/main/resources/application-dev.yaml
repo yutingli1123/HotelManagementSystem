@@ -5,7 +5,7 @@ spring:
     driver-class-name: org.postgresql.Driver
     username: postgres
     password: postgres
-    url: jdbc:postgresql://${server.host}:5432/hotel_management_test
+    url: jdbc:postgresql://${server.host}:5432/hotel_management_test?connectionTimeZone=UTC
   jpa:
     hibernate:
       ddl-auto: update

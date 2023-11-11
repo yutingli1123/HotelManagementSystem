@@ -1,6 +1,5 @@
 package ca.mcgill.ecse.hotelmanagementbackend.integration;
 
-import ca.mcgill.ecse.hotelmanagementbackend.entity.Customer;
 import ca.mcgill.ecse.hotelmanagementbackend.entity.Owner;
 import ca.mcgill.ecse.hotelmanagementbackend.repository.OwnerRepository;
 import org.junit.jupiter.api.*;
@@ -58,7 +57,7 @@ public class OwnerIntegrationTests {
     @Test
     @Order(2)
     public void testGetById() {
-        ResponseEntity<Customer> response = client.getForEntity("/api/v1/owners/by-id/{id}", Customer.class, ownerId);
+        ResponseEntity<Owner> response = client.getForEntity("/api/v1/owners/by-id/{id}", Owner.class, ownerId);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertTrue(response.getBody().getId() > 0, "Response body should have an ID.");
@@ -71,7 +70,7 @@ public class OwnerIntegrationTests {
     @Test
     @Order(3)
     public void testGetByEmail() {
-        ResponseEntity<Customer> response = client.getForEntity("/api/v1/owners/by-email/{email}", Customer.class, owner.getEmail());
+        ResponseEntity<Owner> response = client.getForEntity("/api/v1/owners/by-email/{email}", Owner.class, owner.getEmail());
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertTrue(response.getBody().getId() > 0, "Response body should have an ID.");
@@ -84,7 +83,7 @@ public class OwnerIntegrationTests {
     @Test
     @Order(4)
     public void testGetByUsername() {
-        ResponseEntity<Customer> response = client.getForEntity("/api/v1/owners/by-username/{username}", Customer.class, owner.getUsername());
+        ResponseEntity<Owner> response = client.getForEntity("/api/v1/owners/by-username/{username}", Owner.class, owner.getUsername());
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertTrue(response.getBody().getId() > 0, "Response body should have an ID.");
@@ -97,35 +96,35 @@ public class OwnerIntegrationTests {
     @Test
     @Order(5)
     public void testGetAll() {
-        ResponseEntity<Customer[]> response = client.getForEntity("/api/v1/owners", Customer[].class);
+        ResponseEntity<Owner[]> response = client.getForEntity("/api/v1/owners", Owner[].class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        Customer[] responseBody = response.getBody();
+        Owner[] responseBody = response.getBody();
         assertNotNull(responseBody);
         assertEquals(1, responseBody.length);
         assertNotNull(responseBody[0]);
-        Customer responseCustomer = responseBody[0];
-        assertTrue(responseCustomer.getId() > 0, "Response body should have an ID.");
-        assertEquals(owner.getName(), responseCustomer.getName());
-        assertEquals(owner.getUsername(), responseCustomer.getUsername());
-        assertEquals(owner.getEmail(), responseCustomer.getEmail());
-        assertTrue(passwordEncoder.matches(owner.getPassword(), responseCustomer.getPassword()));
+        Owner responseOwner = responseBody[0];
+        assertTrue(responseOwner.getId() > 0, "Response body should have an ID.");
+        assertEquals(owner.getName(), responseOwner.getName());
+        assertEquals(owner.getUsername(), responseOwner.getUsername());
+        assertEquals(owner.getEmail(), responseOwner.getEmail());
+        assertTrue(passwordEncoder.matches(owner.getPassword(), responseOwner.getPassword()));
     }
 
     @Test
     @Order(6)
     public void testGetAllByName() {
-        ResponseEntity<Customer[]> response = client.getForEntity("/api/v1/owners/by-name/{name}", Customer[].class, owner.getName());
+        ResponseEntity<Owner[]> response = client.getForEntity("/api/v1/owners/by-name/{name}", Owner[].class, owner.getName());
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        Customer[] responseBody = response.getBody();
+        Owner[] responseBody = response.getBody();
         assertNotNull(responseBody);
         assertEquals(1, responseBody.length);
         assertNotNull(responseBody[0]);
-        Customer responseCustomer = responseBody[0];
-        assertTrue(responseCustomer.getId() > 0, "Response body should have an ID.");
-        assertEquals(owner.getName(), responseCustomer.getName());
-        assertEquals(owner.getUsername(), responseCustomer.getUsername());
-        assertEquals(owner.getEmail(), responseCustomer.getEmail());
-        assertTrue(passwordEncoder.matches(owner.getPassword(), responseCustomer.getPassword()));
+        Owner responseOwner = responseBody[0];
+        assertTrue(responseOwner.getId() > 0, "Response body should have an ID.");
+        assertEquals(owner.getName(), responseOwner.getName());
+        assertEquals(owner.getUsername(), responseOwner.getUsername());
+        assertEquals(owner.getEmail(), responseOwner.getEmail());
+        assertTrue(passwordEncoder.matches(owner.getPassword(), responseOwner.getPassword()));
     }
 
     @Test
@@ -147,7 +146,7 @@ public class OwnerIntegrationTests {
         ResponseEntity<Long> responseCreate = client.postForEntity("/api/v1/owners", owner, Long.class);
         // Save the ID to read later
         Long ownerId = responseCreate.getBody();
-        client.delete("/api/v1/owners/by-email/{email}",owner.getEmail());
+        client.delete("/api/v1/owners/by-email/{email}", owner.getEmail());
         ResponseEntity<Owner> responseGet = client.getForEntity("/api/v1/owners/by-id/{id}", Owner.class, ownerId);
         assertNull(responseGet.getBody());
     }

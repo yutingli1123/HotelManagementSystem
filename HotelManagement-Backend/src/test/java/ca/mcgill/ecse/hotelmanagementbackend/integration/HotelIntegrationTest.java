@@ -1,7 +1,7 @@
 package ca.mcgill.ecse.hotelmanagementbackend.integration;
 
 import ca.mcgill.ecse.hotelmanagementbackend.entity.Hotel;
-import ca.mcgill.ecse.hotelmanagementbackend.repository.CustomerRepository;
+import ca.mcgill.ecse.hotelmanagementbackend.repository.HotelRepository;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
@@ -27,7 +27,7 @@ public class HotelIntegrationTest {
     @Autowired
     private TestRestTemplate client;
     @Autowired
-    private CustomerRepository customerRepository;
+    private HotelRepository hotelRepository;
 
 
     private Long hotelId;
@@ -35,14 +35,14 @@ public class HotelIntegrationTest {
     // NOT @AfterEach, otherwise the person created in the POST test will be deleted before the GET test
     @AfterAll
     public void clearDatabase() {
-        customerRepository.deleteAll();
+        hotelRepository.deleteAll();
     }
 
     @Test
     @Order(1)
     public void testSave() {
-        LocalTime startTime = LocalTime.of(8,30);
-        LocalTime closeTime = LocalTime.of(23,30);
+        LocalTime startTime = LocalTime.of(8, 30);
+        LocalTime closeTime = LocalTime.of(23, 30);
         Hotel hotel = new Hotel(startTime, closeTime);
 
         // Send the request
@@ -61,8 +61,8 @@ public class HotelIntegrationTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertTrue(response.getBody().getId() > 0, "Response body should have an ID.");
-        assertEquals(LocalTime.of(8,30), response.getBody().getOpenTime());
-        assertEquals(LocalTime.of(23,30), response.getBody().getCloseTime());
+        assertEquals(LocalTime.of(8, 30), response.getBody().getOpenTime());
+        assertEquals(LocalTime.of(23, 30), response.getBody().getCloseTime());
     }
 
     @Test
@@ -76,13 +76,13 @@ public class HotelIntegrationTest {
         assertNotNull(responseBody[0]);
         Hotel hotel = responseBody[0];
         assertTrue(hotel.getId() > 0, "Response body should have an ID.");
-        assertEquals(LocalTime.of(8,30), hotel.getOpenTime());
-        assertEquals(LocalTime.of(23,30), hotel.getCloseTime());
+        assertEquals(LocalTime.of(8, 30), hotel.getOpenTime());
+        assertEquals(LocalTime.of(23, 30), hotel.getCloseTime());
     }
 
     @Test
     @Order(4)
-    public void testDeleteHotelById(){
+    public void testDeleteHotelById() {
         client.delete("/api/v1/hotels/" + hotelId);
         ResponseEntity<Hotel> response = client.getForEntity("/api/v1/hotels/" + hotelId, Hotel.class);
         assertNull(response.getBody());

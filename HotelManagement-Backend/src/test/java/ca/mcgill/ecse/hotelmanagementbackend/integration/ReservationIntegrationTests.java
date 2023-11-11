@@ -1,6 +1,5 @@
 package ca.mcgill.ecse.hotelmanagementbackend.integration;
 
-import ca.mcgill.ecse.hotelmanagementbackend.entity.Owner;
 import ca.mcgill.ecse.hotelmanagementbackend.entity.Reservation;
 import ca.mcgill.ecse.hotelmanagementbackend.repository.ReservationRepository;
 import org.junit.jupiter.api.*;
@@ -113,7 +112,7 @@ public class ReservationIntegrationTests {
         // Save the ID to read later
         Long reservationId = responseCreate.getBody();
         client.delete("/api/v1/reservations/by-id/{id}", reservationId);
-        ResponseEntity<Owner> responseGet = client.getForEntity("/api/v1/reservations/by-id/{id}", Owner.class, reservationId);
+        ResponseEntity<Reservation> responseGet = client.getForEntity("/api/v1/reservations/by-id/{id}", Reservation.class, reservationId);
         assertNull(responseGet.getBody());
     }
 
@@ -134,7 +133,7 @@ public class ReservationIntegrationTests {
         Date endDate = calendar.getTime();
 
         client.delete("/api/v1/reservations/by-date-range?startDate={startDate}&endDate={endDate}", startDate, endDate);
-        ResponseEntity<Owner> responseGet = client.getForEntity("/api/v1/reservations/by-id/{id}", Owner.class, reservationId);
+        ResponseEntity<Reservation> responseGet = client.getForEntity("/api/v1/reservations/by-id/{id}", Reservation.class, reservationId);
         assertNull(responseGet.getBody());
     }
 }
