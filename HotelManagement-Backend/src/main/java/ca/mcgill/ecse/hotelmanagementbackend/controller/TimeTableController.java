@@ -10,28 +10,28 @@ import java.util.List;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/timeTables")
 public class TimeTableController {
     @Autowired
     private TimeTableService timeTableService;
 
-    @GetMapping("/timeTables")
+    @GetMapping
     public List<TimeTable> getAllTimeTables() {
         return timeTableService.findAll();
     }
 
-    @GetMapping("/timeTable")
-    public TimeTable getTimeTable(@RequestParam Long id) {
+    @GetMapping("/by-id/{id}")
+    public TimeTable getTimeTable(@PathVariable Long id) {
         return timeTableService.findById(id);
     }
 
-    @PostMapping("/timeTable")
+    @PostMapping
     public void saveTimeTable(@Valid @RequestBody TimeTable timeTable) {
         timeTableService.save(timeTable);
     }
 
-    @DeleteMapping("/timeTable")
-    public void deleteTimeTable(@RequestParam Long id) {
+    @DeleteMapping("/by-id/{id}")
+    public void deleteTimeTable(@PathVariable Long id) {
         timeTableService.deleteById(id);
     }
 }

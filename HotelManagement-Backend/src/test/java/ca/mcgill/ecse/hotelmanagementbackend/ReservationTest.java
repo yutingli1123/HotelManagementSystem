@@ -48,7 +48,6 @@ public class ReservationTest {
         Customer customer1 = new Customer("Test1", "test1", "test1@test.com", "test1", hotel);
         Customer customer2 = new Customer("Test2", "test2", "test2@test.com", "test2", hotel);
         customerService.save(customer1);
-        List<Reservation> reservations = new ArrayList<>();
         Reservation reservation = new Reservation(new Date());
         reservation.setCustomer(customer1);
         reservationService.save(reservation);

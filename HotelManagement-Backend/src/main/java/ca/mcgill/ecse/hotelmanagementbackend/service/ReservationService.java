@@ -30,6 +30,11 @@ public class ReservationService {
         return reservationRepository.findAllByDate(date).orElse(null);
     }
 
+    @Transactional(readOnly = true)
+    public List<Reservation> findAllByDateBetween(Date startDate, Date endDate) {
+        return reservationRepository.findAllByDateBetween(startDate, endDate).orElse(null);
+    }
+
     @Transactional
     public void deleteById(Long id) {
         reservationRepository.deleteById(id);
@@ -38,6 +43,11 @@ public class ReservationService {
     @Transactional
     public void deleteAllByDate(Date date) {
         reservationRepository.deleteAllByDate(date);
+    }
+
+    @Transactional
+    public void deleteAllByDateBetween(Date startDate, Date endDate) {
+        reservationRepository.deleteAllByDateBetween(startDate, endDate);
     }
 
     @Transactional

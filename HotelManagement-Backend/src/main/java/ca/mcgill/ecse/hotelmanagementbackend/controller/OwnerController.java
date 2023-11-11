@@ -4,54 +4,58 @@ import ca.mcgill.ecse.hotelmanagementbackend.entity.Owner;
 import ca.mcgill.ecse.hotelmanagementbackend.service.OwnerService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/api/v1/owner")
+@RequestMapping("/api/v1/owners")
 public class OwnerController {
+    private final Argon2PasswordEncoder passwordEncoder = new Argon2PasswordEncoder(16,32,1,60000,10);
+
     @Autowired
     private OwnerService ownerService;
 
-    @GetMapping("/all")
+    @GetMapping
     public List<Owner> getAllOwners() {
         return ownerService.findAll();
     }
 
-    @PostMapping("/save")
+    @PostMapping
     public void saveOwner(@Valid @RequestBody Owner owner) {
+        owner.setPassword(passwordEncoder.encode(owner.getPassword()));
         ownerService.save(owner);
     }
 
-    @GetMapping("/by-username")
-    public Owner getOwnerByUsername(@RequestParam String username) {
+    @GetMapping("/by-username/{username}")
+    public Owner getOwnerByUsername(@PathVariable String username) {
         return ownerService.findByUsername(username);
     }
 
-    @GetMapping("/by-email")
-    public Owner getOwnerByEmail(@RequestParam String email) {
+    @GetMapping("/by-email/{email}")
+    public Owner getOwnerByEmail(@PathVariable String email) {
         return ownerService.findByEmail(email);
     }
 
-    @GetMapping("/by-id")
-    public Owner getOwnerById(@RequestParam Long id) {
+    @GetMapping("/by-id/{id}")
+    public Owner getOwnerById(@PathVariable Long id) {
         return ownerService.findById(id);
     }
 
-    @DeleteMapping("/by-username")
-    public void DeleteOwnerByUsername(@RequestParam String username) {
+    @DeleteMapping("/by-username/{username}")
+    public void DeleteOwnerByUsername(@PathVariable String username) {
         ownerService.deleteByUsername(username);
     }
 
-    @DeleteMapping("/by-email")
-    public void DeleteOwnerByEmail(@RequestParam String email) {
+    @DeleteMapping("/by-email/{email}")
+    public void DeleteOwnerByEmail(@PathVariable String email) {
         ownerService.deleteByEmail(email);
     }
 
-    @DeleteMapping("/by-id")
-    public void DeleteOwnerById(@RequestParam Long id) {
+    @DeleteMapping("/by-id/{id}")
+    public void DeleteOwnerById(@PathVariable Long id) {
         ownerService.deleteById(id);
     }
 }

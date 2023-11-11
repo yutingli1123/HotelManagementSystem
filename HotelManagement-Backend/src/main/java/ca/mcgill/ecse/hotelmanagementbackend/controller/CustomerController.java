@@ -18,44 +18,44 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
-    @GetMapping("/all") // Updated endpoint
+    @GetMapping // Updated endpoint
     public List<Customer> getAllCustomers() {
         return customerService.findAll();
     }
 
-    @PostMapping("/create") // Updated endpoint
+    @PostMapping // Updated endpoint
     public void saveCustomer(@Valid @RequestBody Customer customer) {
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
         customerService.save(customer);
     }
 
-    @GetMapping("/username") // Updated endpoint
-    public Customer getCustomerByUsername(@RequestParam String username) {
+    @GetMapping("/by-username/{username}") // Updated endpoint
+    public Customer getCustomerByUsername(@PathVariable String username) {
         return customerService.findByUsername(username);
     }
 
-    @GetMapping("/email") // Updated endpoint
-    public Customer getCustomerByEmail(@RequestParam String email) {
+    @GetMapping("/by-email/{email}") // Updated endpoint
+    public Customer getCustomerByEmail(@PathVariable String email) {
         return customerService.findByEmail(email);
     }
 
-    @GetMapping("/id") // Updated endpoint
-    public Customer getCustomerById(@RequestParam Long id) {
+    @GetMapping("/by-id/{id}") // Updated endpoint
+    public Customer getCustomerById(@PathVariable Long id) {
         return customerService.findById(id);
     }
 
-    @DeleteMapping("/delete/username") // Updated endpoint
-    public void deleteCustomerByUsername(@RequestParam String username) {
+    @DeleteMapping("/by-username/{username}") // Updated endpoint
+    public void deleteCustomerByUsername(@PathVariable String username) {
         customerService.deleteByUsername(username);
     }
 
-    @DeleteMapping("/delete/email") // Updated endpoint
-    public void deleteCustomerByEmail(@RequestParam String email) {
+    @DeleteMapping("/by-email/{email}") // Updated endpoint
+    public void deleteCustomerByEmail(@PathVariable String email) {
         customerService.deleteByEmail(email);
     }
 
-    @DeleteMapping("/delete/id") // Updated endpoint
-    public void deleteCustomerById(@RequestParam Long id) {
+    @DeleteMapping("/by-id/{id}") // Updated endpoint
+    public void deleteCustomerById(@PathVariable Long id) {
         customerService.deleteById(id);
     }
 }

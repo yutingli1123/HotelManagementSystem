@@ -12,29 +12,44 @@ import java.util.List;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/reservations")
 public class ReservationController {
     @Autowired
     private ReservationService reservationService;
 
-    @GetMapping("/reservations")
+    @GetMapping
     public List<Reservation> getAllReservations() {
         return reservationService.findAll();
     }
 
-    @GetMapping("/reservations/by-date")
-    public List<Reservation> getAllReservationsByDate(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date date) {
+    @GetMapping("/by-date")
+    public List<Reservation> getAllReservationsByDate(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date date) {
         return reservationService.findAllByDate(date);
     }
 
-    @PostMapping("/reservations")
+    @GetMapping("/by-date-range")
+    public List<Reservation> getAllReservationsByDateBetween(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate) {
+        return reservationService.findAllByDateBetween(startDate,endDate);
+    }
+
+    @PostMapping
     public void saveReservation(@Valid @RequestBody Reservation reservation) {
         reservationService.save(reservation);
     }
 
-    @GetMapping("/reservation")
-    public Reservation getReservation(@RequestParam Long id) {
+    @GetMapping("/by-id/{id}")
+    public Reservation getReservation(@PathVariable Long id) {
         return reservationService.findById(id);
+    }
+
+    @DeleteMapping("/by-id/{id}")
+    public void deleteReservation(@PathVariable Long id) {
+        reservationService.deleteById(id);
+    }
+
+    @DeleteMapping("/by-date-range")
+    public void deleteReservation(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate) {
+        reservationService.deleteAllByDateBetween(startDate, endDate);
     }
 }
 

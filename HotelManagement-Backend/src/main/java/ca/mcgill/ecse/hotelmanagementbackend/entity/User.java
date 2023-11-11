@@ -1,5 +1,6 @@
 package ca.mcgill.ecse.hotelmanagementbackend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Table(name = "hotel_user")
+@JsonIgnoreProperties(allowSetters = true, value = {"password"})
 public abstract class User {
     @Id
     @GeneratedValue

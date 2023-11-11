@@ -11,28 +11,28 @@ import java.util.List;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/rooms")
 public class RoomController {
     @Autowired
     private RoomService roomService;
 
-    @GetMapping("/rooms")
+    @GetMapping
     public List<Room> getAllRooms() {
         return roomService.findAll();
     }
 
-    @PostMapping("/rooms")
+    @PostMapping
     public void saveRoom(@Valid @RequestBody Room room) {
         roomService.save(room);
     }
 
-    @GetMapping("/roomsByType")
-    public List<Room> getAllRoomsByRoomType(@RequestParam RoomType roomType) {
+    @GetMapping("/by-type/{roomType}")
+    public List<Room> getAllRoomsByRoomType(@PathVariable RoomType roomType) {
         return roomService.findAllByRoomType(roomType);
     }
 
-    @DeleteMapping("/room")
-    public void deleteRoom(@RequestParam Long id) {
+    @DeleteMapping("/by-id/{id}")
+    public void deleteRoom(@PathVariable Long id) {
         roomService.deleteById(id);
     }
 }

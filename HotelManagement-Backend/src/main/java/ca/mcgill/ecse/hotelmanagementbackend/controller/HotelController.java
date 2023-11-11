@@ -10,28 +10,28 @@ import java.util.List;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/hotels")
 public class HotelController {
     @Autowired
     private HotelService hotelService;
 
-    @GetMapping("/hotels")
+    @GetMapping
     public List<Hotel> getAllHotels() {
         return hotelService.findAll();
     }
 
-    @PostMapping("/hotels")
+    @PostMapping
     public void saveHotel(@Valid @RequestBody Hotel hotel) {
         hotelService.save(hotel);
     }
 
-    @GetMapping("/hotel")
-    public Hotel getHotelById(@RequestParam Long id) {
+    @GetMapping("/{id}")
+    public Hotel getHotelById(@PathVariable Long id) {
         return hotelService.findById(id);
     }
 
-    @DeleteMapping("/hotel")
-    public void deleteHotelById(@RequestParam Long id) {
+    @DeleteMapping("/{id}")
+    public void deleteHotelById(@PathVariable Long id) {
         hotelService.deleteById(id);
     }
 }

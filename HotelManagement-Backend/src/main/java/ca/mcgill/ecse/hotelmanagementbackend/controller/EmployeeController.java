@@ -26,33 +26,33 @@ public class EmployeeController {
         employeeService.save(employee);
     }
 
-    @GetMapping("/by-username")
-    public Employee getEmployeeByUsername(@RequestParam String username) {
+    @GetMapping("/by-username/{username}")
+    public Employee getEmployeeByUsername(@PathVariable String username) {
         return employeeService.findByUsername(username);
     }
 
-    @GetMapping("/by-email")
-    public Employee getEmployeeByEmail(@RequestParam String email) {
+    @GetMapping("/by-email/{email}")
+    public Employee getEmployeeByEmail(@PathVariable String email) {
         return employeeService.findByEmail(email);
     }
 
-    @GetMapping("/by-id")
-    public Employee getEmployeeById(@RequestParam Long id) {
+    @GetMapping("/by-id/{id}")
+    public Employee getEmployeeById(@PathVariable Long id) {
         return employeeService.findById(id);
     }
 
-    @DeleteMapping("/by-username")
-    public void deleteEmployeeByUsername(@RequestParam String username) {
+    @DeleteMapping("/by-username/{username}")
+    public void deleteEmployeeByUsername(@PathVariable String username) {
         employeeService.deleteByUsername(username);
     }
 
-    @DeleteMapping("/by-email")
-    public void deleteEmployeeByEmail(@RequestParam String email) {
+    @DeleteMapping("/by-email/{email}")
+    public void deleteEmployeeByEmail(@PathVariable String email) {
         employeeService.deleteByEmail(email);
     }
 
-    @DeleteMapping("/by-id")
-    public void deleteEmployeeById(@RequestParam Long id) {
+    @DeleteMapping("/by-id/{id}")
+    public void deleteEmployeeById(@PathVariable Long id) {
         employeeService.deleteById(id);
     }
 }
