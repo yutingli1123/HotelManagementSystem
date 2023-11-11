@@ -1,7 +1,8 @@
 package ca.mcgill.ecse.hotelmanagementbackend.integration;
 
 import ca.mcgill.ecse.hotelmanagementbackend.entity.Customer;
-import ca.mcgill.ecse.hotelmanagementbackend.repository.CustomerRepository;
+import ca.mcgill.ecse.hotelmanagementbackend.entity.Employee;
+import ca.mcgill.ecse.hotelmanagementbackend.repository.EmployeeRepository;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
@@ -22,22 +23,22 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestInstance(Lifecycle.PER_CLASS)
 // Run the tests in the order specified by the @Order annotations (e.g., create before read).
 @TestMethodOrder(OrderAnnotation.class)
-public class CustomerIntegrationTests {
+public class EmployeeIntegrationTests {
     @Autowired
     private TestRestTemplate client;
     @Autowired
-    private CustomerRepository customerRepository;
+    private EmployeeRepository employeeRepository;
 
     private final Argon2PasswordEncoder passwordEncoder = new Argon2PasswordEncoder(16, 32, 1, 60000, 10);
 
-    private final Customer customer = new Customer("Test", "test", "t@t.com", "test", null);
+    private final Employee employee = new Employee("Test", "test", "t@t.com", "test", null, 500);
 
-    private Long customerId;
+    private Long employeeId;
 
     // NOT @AfterEach, otherwise the person created in the POST test will be deleted before the GET test
     @AfterAll
     public void clearDatabase() {
-        customerRepository.deleteAll();
+        employeeRepository.deleteAll();
     }
 
     @Test
@@ -46,57 +47,57 @@ public class CustomerIntegrationTests {
 
 
         // Send the request
-        ResponseEntity<Long> response = client.postForEntity("/api/v1/customers", customer, Long.class);
+        ResponseEntity<Long> response = client.postForEntity("/api/v1/employees", employee, Long.class);
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
         // Save the ID to read later
-        this.customerId = response.getBody();
+        this.employeeId = response.getBody();
     }
 
     @Test
     @Order(2)
     public void testGetById() {
-        ResponseEntity<Customer> response = client.getForEntity("/api/v1/customers/by-id/" + customerId, Customer.class);
+        ResponseEntity<Customer> response = client.getForEntity("/api/v1/employees/by-id/" + employeeId, Customer.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertTrue(response.getBody().getId() > 0, "Response body should have an ID.");
-        assertEquals(customer.getName(), response.getBody().getName());
-        assertEquals(customer.getUsername(), response.getBody().getUsername());
-        assertEquals(customer.getEmail(), response.getBody().getEmail());
-        assertTrue(passwordEncoder.matches(customer.getPassword(), response.getBody().getPassword()));
+        assertEquals(employee.getName(), response.getBody().getName());
+        assertEquals(employee.getUsername(), response.getBody().getUsername());
+        assertEquals(employee.getEmail(), response.getBody().getEmail());
+        assertTrue(passwordEncoder.matches(employee.getPassword(), response.getBody().getPassword()));
     }
 
     @Test
     @Order(3)
     public void testGetByEmail() {
-        ResponseEntity<Customer> response = client.getForEntity("/api/v1/customers/by-email/" + customer.getEmail(), Customer.class);
+        ResponseEntity<Customer> response = client.getForEntity("/api/v1/employees/by-email/" + employee.getEmail(), Customer.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertTrue(response.getBody().getId() > 0, "Response body should have an ID.");
-        assertEquals(customer.getName(), response.getBody().getName());
-        assertEquals(customer.getUsername(), response.getBody().getUsername());
-        assertEquals(customer.getEmail(), response.getBody().getEmail());
-        assertTrue(passwordEncoder.matches(customer.getPassword(), response.getBody().getPassword()));
+        assertEquals(employee.getName(), response.getBody().getName());
+        assertEquals(employee.getUsername(), response.getBody().getUsername());
+        assertEquals(employee.getEmail(), response.getBody().getEmail());
+        assertTrue(passwordEncoder.matches(employee.getPassword(), response.getBody().getPassword()));
     }
 
     @Test
     @Order(4)
     public void testGetByUsername() {
-        ResponseEntity<Customer> response = client.getForEntity("/api/v1/customers/by-username/" + customer.getUsername(), Customer.class);
+        ResponseEntity<Customer> response = client.getForEntity("/api/v1/employees/by-username/" + employee.getUsername(), Customer.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertTrue(response.getBody().getId() > 0, "Response body should have an ID.");
-        assertEquals(customer.getName(), response.getBody().getName());
-        assertEquals(customer.getUsername(), response.getBody().getUsername());
-        assertEquals(customer.getEmail(), response.getBody().getEmail());
-        assertTrue(passwordEncoder.matches(customer.getPassword(), response.getBody().getPassword()));
+        assertEquals(employee.getName(), response.getBody().getName());
+        assertEquals(employee.getUsername(), response.getBody().getUsername());
+        assertEquals(employee.getEmail(), response.getBody().getEmail());
+        assertTrue(passwordEncoder.matches(employee.getPassword(), response.getBody().getPassword()));
     }
 
     @Test
     @Order(5)
     public void testGetAll() {
-        ResponseEntity<Customer[]> response = client.getForEntity("/api/v1/customers", Customer[].class);
+        ResponseEntity<Customer[]> response = client.getForEntity("/api/v1/employees", Customer[].class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         Customer[] responseBody = response.getBody();
         assertNotNull(responseBody);
@@ -104,9 +105,9 @@ public class CustomerIntegrationTests {
         assertNotNull(responseBody[0]);
         Customer responseCustomer = responseBody[0];
         assertTrue(responseCustomer.getId() > 0, "Response body should have an ID.");
-        assertEquals(customer.getName(), responseCustomer.getName());
-        assertEquals(customer.getUsername(), responseCustomer.getUsername());
-        assertEquals(customer.getEmail(), responseCustomer.getEmail());
-        assertTrue(passwordEncoder.matches(customer.getPassword(), responseCustomer.getPassword()));
+        assertEquals(employee.getName(), responseCustomer.getName());
+        assertEquals(employee.getUsername(), responseCustomer.getUsername());
+        assertEquals(employee.getEmail(), responseCustomer.getEmail());
+        assertTrue(passwordEncoder.matches(employee.getPassword(), responseCustomer.getPassword()));
     }
 }
