@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Table(name = "hotel_user")
-@JsonIgnoreProperties(allowSetters = true, value = {"password"})
 public abstract class User {
     @Id
     @GeneratedValue
