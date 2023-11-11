@@ -19,12 +19,11 @@ public class TimeTable {
     private Long id;
     private String timeTableName;
     @OneToMany(mappedBy = "timeTable")
-    private List<Task> tasks;
+    private List<Task> tasks = new ArrayList<>();
     @OneToMany(mappedBy = "timeTable")
-    private List<Employee> employees;
+    private List<Employee> employees = new ArrayList<>();
 
     public TimeTable(String timeTableName) {
         this.timeTableName = timeTableName;
-        this.tasks = new ArrayList<>();
     }
 }
