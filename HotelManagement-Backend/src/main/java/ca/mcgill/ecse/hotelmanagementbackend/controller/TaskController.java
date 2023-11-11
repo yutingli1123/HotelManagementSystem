@@ -22,13 +22,13 @@ public class TaskController {
         return taskService.findAll();
     }
 
-    @GetMapping("/by-date/start/{startDate}")
-    public List<Task> getAllTasksByStartDate(@PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate) {
+    @GetMapping("/by-date/start")
+    public List<Task> getAllTasksByStartDate(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate) {
         return taskService.findAllByStartDate(startDate);
     }
 
-    @GetMapping("/by-date/end/{endDate}")
-    public List<Task> getAllTasksByEndDate(@PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate) {
+    @GetMapping("/by-date/end")
+    public List<Task> getAllTasksByEndDate(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate) {
         return taskService.findAllByEndDate(endDate);
     }
 

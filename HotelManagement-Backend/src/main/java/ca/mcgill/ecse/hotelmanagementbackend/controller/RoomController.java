@@ -31,6 +31,11 @@ public class RoomController {
         return roomService.findAllByRoomType(roomType);
     }
 
+    @GetMapping("/by-id/{id}")
+    public Room getRoomById(@PathVariable Long id) {
+        return roomService.findById(id);
+    }
+
     @DeleteMapping("/by-id/{id}")
     public void deleteRoom(@PathVariable Long id) {
         roomService.deleteById(id);

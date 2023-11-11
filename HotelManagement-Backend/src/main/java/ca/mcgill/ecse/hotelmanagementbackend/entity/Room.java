@@ -21,7 +21,7 @@ public class Room {
     private Integer fee;
     @ElementCollection
     private List<Amenity> amenities;
-    private boolean isAvailable;
+    private boolean isAvailable = true;
     @ManyToOne
     private Hotel hotel;
     @ManyToMany(mappedBy = "rooms")
@@ -30,7 +30,12 @@ public class Room {
     public Room(RoomType type, Integer fee) {
         this.type = type;
         this.fee = fee;
-        this.isAvailable = true;
+        this.reservations = new ArrayList<>();
+    }
+
+    public Room(RoomType type, Integer fee, Hotel hotel, List<Amenity> amenities) {
+        this.type = type;
+        this.fee = fee;
         this.reservations = new ArrayList<>();
     }
 }

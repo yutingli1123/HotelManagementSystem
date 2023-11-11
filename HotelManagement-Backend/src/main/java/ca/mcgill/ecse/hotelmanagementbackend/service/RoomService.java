@@ -24,6 +24,11 @@ public class RoomService {
         return roomRepository.findAllByType(type).orElse(null);
     }
 
+    @Transactional(readOnly = true)
+    public Room findById(Long id) {
+        return roomRepository.findById(id).orElse(null);
+    }
+
     @Transactional
     public void save(Room room) {
         roomRepository.save(room);
