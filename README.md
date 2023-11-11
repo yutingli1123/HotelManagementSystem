@@ -17,7 +17,7 @@ Deliverable 1:
 | 6 	| Sami, Bayoud 	| 1. Write final draft of project report 1<br>2. Write detailed use-case specification<br>3. Review all the use-case specifications<br>4. Review Pull Requests<br>5. Adjust the code according to the reviews of the teammates 	| 14 hours 	|
 ## Project Documentation
 - Project Report [Project Report ‐ Deliverable 1](https://github.com/McGill-ECSE321-Fall2023/project-group-06/wiki/Deliverable-1:-Report)
-- Meeting Minutes [Meeting Minutes - Meeting 1](https://github.com/McGill-ECSE321-Fall2023/project-group-06/wiki/Deliverable-1%3A-Meeting-minutes)
+- Meeting Minutes [Meeting Minutes - Deliverable 1](https://github.com/McGill-ECSE321-Fall2023/project-group-06/wiki/Deliverable-1%3A-Meeting-minutes)
 -------------------------------------------
 Deliverable 2: 
 | No 	| Team Member 	| Responsibilities 	| Individual Efforts(hr) 	|
