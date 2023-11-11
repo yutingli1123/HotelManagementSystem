@@ -13,7 +13,7 @@ import java.util.List;
 @CrossOrigin
 @RequestMapping("/api/v1/employees")
 public class EmployeeController {
-    private final Argon2PasswordEncoder passwordEncoder = new Argon2PasswordEncoder(16,32,1,60000,10);
+    private final Argon2PasswordEncoder passwordEncoder = new Argon2PasswordEncoder(16, 32, 1, 60000, 10);
 
     @Autowired
     private EmployeeService employeeService;
@@ -21,6 +21,11 @@ public class EmployeeController {
     @GetMapping
     public List<Employee> getAllEmployees() {
         return employeeService.findAll();
+    }
+
+    @GetMapping("/by-name/{name}") // Updated endpoint
+    public List<Employee> getAllEmployeesByName(@PathVariable String name) {
+        return employeeService.findAllByName(name);
     }
 
     @PostMapping

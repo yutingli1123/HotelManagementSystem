@@ -19,6 +19,11 @@ public class OwnerService {
     }
 
     @Transactional(readOnly = true)
+    public List<Owner> findAllByName(String name) {
+        return ownerRepository.findAllByName(name).orElse(null);
+    }
+
+    @Transactional(readOnly = true)
     public Owner findById(Long id) {
         return ownerRepository.findById(id).orElse(null);
     }

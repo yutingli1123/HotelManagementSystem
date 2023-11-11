@@ -19,6 +19,11 @@ public class CustomerService {
     }
 
     @Transactional(readOnly = true)
+    public List<Customer> findAllByName(String name) {
+        return customerRepository.findAllByName(name).orElse(null);
+    }
+
+    @Transactional(readOnly = true)
     public Customer findById(Long id) {
         return customerRepository.findById(id).orElse(null);
     }

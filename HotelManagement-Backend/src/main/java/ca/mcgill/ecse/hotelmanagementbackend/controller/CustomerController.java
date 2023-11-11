@@ -23,6 +23,11 @@ public class CustomerController {
         return customerService.findAll();
     }
 
+    @GetMapping("/by-name/{name}") // Updated endpoint
+    public List<Customer> getAllCustomersByName(@PathVariable String name) {
+        return customerService.findAllByName(name);
+    }
+
     @PostMapping // Updated endpoint
     public Long saveCustomer(@Valid @RequestBody Customer customer) {
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));

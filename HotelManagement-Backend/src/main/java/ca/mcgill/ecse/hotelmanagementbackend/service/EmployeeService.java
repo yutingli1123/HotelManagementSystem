@@ -19,6 +19,11 @@ public class EmployeeService {
     }
 
     @Transactional(readOnly = true)
+    public List<Employee> findAllByName(String name) {
+        return employeeRepository.findAllByName(name).orElse(null);
+    }
+
+    @Transactional(readOnly = true)
     public Employee findById(Long id) {
         return employeeRepository.findById(id).orElse(null);
     }
