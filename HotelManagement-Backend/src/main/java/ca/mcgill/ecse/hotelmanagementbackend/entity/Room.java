@@ -20,22 +20,15 @@ public class Room {
     private RoomType type;
     private Integer fee;
     @ElementCollection
-    private List<Amenity> amenities;
+    private List<Amenity> amenities = new ArrayList<>();
     private boolean isAvailable = true;
     @ManyToOne
     private Hotel hotel;
     @ManyToMany(mappedBy = "rooms")
-    private List<Reservation> reservations;
+    private List<Reservation> reservations = new ArrayList<>();
 
     public Room(RoomType type, Integer fee) {
         this.type = type;
         this.fee = fee;
-        this.reservations = new ArrayList<>();
-    }
-
-    public Room(RoomType type, Integer fee, Hotel hotel, List<Amenity> amenities) {
-        this.type = type;
-        this.fee = fee;
-        this.reservations = new ArrayList<>();
     }
 }
