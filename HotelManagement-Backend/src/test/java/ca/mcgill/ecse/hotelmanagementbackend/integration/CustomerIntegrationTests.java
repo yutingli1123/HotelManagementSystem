@@ -109,4 +109,40 @@ public class CustomerIntegrationTests {
         assertEquals(customer.getEmail(), responseCustomer.getEmail());
         assertTrue(passwordEncoder.matches(customer.getPassword(), responseCustomer.getPassword()));
     }
+
+    @Test
+    @Order(6)
+    public void testDeleteById() {
+        Customer customer = new Customer("Test2", "test2", "t2@t.com", "test2", null);
+        ResponseEntity<Long> responseCreate = client.postForEntity("/api/v1/customers", customer, Long.class);
+        // Save the ID to read later
+        Long customerId = responseCreate.getBody();
+        client.delete("/api/v1/customers/by-id/" + customerId);
+        ResponseEntity<Customer> responseGet = client.getForEntity("/api/v1/customers/by-id/" + customerId, Customer.class);
+        assertNull(responseGet.getBody());
+    }
+
+    @Test
+    @Order(7)
+    public void testDeleteByEmail() {
+        Customer customer = new Customer("Test2", "test2", "t2@t.com", "test2", null);
+        ResponseEntity<Long> responseCreate = client.postForEntity("/api/v1/customers", customer, Long.class);
+        // Save the ID to read later
+        Long customerId = responseCreate.getBody();
+        client.delete("/api/v1/customers/by-email/" + customer.getEmail());
+        ResponseEntity<Customer> responseGet = client.getForEntity("/api/v1/customers/by-id/" + customerId, Customer.class);
+        assertNull(responseGet.getBody());
+    }
+
+    @Test
+    @Order(8)
+    public void testDeleteByUsername() {
+        Customer customer = new Customer("Test2", "test2", "t2@t.com", "test2", null);
+        ResponseEntity<Long> responseCreate = client.postForEntity("/api/v1/customers", customer, Long.class);
+        // Save the ID to read later
+        Long customerId = responseCreate.getBody();
+        client.delete("/api/v1/customers/by-username/" + customer.getUsername());
+        ResponseEntity<Customer> responseGet = client.getForEntity("/api/v1/customers/by-id/" + customerId, Customer.class);
+        assertNull(responseGet.getBody());
+    }
 }

@@ -1,6 +1,5 @@
 package ca.mcgill.ecse.hotelmanagementbackend.integration;
 
-import ca.mcgill.ecse.hotelmanagementbackend.entity.Customer;
 import ca.mcgill.ecse.hotelmanagementbackend.entity.Employee;
 import ca.mcgill.ecse.hotelmanagementbackend.repository.EmployeeRepository;
 import org.junit.jupiter.api.*;
@@ -58,7 +57,7 @@ public class EmployeeIntegrationTests {
     @Test
     @Order(2)
     public void testGetById() {
-        ResponseEntity<Customer> response = client.getForEntity("/api/v1/employees/by-id/" + employeeId, Customer.class);
+        ResponseEntity<Employee> response = client.getForEntity("/api/v1/employees/by-id/" + employeeId, Employee.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertTrue(response.getBody().getId() > 0, "Response body should have an ID.");
@@ -71,7 +70,7 @@ public class EmployeeIntegrationTests {
     @Test
     @Order(3)
     public void testGetByEmail() {
-        ResponseEntity<Customer> response = client.getForEntity("/api/v1/employees/by-email/" + employee.getEmail(), Customer.class);
+        ResponseEntity<Employee> response = client.getForEntity("/api/v1/employees/by-email/" + employee.getEmail(), Employee.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertTrue(response.getBody().getId() > 0, "Response body should have an ID.");
@@ -84,7 +83,7 @@ public class EmployeeIntegrationTests {
     @Test
     @Order(4)
     public void testGetByUsername() {
-        ResponseEntity<Customer> response = client.getForEntity("/api/v1/employees/by-username/" + employee.getUsername(), Customer.class);
+        ResponseEntity<Employee> response = client.getForEntity("/api/v1/employees/by-username/" + employee.getUsername(), Employee.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertTrue(response.getBody().getId() > 0, "Response body should have an ID.");
@@ -97,17 +96,53 @@ public class EmployeeIntegrationTests {
     @Test
     @Order(5)
     public void testGetAll() {
-        ResponseEntity<Customer[]> response = client.getForEntity("/api/v1/employees", Customer[].class);
+        ResponseEntity<Employee[]> response = client.getForEntity("/api/v1/employees", Employee[].class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        Customer[] responseBody = response.getBody();
+        Employee[] responseBody = response.getBody();
         assertNotNull(responseBody);
         assertEquals(1, responseBody.length);
         assertNotNull(responseBody[0]);
-        Customer responseCustomer = responseBody[0];
-        assertTrue(responseCustomer.getId() > 0, "Response body should have an ID.");
-        assertEquals(employee.getName(), responseCustomer.getName());
-        assertEquals(employee.getUsername(), responseCustomer.getUsername());
-        assertEquals(employee.getEmail(), responseCustomer.getEmail());
-        assertTrue(passwordEncoder.matches(employee.getPassword(), responseCustomer.getPassword()));
+        Employee responseEmployee = responseBody[0];
+        assertTrue(responseEmployee.getId() > 0, "Response body should have an ID.");
+        assertEquals(employee.getName(), responseEmployee.getName());
+        assertEquals(employee.getUsername(), responseEmployee.getUsername());
+        assertEquals(employee.getEmail(), responseEmployee.getEmail());
+        assertTrue(passwordEncoder.matches(employee.getPassword(), responseEmployee.getPassword()));
+    }
+
+    @Test
+    @Order(6)
+    public void testDeleteById() {
+        Employee employee = new Employee("Test2", "test2", "t2@t.com", "test2", null, 500);
+        ResponseEntity<Long> responseCreate = client.postForEntity("/api/v1/employees", employee, Long.class);
+        // Save the ID to read later
+        Long employeeId = responseCreate.getBody();
+        client.delete("/api/v1/employees/by-id/" + employeeId);
+        ResponseEntity<Employee> responseGet = client.getForEntity("/api/v1/employees/by-id/" + employeeId, Employee.class);
+        assertNull(responseGet.getBody());
+    }
+
+    @Test
+    @Order(7)
+    public void testDeleteByEmail() {
+        Employee employee = new Employee("Test2", "test2", "t2@t.com", "test2", null, 500);
+        ResponseEntity<Long> responseCreate = client.postForEntity("/api/v1/employees", employee, Long.class);
+        // Save the ID to read later
+        Long employeeId = responseCreate.getBody();
+        client.delete("/api/v1/employees/by-email/" + employee.getEmail());
+        ResponseEntity<Employee> responseGet = client.getForEntity("/api/v1/employees/by-id/" + employeeId, Employee.class);
+        assertNull(responseGet.getBody());
+    }
+
+    @Test
+    @Order(8)
+    public void testDeleteByUsername() {
+        Employee employee = new Employee("Test2", "test2", "t2@t.com", "test2", null, 500);
+        ResponseEntity<Long> responseCreate = client.postForEntity("/api/v1/employees", employee, Long.class);
+        // Save the ID to read later
+        Long employeeId = responseCreate.getBody();
+        client.delete("/api/v1/employees/by-username/" + employee.getUsername());
+        ResponseEntity<Employee> responseGet = client.getForEntity("/api/v1/employees/by-id/" + employeeId, Employee.class);
+        assertNull(responseGet.getBody());
     }
 }
