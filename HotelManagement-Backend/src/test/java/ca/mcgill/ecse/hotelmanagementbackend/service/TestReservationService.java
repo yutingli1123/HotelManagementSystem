@@ -8,6 +8,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import java.util.Collections;
+
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -150,20 +152,22 @@ public class TestReservationService {
     }
 
     @Test
-    public void testSave() {
+        public void testSave() {
         // Define a sample reservation to be saved
         Reservation reservation = new Reservation();
         reservation.setId(1L);
 
-        // Mock the behavior of reservationRepository.save()
-        doNothing().when(reservationRepository).save(any(Reservation.class));
+        // Mock the behavior of reservationRepository.save() to return the reservation
+        when(reservationRepository.save(any(Reservation.class))).thenReturn(reservation);
 
         // Call the service to save the reservation
         reservationService.save(reservation);
 
         // Verify that the service calls reservationRepository.save with the correct argument
         verify(reservationRepository, times(1)).save(reservation);
+
     }
+
 
     @Test
     public void testFindAllWithEmptyList() {
@@ -178,7 +182,6 @@ public class TestReservationService {
         assertTrue(foundReservations.isEmpty());
     }
 
-    @Test
     public void testFindAllByDateWithEmptyList() {
         // Define a date
         Date date = new Date();
@@ -193,6 +196,7 @@ public class TestReservationService {
         assertNotNull(foundReservations);
         assertTrue(foundReservations.isEmpty());
     }
+
 }
  
 

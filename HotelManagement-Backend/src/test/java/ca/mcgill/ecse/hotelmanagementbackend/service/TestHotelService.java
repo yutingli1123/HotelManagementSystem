@@ -92,8 +92,8 @@ public class TestHotelService {
         Hotel hotel = new Hotel();
         hotel.setId(1L);
 
-        // Mock the behavior of hotelRepository.save()
-        doNothing().when(hotelRepository).save(any(Hotel.class));
+        // Mock the behavior of hotelRepository.save() to return the hotel
+        when(hotelRepository.save(any(Hotel.class))).thenReturn(hotel);
 
         // Call the service to save the hotel
         hotelService.save(hotel);

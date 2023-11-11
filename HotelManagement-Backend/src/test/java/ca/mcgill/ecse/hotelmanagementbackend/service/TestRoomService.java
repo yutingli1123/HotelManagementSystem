@@ -96,7 +96,7 @@ public class TestRoomService {
         room.setId(1L);
 
         // Mock the behavior of roomRepository.save()
-        doNothing().when(roomRepository).save(any(Room.class));
+        when(roomRepository.save(any(Room.class))).thenReturn(room);
 
         // Call the service to save the room
         roomService.save(room);
@@ -133,7 +133,7 @@ public class TestRoomService {
         RoomType roomType = RoomType.REGULAR;
 
         // Mock the behavior of roomRepository.findAllByType() when the list is empty
-        when(roomRepository.findAllByType(roomType)).thenReturn(Optional.empty());
+        when(roomRepository.findAllByType(roomType)).thenReturn(Optional.of(new ArrayList<>()));
 
         // Call the service to get all rooms by room type
         List<Room> foundRooms = roomService.findAllByRoomType(roomType);
@@ -141,7 +141,7 @@ public class TestRoomService {
         // Verify that the service returns an empty list when no rooms of the specified type are found
         assertNotNull(foundRooms);
         assertTrue(foundRooms.isEmpty());
-    }
+}
 
     @Test
     public void testFindAllByRoomTypeWithNullType() {
@@ -166,5 +166,6 @@ public class TestRoomService {
         // Verify that the service returns null when no rooms of the specified type are found
         assertNull(foundRooms);
     }
+
 
 }

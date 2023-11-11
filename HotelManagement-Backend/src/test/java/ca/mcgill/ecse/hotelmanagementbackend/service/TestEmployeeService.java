@@ -126,16 +126,17 @@ import static org.mockito.Mockito.*;
             employee.setId(1L);
             employee.setUsername("John");
             employee.setEmail("john@example.com");
-
-            // Mock the behavior of employeeRepository.save()
-            doNothing().when(employeeRepository).save(any(Employee.class));
-
+        
+            // Mock the behavior of employeeRepository.save() to return the employee
+            when(employeeRepository.save(any(Employee.class))).thenReturn(employee);
+        
             // Call the service to save the employee
             employeeService.save(employee);
-
+        
             // Verify that the service calls employeeRepository.save with the correct argument
             verify(employeeRepository, times(1)).save(employee);
         }
+        
 
         @Test
         public void testDeleteById() {

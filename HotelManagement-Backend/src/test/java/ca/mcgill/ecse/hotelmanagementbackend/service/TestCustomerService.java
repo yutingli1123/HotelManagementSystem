@@ -127,8 +127,8 @@ import static org.mockito.Mockito.*;
             customer.setUsername("John");
             customer.setEmail("john@example.com");
 
-            // Mock the behavior of customerRepository.save()
-            doNothing().when(customerRepository).save(any(Customer.class));
+            // Mock the behavior of customerRepository.save() to return the customer
+            when(customerRepository.save(any(Customer.class))).thenReturn(customer);
 
             // Call the service to save the customer
             customerService.save(customer);
@@ -136,6 +136,7 @@ import static org.mockito.Mockito.*;
             // Verify that the service calls customerRepository.save with the correct argument
             verify(customerRepository, times(1)).save(customer);
         }
+
         
         
         @Test

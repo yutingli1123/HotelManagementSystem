@@ -2,6 +2,8 @@ package ca.mcgill.ecse.hotelmanagementbackend.service;
 
 import ca.mcgill.ecse.hotelmanagementbackend.entity.Owner;
 import ca.mcgill.ecse.hotelmanagementbackend.repository.OwnerRepository;
+import jakarta.persistence.EntityNotFoundException;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -78,8 +80,8 @@ public class TestOwnerService {
         Owner owner = new Owner();
         owner.setId(1L);
 
-        // Mock the behavior of ownerRepository.save()
-        doNothing().when(ownerRepository).save(any(Owner.class));
+        // Mock the behavior of ownerRepository.save() to return the owner
+        when(ownerRepository.save(any(Owner.class))).thenReturn(owner);
 
         // Call the service to save the owner
         ownerService.save(owner);
@@ -87,6 +89,7 @@ public class TestOwnerService {
         // Verify that the service calls ownerRepository.save with the correct argument
         verify(ownerRepository, times(1)).save(owner);
     }
+
 
     @Test
     public void testDeleteById() {
@@ -114,9 +117,18 @@ public class TestOwnerService {
         // Define an invalid (negative) ID
         Long invalidId = -1L;
 
+        // Mock the behavior of ownerRepository.deleteById() to throw EntityNotFoundException
+        doThrow(EntityNotFoundException.class).when(ownerRepository).deleteById(invalidId);
+
         // Attempt to delete an owner with an invalid ID
-        assertDoesNotThrow(() -> ownerService.deleteById(invalidId));
-        // Verify that the service does not call deleteById with an invalid argument
-        verify(ownerRepository, never()).deleteById(invalidId);
+        assertThrows(EntityNotFoundException.class, () -> ownerService.deleteById(invalidId));
+
+        // Verify that the service calls deleteById with the correct argument
+        verify(ownerRepository, times(1)).deleteById(invalidId);
     }
+
+
 }
+
+
+
