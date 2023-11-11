@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
 
@@ -22,14 +23,24 @@ public class TaskController {
         return taskService.findAll();
     }
 
-    @GetMapping("/by-date/start")
-    public List<Task> getAllTasksByStartDate(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate) {
-        return taskService.findAllByStartDate(startDate);
+    @GetMapping("/by-time/start")
+    public List<Task> getAllTasksByStartDate(@RequestParam LocalTime startTime) {
+        return taskService.findAllByStartTime(startTime);
     }
 
-    @GetMapping("/by-date/end")
-    public List<Task> getAllTasksByEndDate(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate) {
-        return taskService.findAllByEndDate(endDate);
+    @GetMapping("/by-time/end")
+    public List<Task> getAllTasksByEndDate(@RequestParam LocalTime endTime) {
+        return taskService.findAllByEndTime(endTime);
+    }
+
+    @GetMapping("/by-time/start/range")
+    public List<Task> getAllTasksByStartDateBetween(@RequestParam LocalTime startTime, @RequestParam LocalTime endTime) {
+        return taskService.findAllByStartTimeBetween(startTime, endTime);
+    }
+
+    @GetMapping("/by-time/end/range")
+    public List<Task> getAllTasksByEndDateBetween(@RequestParam LocalTime startTime, @RequestParam LocalTime endTime) {
+        return taskService.findAllByEndTimeBetween(startTime, endTime);
     }
 
     @GetMapping("/by-id/{id}")

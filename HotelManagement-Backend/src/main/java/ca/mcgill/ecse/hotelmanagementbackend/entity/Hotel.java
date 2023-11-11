@@ -7,6 +7,7 @@ import jakarta.persistence.OneToMany;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,12 +18,12 @@ public class Hotel {
     @Id
     @GeneratedValue
     private Long id;
-    private String openTime;
-    private String closeTime;
+    private LocalTime openTime;
+    private LocalTime closeTime;
     @OneToMany(mappedBy = "hotel")
     private List<User> users;
 
-    public Hotel(String openTime, String closeTime) {
+    public Hotel(LocalTime openTime, LocalTime closeTime) {
         this.openTime = openTime;
         this.closeTime = closeTime;
         this.users = new ArrayList<>();

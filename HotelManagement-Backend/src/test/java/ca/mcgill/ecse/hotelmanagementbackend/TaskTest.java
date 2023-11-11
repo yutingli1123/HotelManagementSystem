@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
 
@@ -24,9 +25,9 @@ public class TaskTest {
     @Test
     @Transactional
     void testSaveTask() {
-        Date startDate = new Date();
-        Date endDate = new Date(startDate.getTime() + 2 * 3600 * 1000);
-        Task task = new Task(startDate, endDate,"Test", "Test");
+        LocalTime startTime = LocalTime.now();
+        LocalTime endTime = startTime.plusHours(2);
+        Task task = new Task(startTime, endTime,"Test", "Test");
         taskService.save(task);
         assertEquals("Test saving task",1,taskService.findAll().size());
     }
@@ -34,9 +35,9 @@ public class TaskTest {
     @Test
     @Transactional
     void testSearchTaskById() {
-        Date startDate = new Date();
-        Date endDate = new Date(startDate.getTime() + 2 * 3600 * 1000);
-        Task task = new Task(startDate, endDate,"Test", "Test");
+        LocalTime startTime = LocalTime.now();
+        LocalTime endTime = startTime.plusHours(2);
+        Task task = new Task(startTime, endTime,"Test", "Test");
         taskService.save(task);
         assertEquals("Test searching task by ID",task,taskService.findById(task.getId()));
     }
@@ -44,29 +45,29 @@ public class TaskTest {
     @Test
     @Transactional
     void testSearchByStartDate() {
-        Date startDate = new Date();
-        Date endDate = new Date(startDate.getTime() + 2 * 3600 * 1000);
-        Task task = new Task(startDate, endDate,"Test", "Test");
+        LocalTime startTime = LocalTime.now();
+        LocalTime endTime = startTime.plusHours(2);
+        Task task = new Task(startTime, endTime,"Test", "Test");
         taskService.save(task);
-        assertTrue("Test searching by start date",taskService.findAllByStartDate(startDate).contains(task));
+        assertTrue("Test searching by start date",taskService.findAllByStartTime(startTime).contains(task));
     }
 
     @Test
     @Transactional
     void testSearchByEndDate() {
-        Date startDate = new Date();
-        Date endDate = new Date(startDate.getTime() + 2 * 3600 * 1000);
-        Task task = new Task(startDate, endDate,"Test", "Test");
+        LocalTime startTime = LocalTime.now();
+        LocalTime endTime = startTime.plusHours(2);
+        Task task = new Task(startTime, endTime,"Test", "Test");
         taskService.save(task);
-        assertTrue("Test searching by end date",taskService.findAllByEndDate(endDate).contains(task));
+        assertTrue("Test searching by end date",taskService.findAllByEndTime(endTime).contains(task));
     }
 
     @Test
     @Transactional
     void testReferenceWithTimeTable() {
-        Date startDate = new Date();
-        Date endDate = new Date(startDate.getTime() + 2 * 3600 * 1000);
-        Task task = new Task(startDate, endDate,"Test", "Test");
+        LocalTime startTime = LocalTime.now();
+        LocalTime endTime = startTime.plusHours(2);
+        Task task = new Task(startTime, endTime,"Test", "Test");
         TimeTable timeTable = new TimeTable("TestTable");
         task.setTimeTable(timeTable);
         List<Task> taskList = timeTable.getTasks();

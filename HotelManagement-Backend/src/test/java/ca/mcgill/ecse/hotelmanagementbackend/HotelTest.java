@@ -11,9 +11,11 @@ import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cglib.core.Local;
 
 import static org.springframework.test.util.AssertionErrors.assertEquals;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,16 +44,16 @@ public class HotelTest {
     @Test
     @Transactional
     void testReadAndWriteHotelAttributes() {
-        Hotel hotel = new Hotel("08:00:00", "23:30:00");
+        Hotel hotel = new Hotel(LocalTime.of(8,0), LocalTime.of(23,30));
         hotelService.save(hotel);
         // checks read
-        String openTime = hotel.getOpenTime();
-        String closeTime = hotel.getCloseTime();
+        LocalTime openTime = hotel.getOpenTime();
+        LocalTime closeTime = hotel.getCloseTime();
         assertEquals("checks open time read", "08:00:00", openTime);
         assertEquals("checks close time read", "23:30:00", closeTime);
         // check write
-        hotel.setOpenTime("06:00:00");
-        hotel.setCloseTime("00:00:00");
+        hotel.setOpenTime(LocalTime.of(6,0));
+        hotel.setCloseTime(LocalTime.of(0,0));
         openTime = hotel.getOpenTime();
         closeTime = hotel.getCloseTime();
         assertEquals("checks open time written", "06:00:00", openTime);
@@ -61,7 +63,7 @@ public class HotelTest {
     @Test
     @Transactional
     void testReadAndWriteReferenceWithUser(){
-        Hotel hotel = new Hotel("08:00:00", "23:30:00");
+        Hotel hotel = new Hotel(LocalTime.of(8,0), LocalTime.of(23,30));
         hotelService.save(hotel);
         Owner owner = new Owner("Owner1", "owner1", "owner1@test.com", "owner1", hotel);
         ownerService.save(owner);

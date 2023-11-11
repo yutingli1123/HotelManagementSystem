@@ -3,7 +3,9 @@ package ca.mcgill.ecse.hotelmanagementbackend.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.cglib.core.Local;
 
+import java.time.LocalTime;
 import java.util.Date;
 
 @Entity
@@ -13,16 +15,16 @@ public class Task {
     @Id
     @GeneratedValue
     private Long id;
-    private Date startDate;
-    private Date endDate;
+    private LocalTime startTime;
+    private LocalTime endTime;
     private String taskName;
     private String taskDescription;
     @ManyToOne
     private TimeTable timeTable;
 
-    public Task(Date startDate, Date endDate, String taskName, String taskDescription) {
-        this.startDate = startDate;
-        this.endDate = endDate;
+    public Task(LocalTime startTime, LocalTime endTime, String taskName, String taskDescription) {
+        this.startTime = startTime;
+        this.endTime = endTime;
         this.taskName = taskName;
         this.taskDescription = taskDescription;
     }

@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.time.LocalTime;
 
 @Service
 public class TaskService {
@@ -25,13 +26,23 @@ public class TaskService {
     }
 
     @Transactional(readOnly = true)
-    public List<Task> findAllByStartDate(Date date) {
-        return taskRepository.findAllByStartDate(date).orElse(null);
+    public List<Task> findAllByStartTime(LocalTime time) {
+        return taskRepository.findAllByStartTime(time).orElse(null);
     }
 
     @Transactional(readOnly = true)
-    public List<Task> findAllByEndDate(Date date) {
-        return taskRepository.findAllByEndDate(date).orElse(null);
+    public List<Task> findAllByEndTime(LocalTime time) {
+        return taskRepository.findAllByEndTime(time).orElse(null);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Task> findAllByStartTimeBetween(LocalTime startTime, LocalTime endTime) {
+        return taskRepository.findAllByStartTimeBetween(startTime, endTime).orElse(null);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Task> findAllByEndTimeBetween(LocalTime startTime, LocalTime endTime) {
+        return taskRepository.findAllByEndTimeBetween(startTime, endTime).orElse(null);
     }
 
     @Transactional

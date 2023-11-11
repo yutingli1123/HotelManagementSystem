@@ -1,16 +1,7 @@
 package ca.mcgill.ecse.hotelmanagementbackend.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-
-import ca.mcgill.ecse.hotelmanagementbackend.repository.TaskRepository;
 import ca.mcgill.ecse.hotelmanagementbackend.entity.Task;
-
+import ca.mcgill.ecse.hotelmanagementbackend.repository.TaskRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,8 +9,18 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 /**
  * Test for Task Service class
+ *
  * @author Clara Jabbour
  */
 @ExtendWith(MockitoExtension.class)
@@ -63,25 +64,25 @@ public class TestTaskService {
     @Test
     public void testFindAllByStartDate() {
         // Define a sample start date
-        Date startDate = new Date();
+        LocalTime startTime = LocalTime.now();
 
         // Define a list of sample tasks with the specified start date
         List<Task> tasks = new ArrayList<>();
         Task task1 = new Task();
         task1.setId(1L);
-        task1.setStartDate(startDate);
+        task1.setStartTime(startTime);
         tasks.add(task1);
 
         Task task2 = new Task();
         task2.setId(2L);
-        task2.setStartDate(startDate);
+        task2.setStartTime(startTime);
         tasks.add(task2);
 
         // Mock the behavior of taskRepository.findAllByStartDate()
-        when(taskRepository.findAllByStartDate(startDate)).thenReturn(Optional.of(tasks));
+        when(taskRepository.findAllByStartTime(startTime)).thenReturn(Optional.of(tasks));
 
         // Call the service to get all tasks by the specified start date
-        List<Task> foundTasks = taskService.findAllByStartDate(startDate);
+        List<Task> foundTasks = taskService.findAllByStartTime(startTime);
 
         // Verify that the service returns the expected list of tasks
         assertNotNull(foundTasks);
@@ -93,26 +94,26 @@ public class TestTaskService {
     @Test
     public void testFindAllByEndDate() {
         // Define a sample end date
-        Date endDate = new Date();
+        LocalTime endTime = LocalTime.now();
 
         // Define a list of sample tasks with the specified end date
         List<Task> tasks = new ArrayList<>();
-        
+
         Task task1 = new Task();
         task1.setId(1L);
-        task1.setEndDate(endDate);
+        task1.setEndTime(endTime);
         tasks.add(task1);
 
         Task task2 = new Task();
         task2.setId(2L);
-        task2.setEndDate(endDate); // Set the end date for task2
+        task1.setEndTime(endTime); // Set the end date for task2
         tasks.add(task2);
 
         // Mock the behavior of taskRepository.findAllByEndDate()
-        when(taskRepository.findAllByEndDate(endDate)).thenReturn(Optional.of(tasks));
+        when(taskRepository.findAllByEndTime(endTime)).thenReturn(Optional.of(tasks));
 
         // Call the service to get all tasks by the specified end date
-        List<Task> foundTasks = taskService.findAllByEndDate(endDate);
+        List<Task> foundTasks = taskService.findAllByEndTime(endTime);
 
         // Verify that the service returns the expected list of tasks
         assertNotNull(foundTasks);
@@ -163,13 +164,13 @@ public class TestTaskService {
     @Test
     public void testFindAllByStartDateWithEmptyList() {
         // Define a start date
-        Date startDate = new Date();
+        LocalTime startTime = LocalTime.now();
 
         // Mock the behavior of taskRepository.findAllByStartDate() when the list is empty
-        when(taskRepository.findAllByStartDate(startDate)).thenReturn(Optional.empty());
+        when(taskRepository.findAllByStartTime(startTime)).thenReturn(Optional.empty());
 
         // Call the service to get all tasks by start date
-        List<Task> foundTasks = taskService.findAllByStartDate(startDate);
+        List<Task> foundTasks = taskService.findAllByStartTime(startTime);
 
         // Verify that the service may return null or an empty list when no tasks with the specified start date are found
         assertNull(foundTasks);
@@ -178,13 +179,13 @@ public class TestTaskService {
     @Test
     public void testFindAllByEndDateWithEmptyList() {
         // Define an end date
-        Date endDate = new Date();
+        LocalTime endTime = LocalTime.now();
 
         // Mock the behavior of taskRepository.findAllByEndDate() when the list is empty
-        when(taskRepository.findAllByEndDate(endDate)).thenReturn(Optional.empty());
+        when(taskRepository.findAllByEndTime(endTime)).thenReturn(Optional.empty());
 
         // Call the service to get all tasks by end date
-        List<Task> foundTasks = taskService.findAllByEndDate(endDate);
+        List<Task> foundTasks = taskService.findAllByEndTime(endTime);
 
         // Verify that the service may return null or an empty list when no tasks with the specified end date are found
         assertNull(foundTasks);
