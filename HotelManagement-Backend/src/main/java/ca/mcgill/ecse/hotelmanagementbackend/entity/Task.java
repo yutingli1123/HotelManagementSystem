@@ -17,14 +17,16 @@ public class Task {
     private Long id;
     private LocalTime startTime;
     private LocalTime endTime;
+    private String dayOfTheWeek;
     private String taskName;
     private String taskDescription;
     @ManyToOne
     private TimeTable timeTable;
 
-    public Task(LocalTime startTime, LocalTime endTime, String taskName, String taskDescription) {
+    public Task(LocalTime startTime, LocalTime endTime, String dayOfTheWeek, String taskName, String taskDescription) {
         this.startTime = startTime;
         this.endTime = endTime;
+        this.dayOfTheWeek = dayOfTheWeek;
         this.taskName = taskName;
         this.taskDescription = taskDescription;
     }
