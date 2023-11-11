@@ -4,6 +4,7 @@ import ca.mcgill.ecse.hotelmanagementbackend.entity.Task;
 import ca.mcgill.ecse.hotelmanagementbackend.service.TaskService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -21,13 +22,13 @@ public class TaskController {
         return taskService.findAll();
     }
 
-    @GetMapping("/tasks")
-    public List<Task> getAllTasksByStartDate(@RequestParam Date startDate) {
+    @GetMapping("/tasksByStartDate")
+    public List<Task> getAllTasksByStartDate(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate) {
         return taskService.findAllByStartDate(startDate);
     }
 
-    @GetMapping("/tasks")
-    public List<Task> getAllTasksByEndDate(@RequestParam Date endDate) {
+    @GetMapping("/tasksByEndDate")
+    public List<Task> getAllTasksByEndDate(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate) {
         return taskService.findAllByEndDate(endDate);
     }
 
@@ -46,3 +47,4 @@ public class TaskController {
         taskService.deleteById(id);
     }
 }
+

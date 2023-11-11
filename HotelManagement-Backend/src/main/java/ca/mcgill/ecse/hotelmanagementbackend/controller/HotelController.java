@@ -20,18 +20,18 @@ public class HotelController {
         return hotelService.findAll();
     }
 
-    @PostMapping("/hotel")
+    @PostMapping("/hotels")
     public void saveHotel(@Valid @RequestBody Hotel hotel) {
         hotelService.save(hotel);
     }
 
     @GetMapping("/hotel")
-    public Hotel getHotel(@RequestParam Long id) {
+    public Hotel getHotelById(@RequestParam Long id) {
         return hotelService.findById(id);
     }
 
     @DeleteMapping("/hotel")
-    public void deleteHotel(@RequestParam Long id) {
+    public void deleteHotelById(@RequestParam Long id) {
         hotelService.deleteById(id);
     }
 }

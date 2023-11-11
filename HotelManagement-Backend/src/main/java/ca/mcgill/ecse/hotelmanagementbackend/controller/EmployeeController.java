@@ -10,48 +10,50 @@ import java.util.List;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/employees")
 public class EmployeeController {
+
     @Autowired
     private EmployeeService employeeService;
 
-    @GetMapping("/employees")
+    @GetMapping
     public List<Employee> getAllEmployees() {
         return employeeService.findAll();
     }
 
-    @PostMapping("/employee")
+    @PostMapping
     public void saveEmployee(@Valid @RequestBody Employee employee) {
         employeeService.save(employee);
     }
 
-    @GetMapping("/employee")
+    @GetMapping("/by-username")
     public Employee getEmployeeByUsername(@RequestParam String username) {
         return employeeService.findByUsername(username);
     }
 
-    @GetMapping("/employee")
+    @GetMapping("/by-email")
     public Employee getEmployeeByEmail(@RequestParam String email) {
         return employeeService.findByEmail(email);
     }
 
-    @GetMapping("/employee")
+    @GetMapping("/by-id")
     public Employee getEmployeeById(@RequestParam Long id) {
         return employeeService.findById(id);
     }
 
-    @DeleteMapping("/employee")
+    @DeleteMapping("/by-username")
     public void deleteEmployeeByUsername(@RequestParam String username) {
         employeeService.deleteByUsername(username);
     }
 
-    @GetMapping("/employee")
+    @DeleteMapping("/by-email")
     public void deleteEmployeeByEmail(@RequestParam String email) {
         employeeService.deleteByEmail(email);
     }
 
-    @GetMapping("/employee")
+    @DeleteMapping("/by-id")
     public void deleteEmployeeById(@RequestParam Long id) {
         employeeService.deleteById(id);
     }
 }
+

@@ -21,12 +21,12 @@ public class RoomController {
         return roomService.findAll();
     }
 
-    @PostMapping("/room")
+    @PostMapping("/rooms")
     public void saveRoom(@Valid @RequestBody Room room) {
         roomService.save(room);
     }
 
-    @GetMapping("/rooms")
+    @GetMapping("/roomsByType")
     public List<Room> getAllRoomsByRoomType(@RequestParam RoomType roomType) {
         return roomService.findAllByRoomType(roomType);
     }
@@ -36,3 +36,4 @@ public class RoomController {
         roomService.deleteById(id);
     }
 }
+

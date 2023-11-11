@@ -10,48 +10,49 @@ import java.util.List;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/owner")
 public class OwnerController {
     @Autowired
     private OwnerService ownerService;
 
-    @GetMapping("/owners")
+    @GetMapping("/all")
     public List<Owner> getAllOwners() {
         return ownerService.findAll();
     }
 
-    @PostMapping("/owner")
+    @PostMapping("/save")
     public void saveOwner(@Valid @RequestBody Owner owner) {
         ownerService.save(owner);
     }
 
-    @GetMapping("/owner")
+    @GetMapping("/by-username")
     public Owner getOwnerByUsername(@RequestParam String username) {
         return ownerService.findByUsername(username);
     }
 
-    @GetMapping("/owner")
+    @GetMapping("/by-email")
     public Owner getOwnerByEmail(@RequestParam String email) {
         return ownerService.findByEmail(email);
     }
 
-    @GetMapping("/owner")
+    @GetMapping("/by-id")
     public Owner getOwnerById(@RequestParam Long id) {
         return ownerService.findById(id);
     }
 
-    @DeleteMapping("/owner")
+    @DeleteMapping("/by-username")
     public void DeleteOwnerByUsername(@RequestParam String username) {
         ownerService.deleteByUsername(username);
     }
 
-    @GetMapping("/owner")
+    @DeleteMapping("/by-email")
     public void DeleteOwnerByEmail(@RequestParam String email) {
         ownerService.deleteByEmail(email);
     }
 
-    @GetMapping("/owner")
+    @DeleteMapping("/by-id")
     public void DeleteOwnerById(@RequestParam Long id) {
         ownerService.deleteById(id);
     }
 }
+
