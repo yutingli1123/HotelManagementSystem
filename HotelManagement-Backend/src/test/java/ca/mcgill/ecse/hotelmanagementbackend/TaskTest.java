@@ -10,10 +10,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalTime;
-import java.util.Date;
 import java.util.List;
 
-import static org.springframework.test.util.AssertionErrors.*;
+import static org.springframework.test.util.AssertionErrors.assertEquals;
+import static org.springframework.test.util.AssertionErrors.assertTrue;
 
 @SpringBootTest
 public class TaskTest {
@@ -27,9 +27,9 @@ public class TaskTest {
     void testSaveTask() {
         LocalTime startTime = LocalTime.now();
         LocalTime endTime = startTime.plusHours(2);
-        Task task = new Task(startTime, endTime,"Test", "Test");
+        Task task = new Task(startTime, endTime, "Monday", "Test", "Test");
         taskService.save(task);
-        assertEquals("Test saving task",1,taskService.findAll().size());
+        assertEquals("Test saving task", 1, taskService.findAll().size());
     }
 
     @Test
@@ -37,9 +37,9 @@ public class TaskTest {
     void testSearchTaskById() {
         LocalTime startTime = LocalTime.now();
         LocalTime endTime = startTime.plusHours(2);
-        Task task = new Task(startTime, endTime,"Test", "Test");
+        Task task = new Task(startTime, endTime, "Monday", "Test", "Test");
         taskService.save(task);
-        assertEquals("Test searching task by ID",task,taskService.findById(task.getId()));
+        assertEquals("Test searching task by ID", task, taskService.findById(task.getId()));
     }
 
     @Test
@@ -47,9 +47,9 @@ public class TaskTest {
     void testSearchByStartDate() {
         LocalTime startTime = LocalTime.now();
         LocalTime endTime = startTime.plusHours(2);
-        Task task = new Task(startTime, endTime,"Test", "Test");
+        Task task = new Task(startTime, endTime, "Monday", "Test", "Test");
         taskService.save(task);
-        assertTrue("Test searching by start date",taskService.findAllByStartTime(startTime).contains(task));
+        assertTrue("Test searching by start date", taskService.findAllByStartTime(startTime).contains(task));
     }
 
     @Test
@@ -57,9 +57,9 @@ public class TaskTest {
     void testSearchByEndDate() {
         LocalTime startTime = LocalTime.now();
         LocalTime endTime = startTime.plusHours(2);
-        Task task = new Task(startTime, endTime,"Test", "Test");
+        Task task = new Task(startTime, endTime, "Monday", "Test", "Test");
         taskService.save(task);
-        assertTrue("Test searching by end date",taskService.findAllByEndTime(endTime).contains(task));
+        assertTrue("Test searching by end date", taskService.findAllByEndTime(endTime).contains(task));
     }
 
     @Test
@@ -67,7 +67,7 @@ public class TaskTest {
     void testReferenceWithTimeTable() {
         LocalTime startTime = LocalTime.now();
         LocalTime endTime = startTime.plusHours(2);
-        Task task = new Task(startTime, endTime,"Test", "Test");
+        Task task = new Task(startTime, endTime, "Monday", "Test", "Test");
         TimeTable timeTable = new TimeTable("TestTable");
         task.setTimeTable(timeTable);
         List<Task> taskList = timeTable.getTasks();
@@ -76,6 +76,6 @@ public class TaskTest {
         timeTableService.save(timeTable);
         taskService.save(task);
         Task taskFromDB = taskService.findById(task.getId());
-        assertEquals("Test reference with time table",taskFromDB.getTimeTable(),timeTable);
+        assertEquals("Test reference with time table", taskFromDB.getTimeTable(), timeTable);
     }
 }

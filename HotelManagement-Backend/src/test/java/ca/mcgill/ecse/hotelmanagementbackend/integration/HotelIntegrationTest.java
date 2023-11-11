@@ -83,8 +83,15 @@ public class HotelIntegrationTest {
     @Test
     @Order(4)
     public void testDeleteHotelById() {
+        Hotel hotel = new Hotel(LocalTime.of(8, 30), LocalTime.of(12, 30));
+        ResponseEntity<Long> responseCreate = client.postForEntity("/api/v1/hotels", hotel, Long.class);
+        // Assert
+        assertEquals(HttpStatus.OK, responseCreate.getStatusCode());
+
+        // Save the ID to read later
+        Long hotelId = responseCreate.getBody();
         client.delete("/api/v1/hotels/" + hotelId);
-        ResponseEntity<Hotel> response = client.getForEntity("/api/v1/hotels/" + hotelId, Hotel.class);
-        assertNull(response.getBody());
+        ResponseEntity<Hotel> responseDelete = client.getForEntity("/api/v1/hotels/" + hotelId, Hotel.class);
+        assertNull(responseDelete.getBody());
     }
 }

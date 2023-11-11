@@ -29,6 +29,8 @@ public class TaskIntergrationTests {
     @Autowired
     private TaskRepository taskRepository;
 
+    private final Task task = new Task(LocalTime.of(8, 30), LocalTime.of(10, 30), "Monday", "test", "a task to test");
+
 
     private Long taskId;
 
@@ -41,10 +43,6 @@ public class TaskIntergrationTests {
     @Test
     @Order(1)
     public void testSave() {
-        LocalTime startTime = LocalTime.of(8, 30);
-        LocalTime endTime = LocalTime.of(10, 30);
-        Task task = new Task(startTime, endTime, "Monday", "test", "a task to test");
-
         // Send the request
         ResponseEntity<Long> response = client.postForEntity("/api/v1/tasks", task, Long.class);
         // Assert
@@ -57,75 +55,110 @@ public class TaskIntergrationTests {
     @Test
     @Order(2)
     public void testGetById() {
-        ResponseEntity<Task> response = client.getForEntity("/api/v1/tasks/by-id/" + taskId, Task.class);
+        ResponseEntity<Task> response = client.getForEntity("/api/v1/tasks/by-id/{id}", Task.class, taskId);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertTrue(response.getBody().getId() > 0, "Response body should have an ID.");
-        assertEquals(LocalTime.of(8, 30), response.getBody().getStartTime());
-        assertEquals(LocalTime.of(10, 30), response.getBody().getEndTime());
+        assertEquals(task.getStartTime(), response.getBody().getStartTime());
+        assertEquals(task.getEndTime(), response.getBody().getEndTime());
+        assertEquals(task.getTaskName(), response.getBody().getTaskName());
+        assertEquals(task.getTaskDescription(), response.getBody().getTaskDescription());
+        assertEquals(task.getDayOfTheWeek(), response.getBody().getDayOfTheWeek());
+        assertEquals(task.getTimeTable(), response.getBody().getTimeTable());
     }
 
     @Test
     @Order(3)
     public void testGetAllByStartDate() {
-        ResponseEntity<Task[]> response = client.getForEntity("/api/v1/tasks/by-time/start", Task[].class);
+        ResponseEntity<Task[]> response = client.getForEntity("/api/v1/tasks/by-time/start?startTime={startTime}", Task[].class, task.getStartTime());
         assertEquals(HttpStatus.OK, response.getStatusCode());
         Task[] responseBody = response.getBody();
         assertNotNull(responseBody);
         assertEquals(1, responseBody.length);
         assertNotNull(responseBody[0]);
-        Task task = responseBody[0];
-        assertTrue(task.getId() > 0, "Response body should have an ID.");
-        assertEquals(LocalTime.of(8, 30), task.getStartTime());
+        Task responseTask = responseBody[0];
+        assertTrue(responseTask.getId() > 0, "Response body should have an ID.");
+        assertEquals(task.getStartTime(), responseTask.getStartTime());
+        assertEquals(task.getEndTime(), responseTask.getEndTime());
+        assertEquals(task.getTaskName(), responseTask.getTaskName());
+        assertEquals(task.getTaskDescription(), responseTask.getTaskDescription());
+        assertEquals(task.getDayOfTheWeek(), responseTask.getDayOfTheWeek());
+        assertEquals(task.getTimeTable(), responseTask.getTimeTable());
     }
 
     @Test
     @Order(4)
     public void testGetAllByEndDate() {
-        ResponseEntity<Task[]> response = client.getForEntity("/api/v1/tasks/by-time/end", Task[].class);
+        ResponseEntity<Task[]> response = client.getForEntity("/api/v1/tasks/by-time/end?endTime={endTime}", Task[].class, task.getEndTime());
         assertEquals(HttpStatus.OK, response.getStatusCode());
         Task[] responseBody = response.getBody();
         assertNotNull(responseBody);
         assertEquals(1, responseBody.length);
         assertNotNull(responseBody[0]);
-        Task task = responseBody[0];
-        assertTrue(task.getId() > 0, "Response body should have an ID.");
-        assertEquals(LocalTime.of(10, 30), task.getEndTime());
+        Task responseTask = responseBody[0];
+        assertTrue(responseTask.getId() > 0, "Response body should have an ID.");
+        assertEquals(task.getStartTime(), responseTask.getStartTime());
+        assertEquals(task.getEndTime(), responseTask.getEndTime());
+        assertEquals(task.getTaskName(), responseTask.getTaskName());
+        assertEquals(task.getTaskDescription(), responseTask.getTaskDescription());
+        assertEquals(task.getDayOfTheWeek(), responseTask.getDayOfTheWeek());
+        assertEquals(task.getTimeTable(), responseTask.getTimeTable());
     }
 
     @Test
     @Order(5)
     public void testGetAllByStartDateRange() {
-        ResponseEntity<Task[]> response = client.getForEntity("/api/v1/tasks/by-time/start", Task[].class);
+        LocalTime startTime = task.getStartTime().minusHours(1);
+        LocalTime endTime = task.getStartTime().plusHours(1);
+        ResponseEntity<Task[]> response = client.getForEntity("/api/v1/tasks/by-time/start/range?startTime={startTime}&endTime={endTime}", Task[].class, startTime, endTime);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         Task[] responseBody = response.getBody();
         assertNotNull(responseBody);
         assertEquals(1, responseBody.length);
         assertNotNull(responseBody[0]);
-        Task task = responseBody[0];
-        assertTrue(task.getId() > 0, "Response body should have an ID.");
-        assertEquals(LocalTime.of(8, 30), task.getStartTime());
+        Task responseTask = responseBody[0];
+        assertTrue(responseTask.getId() > 0, "Response body should have an ID.");
+        assertEquals(task.getStartTime(), responseTask.getStartTime());
+        assertEquals(task.getEndTime(), responseTask.getEndTime());
+        assertEquals(task.getTaskName(), responseTask.getTaskName());
+        assertEquals(task.getTaskDescription(), responseTask.getTaskDescription());
+        assertEquals(task.getDayOfTheWeek(), responseTask.getDayOfTheWeek());
+        assertEquals(task.getTimeTable(), responseTask.getTimeTable());
     }
 
     @Test
     @Order(6)
     public void testGetAllByEndDateRange() {
-        ResponseEntity<Task[]> response = client.getForEntity("/api/v1/tasks/by-time/start", Task[].class);
+        LocalTime startTime = task.getEndTime().minusHours(1);
+        LocalTime endTime = task.getEndTime().plusHours(1);
+        ResponseEntity<Task[]> response = client.getForEntity("/api/v1/tasks/by-time/end/range?startTime={startTime}&endTime={endTime}", Task[].class, startTime, endTime);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         Task[] responseBody = response.getBody();
         assertNotNull(responseBody);
         assertEquals(1, responseBody.length);
         assertNotNull(responseBody[0]);
-        Task task = responseBody[0];
-        assertTrue(task.getId() > 0, "Response body should have an ID.");
-        assertEquals(LocalTime.of(10, 30), task.getStartTime());
+        Task responseTask = responseBody[0];
+        assertTrue(responseTask.getId() > 0, "Response body should have an ID.");
+        assertEquals(task.getStartTime(), responseTask.getStartTime());
+        assertEquals(task.getEndTime(), responseTask.getEndTime());
+        assertEquals(task.getTaskName(), responseTask.getTaskName());
+        assertEquals(task.getTaskDescription(), responseTask.getTaskDescription());
+        assertEquals(task.getDayOfTheWeek(), responseTask.getDayOfTheWeek());
+        assertEquals(task.getTimeTable(), responseTask.getTimeTable());
     }
 
     @Test
     @Order(7)
     public void testDeleteHotelById() {
-        client.delete("/api/v1/tasks/by-id/" + taskId);
-        ResponseEntity<Task> response = client.getForEntity("/api/v1/tasks/by-id/" + taskId, Task.class);
-        assertNull(response.getBody());
+        Task task = new Task(LocalTime.of(10, 30), LocalTime.of(12, 30), "Monday", "test2", "another task to test");
+        ResponseEntity<Long> responseCreate = client.postForEntity("/api/v1/tasks", task, Long.class);
+        // Assert
+        assertEquals(HttpStatus.OK, responseCreate.getStatusCode());
+
+        // Save the ID to read later
+        Long taskId = responseCreate.getBody();
+        client.delete("/api/v1/tasks/by-id/{id}", taskId);
+        ResponseEntity<Task> responseDelete = client.getForEntity("/api/v1/tasks/by-id/" + taskId, Task.class);
+        assertNull(responseDelete.getBody());
     }
 }
