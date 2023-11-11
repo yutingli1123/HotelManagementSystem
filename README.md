@@ -20,5 +20,11 @@ Deliverable 1:
 - Meeting Minutes [Meeting Minutes - Meeting 1](https://github.com/McGill-ECSE321-Fall2023/project-group-06/wiki/Meeting-minutes#meeting-minutes---meeting-1)
 -------------------------------------------
 Deliverabke 2: 
-| Team Member | Roles | Individual Efforts(hrs) |
-|--- |--- |--- |--- |
+| No 	| Team Member 	| Responsibilities 	| Individual Efforts(hr) 	|
+|---	|---	|---	|---	|
+| 1 	| Clara, Jabbour 	| Testing & Modeling 	| 32 hours 	|
+| 2 	| Hing, Hong Way 	| Testing & Recording 	| 32 hours 	|
+| 3 	| Cao, Simon 	| Testing & Modeling 	| 33 hours 	|
+| 4 	| Li, Yuting 	| Testing & Modeling & Recording 	| 35 hours 	|
+| 5 	| Rao, Simiao 	| Testing & Modeling & Recording 	| 35 hours 	|
+| 6 	| Sami, Bayoud 	| Managing & Testing 	| 30 hours 	|
