@@ -30,3 +30,4 @@ Deliverable 2:
 | 6 	| Sami, Bayoud 	| Managing & Testing 	| 30 hours 	|
 ## Project Documentation
 - Project Report [Project Report ‐ Deliverable 2](https://github.com/McGill-ECSE321-Fall2023/project-group-06/wiki/Deliverable-2:-Report#welcome-page)
+- Meeting Minutes [Meeting Minutes ‐ Deliverable 2](https://github.com/McGill-ECSE321-Fall2023/project-group-06/wiki/Deliverable-2%3A-Meeting-minutes) 
