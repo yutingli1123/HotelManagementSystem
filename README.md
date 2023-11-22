@@ -1,6 +1,6 @@
 # Group 6 - Hotel Management Software System
 
-For Our McGill ECSE 321: Introduction to Software Engineering course, We are a student team composed of 6 members: Clara Jabbour, Hong Way Hing, Simon Cao, Yuting Li, Simiao Rao, and Sami Bayoud. Our project consists of developing the Hotel Management Software System (HMSS) for a small hotel to support their customers, owner, and employees. 
+For our McGill ECSE 321: Introduction to Software Engineering course, We are a student team composed of 6 members: Clara Jabbour, Hong Way Hing, Simon Cao, Yuting Li, Simiao Rao, and Sami Bayoud. Our project consists of developing the Hotel Management Software System (HMSS) for a small hotel to support their customers, owner, and employees. 
 
 ## Main scope of the project 
 The Hotel Management System is a comprehensive web application designed to streamline and enhance the operations of a small hotel in your neighborhood. With 70 rooms consisting of 10 suites, 10 deluxe rooms, 10 luxury rooms, and 40 regular rooms, this system aims to provide a seamless experience for both customers and hotel staff. The primary objective is to facilitate room bookings, fee payments, and customer requests, while also assisting the hotel owner and employees in effectively managing the business.
