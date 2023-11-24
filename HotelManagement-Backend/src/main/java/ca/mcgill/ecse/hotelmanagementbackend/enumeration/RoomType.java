@@ -1,8 +1,7 @@
 package ca.mcgill.ecse.hotelmanagementbackend.enumeration;
 
 public enum RoomType {
-    SUITE,
+    DOUBLE,
     DELUXE,
-    LUXURY,
     REGULAR
 }

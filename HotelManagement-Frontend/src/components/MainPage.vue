@@ -21,7 +21,7 @@ const disabled_check_out_date = (date: Dayjs) => {
 }
 
 const date_checker = (date: Dayjs) => {
-  if (date.isAfter(check_out_date.value)) {
+  if (date.add(1,'day').isAfter(check_out_date.value)) {
     check_out_date.value = date.add(1,'day')
   }
 }
@@ -117,7 +117,6 @@ const date_checker = (date: Dayjs) => {
 
 .img-container {
   position: relative;
-
 }
 
 .container {

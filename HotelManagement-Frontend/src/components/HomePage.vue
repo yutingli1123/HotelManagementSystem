@@ -2,11 +2,15 @@
 import {h, ref} from "vue";
 import {LoginOutlined} from "@ant-design/icons-vue";
 import type {MenuProps} from "ant-design-vue";
-import {useRouter} from "vue-router";
+import { useRoute, useRouter} from "vue-router";
 
-const router = useRouter();
+const router = useRouter()
 
-const current = ref<string[]>(['main']);
+const route = useRoute()
+
+const current_route = route.name ? route.name.toString(): 'main'
+
+const current = ref<string[]>([current_route]);
 const items = ref<MenuProps['items']>([
   {
     key: 'main',
@@ -83,8 +87,10 @@ const goto = (input: { item: object, key: string, keyPath: object }) => {
 }
 
 .footer {
+  background: rgba(0,0,0,0.8);
   text-align: center;
   vertical-align: center;
+  color: white;
 }
 
 </style>
