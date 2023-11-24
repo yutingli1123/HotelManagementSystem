@@ -1,5 +1,30 @@
 <script setup lang="ts">
+import {ref} from "vue";
+import type {Dayjs} from 'dayjs'
+import dayjs from 'dayjs'
 
+const today =dayjs()
+const guest_number = ref(1)
+const check_in_date = ref<Dayjs>(today)
+const check_out_date = ref<Dayjs>(today.add(1, 'day'))
+
+const disabled_check_in_date = (date: Dayjs) => {
+  if (date.isBefore(today)) {
+    return true
+  }
+}
+
+const disabled_check_out_date = (date: Dayjs) => {
+  if (date.subtract(1,'day').isBefore(check_in_date.value)) {
+    return true
+  }
+}
+
+const date_checker = (date: Dayjs) => {
+  if (date.isAfter(check_out_date.value)) {
+    check_out_date.value = date.add(1,'day')
+  }
+}
 </script>
 
 <template>
@@ -30,7 +55,7 @@
               <div style="font-size: 16px">CHECK-IN</div>
             </a-row>
             <a-row>
-              <a-date-picker size="large"/>
+              <a-date-picker size="large" format="MMM/DD/YYYY" v-model:value="check_in_date" :disabled-date="disabled_check_in_date" @change="date_checker"/>
             </a-row>
           </a-space>
         </a-col>
@@ -40,7 +65,7 @@
               <div style="font-size: 16px">CHECK-OUT</div>
             </a-row>
             <a-row>
-              <a-date-picker size="large"/>
+              <a-date-picker size="large" format="MMM/DD/YYYY" v-model:value="check_out_date" :disabled-date="disabled_check_out_date"/>
             </a-row>
           </a-space>
         </a-col>
@@ -50,7 +75,7 @@
               <div style="font-size: 16px">GUESTS</div>
             </a-row>
             <a-row>
-              <a-input-number size="large"/>
+              <a-input-number size="large" min="1" v-model:value="guest_number"/>
             </a-row>
           </a-space>
         </a-col>
@@ -66,7 +91,7 @@
 
 .carousel-image {
   width: 100%;
-  height: 1200px;
+  height: 750px;
   object-fit: cover;
 }
 
@@ -109,7 +134,7 @@
   height: 150px;
   background: white;
   position: absolute;
-  bottom: 140px;
+  bottom: 60px;
   left: 50%;
   transform: translate(-50%, 0);
   overflow: clip;
