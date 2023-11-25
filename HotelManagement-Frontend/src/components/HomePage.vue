@@ -39,7 +39,7 @@ const goto = (input: { item: object, key: string, keyPath: object }) => {
     <a-layout-header class="header">
       <a-space :size=50>
         <a-space :size=30>
-          <router-link :to="{name:'main'}" class="logo">The<span class="text-primary">Hotel</span></router-link>
+          <router-link :to="{name:'main'}" class="logo" @click='()=>{current_route="main"}'>The<span class="text-primary">Hotel</span></router-link>
           <a-menu mode="horizontal" :style="{lineHeight:'80px'}" v-model:selectedKeys="current" :items="items"
                   @click="goto"/>
         </a-space>
