@@ -89,84 +89,80 @@ const date_checker = (date: Dayjs) => {
       </a-card>
     </a-col>
 
-    <a-col>
-      <a-space direction="vertical" :size=50>
-        <a-row>
-
-          <a-card hoverable style="width: 350px">
-            <template #cover>
-              <img
-                  src="../assets/regular.jpg"
-              />
-            </template>
-            <template #actions>
-              <svg-icon type="mdi" :path="mdiWifi" size="16"/>
-              <svg-icon type="mdi" :path="mdiShower" size="16"/>
-              <svg-icon type="mdi" :path="mdiTelevisionClassic" size="16"/>
-            </template>
-            <a-card-meta title="Regular Room">
-              <template #description>
-                <TeamOutlined/>
-                2 GUESTS <br/>
-                <div style="margin-top: 10px">Room with one queen bed. Amenities include a private washroom with
-                  shower.
-                </div>
-              </template>
-            </a-card-meta>
-          </a-card>
-
-        </a-row>
-        <a-row>
-          <a-card hoverable style="width: 350px">
-            <template #cover>
-              <img
-                  src="../assets/double.jpg"
-              />
-            </template>
-            <template #actions>
-              <svg-icon type="mdi" :path="mdiWifi" size="16"/>
-              <svg-icon type="mdi" :path="mdiShower" size="16"/>
-              <svg-icon type="mdi" :path="mdiTelevisionClassic" size="16"/>
-              <svg-icon type="mdi" :path="mdiSofaSingle" size="16"/>
-            </template>
-            <a-card-meta title="Double Room">
-              <template #description>
-                <TeamOutlined/>
-                4 GUESTS <br/>
-                <div style="margin-top: 10px">Room with two queen beds. Amenities include a private washroom with shower
-                  and a sofa.
-                </div>
-              </template>
-            </a-card-meta>
-          </a-card>
-        </a-row>
-      </a-space>
-    </a-col>
-    <a-col>
-      <a-card hoverable style="width: 350px">
-        <template #cover>
-          <img
-              src="../assets/deluxe.jpg"
-          />
-        </template>
-        <template #actions>
-          <svg-icon type="mdi" :path="mdiWifi" size="16"/>
-          <svg-icon type="mdi" :path="mdiShower" size="16"/>
-          <svg-icon type="mdi" :path="mdiTelevisionClassic" size="16"/>
-          <svg-icon type="mdi" :path="mdiDesk" size="16"/>
-          <svg-icon type="mdi" :path="mdiSofaSingle" size="16"/>
-        </template>
-        <a-card-meta title="Deluxe Room">
-          <template #description>
-            <TeamOutlined/>
-            2 GUESTS <br/>
-            <div style="margin-top: 10px"> Larger room with one queen bed. Amenities include a private washroom with
-              shower, a sofa, a working desk with chair.
-            </div>
+    <a-row style="margin-left: 20px" :wrap=true :gutter=[40,40]>
+      <a-col>
+        <a-card hoverable style="width: 350px">
+          <template #cover>
+            <img
+                src="../assets/regular.jpg"
+            />
           </template>
-        </a-card-meta>
-      </a-card>
-    </a-col>
+          <template #actions>
+            <svg-icon type="mdi" :path="mdiWifi" size="16"/>
+            <svg-icon type="mdi" :path="mdiShower" size="16"/>
+            <svg-icon type="mdi" :path="mdiTelevisionClassic" size="16"/>
+          </template>
+          <a-card-meta title="Regular Room">
+            <template #description>
+              <TeamOutlined/>
+              2 GUESTS <br/>
+              <div style="margin-top: 10px">Room with one queen bed. Amenities include a private washroom with
+                shower.
+              </div>
+            </template>
+          </a-card-meta>
+        </a-card>
+      </a-col>
+      <a-col>
+        <a-card hoverable style="width: 350px">
+          <template #cover>
+            <img
+                src="../assets/deluxe.jpg"
+            />
+          </template>
+          <template #actions>
+            <svg-icon type="mdi" :path="mdiWifi" size="16"/>
+            <svg-icon type="mdi" :path="mdiShower" size="16"/>
+            <svg-icon type="mdi" :path="mdiTelevisionClassic" size="16"/>
+            <svg-icon type="mdi" :path="mdiDesk" size="16"/>
+            <svg-icon type="mdi" :path="mdiSofaSingle" size="16"/>
+          </template>
+          <a-card-meta title="Deluxe Room">
+            <template #description>
+              <TeamOutlined/>
+              2 GUESTS <br/>
+              <div style="margin-top: 10px"> Larger room with one queen bed. Amenities include a private washroom with
+                shower, a sofa, a working desk with chair.
+              </div>
+            </template>
+          </a-card-meta>
+        </a-card>
+      </a-col>
+      <a-col>
+        <a-card hoverable style="width: 350px">
+          <template #cover>
+            <img
+                src="../assets/double.jpg"
+            />
+          </template>
+          <template #actions>
+            <svg-icon type="mdi" :path="mdiWifi" size="16"/>
+            <svg-icon type="mdi" :path="mdiShower" size="16"/>
+            <svg-icon type="mdi" :path="mdiTelevisionClassic" size="16"/>
+            <svg-icon type="mdi" :path="mdiSofaSingle" size="16"/>
+          </template>
+          <a-card-meta title="Double Room">
+            <template #description>
+              <TeamOutlined/>
+              4 GUESTS <br/>
+              <div style="margin-top: 10px">Room with two queen beds. Amenities include a private washroom with shower
+                and a sofa.
+              </div>
+            </template>
+          </a-card-meta>
+        </a-card>
+      </a-col>
+    </a-row>
   </div>
   <div style="height: 30px"/>
 </template>
@@ -174,14 +170,14 @@ const date_checker = (date: Dayjs) => {
 <style scoped>
 .grid {
   display: flex;
-  justify-content: space-evenly;
-  padding-left: 80px;
-  padding-right: 80px;
+  justify-content: center;
+  padding-left: 100px;
+  padding-right: 100px;
 }
 
 .book_box {
   background: rgba(0, 0, 0, 0.9);
-  width: 435px;
+  width: 490px;
   height: 280px;
   color: white;
 }
@@ -208,7 +204,7 @@ const date_checker = (date: Dayjs) => {
 
 .button {
   height: 105px;
-  width: 185px;
+  width: 210px;
   background: rgba(255, 255, 255, 0.1);
   color: white;
   font-size: 18px;

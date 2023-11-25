@@ -23,11 +23,6 @@ const items = ref<MenuProps['items']>([
     title: 'Rooms',
   },
   {
-    key: 'gallery',
-    label: 'Gallery',
-    title: 'Gallery',
-  },
-  {
     key: 'contact',
     label: 'Contact',
     title: 'Contact',
