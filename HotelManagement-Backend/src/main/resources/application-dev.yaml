@@ -9,3 +9,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+security:
+  jwt:
+    token:
+      secret-key: uPvWz9IVzG7wziKv8iK0JxIviGn1Li5e7a+usAFovk8=
