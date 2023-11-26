@@ -3,6 +3,8 @@ import {computed, h, reactive, ref} from "vue";
 import {LoginOutlined} from "@ant-design/icons-vue";
 import type {MenuProps} from "ant-design-vue";
 import {useRoute, useRouter} from "vue-router";
+import axios from 'axios';
+import Cookies from 'js-cookie';
 
 const router = useRouter()
 
@@ -98,6 +100,42 @@ const onRegisterFinishFailed = (errorInfo: any) => {
 const registerDisabled = computed(() => {
   return !(registerFormState.username && registerFormState.password);
 });
+
+
+
+axios
+  .post("http://localhost:8080/api/v1/login", {
+    username: loginFormState.username,
+    password: loginFormState.password,
+  })
+  .then((response) => {
+    if (response.status == 200) {
+      Cookies.set(response.data);
+      loginModalOpen.value = false;
+    }
+  })
+  .catch((err) => console.log(err));
+
+
+axios
+  .post("http://localhost:8080/api/v1/register", {
+    firstname: registerFormState.firstName,
+    lastname: registerFormState.lastName,
+    password: registerFormState.password,
+    username: registerFormState.username,
+    email: registerFormState.email,
+  })
+  .then((response) => {
+    if (response.status == 200) {
+      registerModalOpen.value = false;
+      loginModalOpen.value = true;
+      loginFormState.username = registerFormState.username;
+      loginFormState.password = registerFormState.password;
+    }
+  })
+  .catch((err) => console.log(err));
+
+
 </script>
 
 <template>
