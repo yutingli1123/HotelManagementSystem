@@ -26,8 +26,18 @@ public class ReservationService {
 
 
     @Transactional(readOnly = true)
-    public List<Reservation> findAllByDateBetween(Date startDate, Date endDate) {
-        return reservationRepository.findAllByDateBetween(startDate, endDate).orElse(null);
+    public List<Reservation> findAllByCheckInDate(Date checkInDate) {
+        return reservationRepository.findAllByCheckInDate(checkInDate).orElse(null);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Reservation> findAllByCheckOutDate(Date checkOutDate) {
+        return reservationRepository.findAllByCheckOutDate(checkOutDate).orElse(null);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Reservation> findAllByCheckInDateAndCheckOutDateRange(Date checkInDate, Date checkOutDate) {
+        return reservationRepository.findAllByCheckInDateAfterAndCheckOutDateBefore(checkInDate, checkOutDate).orElse(null);
     }
 
     @Transactional
@@ -36,8 +46,13 @@ public class ReservationService {
     }
 
     @Transactional
-    public void deleteAllByDateBetween(Date startDate, Date endDate) {
-        reservationRepository.deleteAllByDateBetween(startDate, endDate);
+    public void deleteAllByCheckInDate(Date checkInDate) {
+        reservationRepository.deleteAllByCheckInDate(checkInDate);
+    }
+
+    @Transactional
+    public void deleteAllByCheckOutDate(Date checkOutDate) {
+        reservationRepository.deleteAllByCheckOutDate(checkOutDate);
     }
 
     @Transactional

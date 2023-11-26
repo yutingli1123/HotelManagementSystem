@@ -21,9 +21,19 @@ public class ReservationController {
         return reservationService.findAll();
     }
 
+    @GetMapping("/by-checkin-date")
+    public List<Reservation> getAllReservationsByCheckInDate(@RequestParam Date checkInDate) {
+        return reservationService.findAllByCheckInDate(checkInDate);
+    }
+
+    @GetMapping("/by-checkout-date")
+    public List<Reservation> getAllReservationsByCheckOutDate(@RequestParam Date checkOutDate) {
+        return reservationService.findAllByCheckOutDate(checkOutDate);
+    }
+
     @GetMapping("/by-date-range")
-    public List<Reservation> getAllReservationsByDateBetween(@RequestParam Date startDate, @RequestParam Date endDate) {
-        return reservationService.findAllByDateBetween(startDate, endDate);
+    public List<Reservation> getAllReservationsByDateRange(@RequestParam Date checkInDate, @RequestParam Date checkOutDate) {
+        return reservationService.findAllByCheckInDateAndCheckOutDateRange(checkInDate,checkOutDate);
     }
 
     @PostMapping
@@ -40,11 +50,6 @@ public class ReservationController {
     @DeleteMapping("/by-id/{id}")
     public void deleteReservation(@PathVariable Long id) {
         reservationService.deleteById(id);
-    }
-
-    @DeleteMapping("/by-date-range")
-    public void deleteReservation(@RequestParam Date startDate, @RequestParam Date endDate) {
-        reservationService.deleteAllByDateBetween(startDate, endDate);
     }
 }
 

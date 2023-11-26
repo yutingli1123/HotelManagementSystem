@@ -1,12 +1,13 @@
 package ca.mcgill.ecse.hotelmanagementbackend.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Data
@@ -17,15 +18,15 @@ public class Reservation {
     private Long id;
     private Date checkInDate;
     private Date checkOutDate;
-    @ManyToMany
-    private List<Room> rooms;
+    @ManyToOne
+    private Room room;
     @ManyToOne
     private Customer customer;
 
 
-    public Reservation(Date checkInDate, Date checkOutDate) {
+    public Reservation(Date checkInDate, Date checkOutDate, Room room) {
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
-        this.rooms = new ArrayList<>();
+        this.room = room;
     }
 }

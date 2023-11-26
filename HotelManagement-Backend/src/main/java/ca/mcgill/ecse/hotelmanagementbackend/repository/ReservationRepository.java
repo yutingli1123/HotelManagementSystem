@@ -10,7 +10,12 @@ import java.util.Optional;
 
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
-    Optional<List<Reservation>> findAllByDateBetween(Date startDate, Date endDate);
+    Optional<List<Reservation>> findAllByCheckInDate(Date checkInDate);
 
-    void deleteAllByDateBetween(Date startDate, Date endDate);
+    Optional<List<Reservation>> findAllByCheckOutDate(Date checkInDate);
+
+    Optional<List<Reservation>> findAllByCheckInDateAfterAndCheckOutDateBefore(Date startDate, Date endDate);
+
+    void deleteAllByCheckInDate(Date checkInDate);
+    void deleteAllByCheckOutDate(Date checkOutDate);
 }
