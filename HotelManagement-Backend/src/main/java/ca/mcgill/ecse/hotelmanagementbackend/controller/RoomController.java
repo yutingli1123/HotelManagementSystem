@@ -46,9 +46,8 @@ public class RoomController {
     @PostMapping("/batch")
     public void saveRoomInBatch(@RequestBody RoomBatch roomBatch) {
         Integer number = roomBatch.getNumber();
-        Room room = roomBatch.getRoom();
         for (int i =0; i<number;i++) {
-            roomService.save(room);
+            roomService.save(new Room(roomBatch.getRoomType(), roomBatch.getFee()));
         }
     }
 

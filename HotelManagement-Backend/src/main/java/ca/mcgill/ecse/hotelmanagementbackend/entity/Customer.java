@@ -19,24 +19,4 @@ public class Customer extends User {
     public Customer(String name, String username, String email, String password) {
         super(name, username, email, password);
     }
-
-    @Override
-    public String getEmail() {
-        return super.getEmail();
-    }
-
-    @Override
-    public String getName() {
-        return super.getName();
-    }
-
-    @Override
-    public String getPassword() {
-        return super.getPassword();
-    }
-
-    @Override
-    public String getUsername() {
-        return super.getUsername();
-    }
 }

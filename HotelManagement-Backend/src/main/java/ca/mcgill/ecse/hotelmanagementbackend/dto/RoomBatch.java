@@ -1,6 +1,7 @@
 package ca.mcgill.ecse.hotelmanagementbackend.dto;
 
 import ca.mcgill.ecse.hotelmanagementbackend.entity.Room;
+import ca.mcgill.ecse.hotelmanagementbackend.enumeration.RoomType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,5 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RoomBatch {
     private Integer number;
-    private Room room;
+    private RoomType roomType;
+    private Integer fee;
 }
