@@ -3,6 +3,8 @@ import HomeView from '../views/HomeView.vue'
 import MainPage from "@/components/MainPage.vue";
 import RoomsPage from "@/components/RoomsPage.vue";
 import ContactPage from "@/components/ContactPage.vue";
+import ResultPage from "@/components/ResultPage.vue";
+import AccountPage from "@/components/AccountPage.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -27,8 +29,18 @@ const router = createRouter({
                     name: 'contact',
                     component: ContactPage
                 },
+                {
+                    path: 'result',
+                    name: 'result',
+                    component: ResultPage
+                },
             ]
         },
+        {
+            path:'/my-account',
+            name: 'account',
+            component: AccountPage
+        }
     ]
 })
 

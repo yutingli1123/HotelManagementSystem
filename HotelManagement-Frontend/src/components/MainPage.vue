@@ -5,8 +5,9 @@ import dayjs from 'dayjs'
 import SvgIcon from '@jamescoyle/vue-icon'
 import {mdiDesk, mdiShower, mdiSofaSingle, mdiTelevisionClassic, mdiWifi} from "@mdi/js";
 import {TeamOutlined} from "@ant-design/icons-vue";
+import {useRouter} from "vue-router";
 
-
+const router = useRouter()
 const today = dayjs()
 const guest_number = ref(1)
 const check_in_date = ref<Dayjs>(today)
@@ -29,6 +30,11 @@ const date_checker = (date: Dayjs) => {
     check_out_date.value = date.add(1, 'day')
   }
 }
+
+const submit = () => {
+  router.push({name:'result',query:{checkIn: check_in_date.value.format('YYYY-MM-DD'), checkOut: check_out_date.value.format('YYYY-MM-DD'), guests: guest_number.value}})
+}
+
 </script>
 
 <template>
@@ -89,7 +95,7 @@ const date_checker = (date: Dayjs) => {
           </a-space>
         </a-col>
       </a-row>
-      <a-button class="full-button" type="text">CHECK <br/> AVAILABILITY</a-button>
+      <a-button class="full-button" type="text" @click="submit">CHECK <br/> AVAILABILITY</a-button>
     </div>
   </div>
   <div style="height: 20px;"/>
