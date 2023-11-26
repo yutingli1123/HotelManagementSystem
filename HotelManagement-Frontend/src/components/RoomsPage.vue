@@ -177,7 +177,7 @@ const date_checker = (date: Dayjs) => {
 
 .book_box {
   background: rgba(0, 0, 0, 0.9);
-  width: 465px;
+  width: 490px;
   height: 280px;
   color: white;
 }
