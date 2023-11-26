@@ -100,7 +100,8 @@ class CustomerTest {
         Customer customer = new Customer("Test1", "test1", "test1@test.com", "test1");
         customerService.save(customer);
         //write
-        Reservation reservation = new Reservation(new Date());
+        Date today = new Date();
+        Reservation reservation = new Reservation(today, new Date(today.getTime() + 24 * 60 * 60 * 1000));
         reservationService.save(reservation);
         reservationList.add(reservation);
         customer.setReservationsForCustomer(reservationList);

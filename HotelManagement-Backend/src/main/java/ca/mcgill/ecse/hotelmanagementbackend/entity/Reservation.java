@@ -15,15 +15,17 @@ public class Reservation {
     @Id
     @GeneratedValue
     private Long id;
-    private Date date;
+    private Date checkInDate;
+    private Date checkOutDate;
     @ManyToMany
     private List<Room> rooms;
     @ManyToOne
     private Customer customer;
 
 
-    public Reservation(Date date) {
-        this.date = date;
+    public Reservation(Date checkInDate, Date checkOutDate) {
+        this.checkInDate = checkInDate;
+        this.checkOutDate = checkOutDate;
         this.rooms = new ArrayList<>();
     }
 }

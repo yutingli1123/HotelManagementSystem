@@ -55,7 +55,7 @@ public class ReservationTest {
     @Test
     @Transactional
     void testReadAndWriteReference() {
-        Reservation reservation = new Reservation(new Date());
+        Reservation reservation = new Reservation(new Date(),);
         List<Room> rooms = new ArrayList<>();
         Room room1 = new Room(RoomType.DELUXE, 1000);
         roomService.save(room1);

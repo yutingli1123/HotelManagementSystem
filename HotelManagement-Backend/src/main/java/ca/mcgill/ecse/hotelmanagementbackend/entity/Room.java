@@ -21,7 +21,6 @@ public class Room {
     private Integer fee;
     @ElementCollection
     private List<Amenity> amenities = new ArrayList<>();
-    private boolean isAvailable = true;
     @ManyToMany(mappedBy = "rooms")
     private List<Reservation> reservations = new ArrayList<>();
 
