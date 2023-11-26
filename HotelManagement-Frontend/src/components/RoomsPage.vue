@@ -31,7 +31,7 @@ const date_checker = (date: Dayjs) => {
 
 <template>
   <div style="position: relative">
-    <img class="background_image" src="regular.jpg"/>
+    <img class="background_image" src="regular.jpg" alt="Background Image"/>
     <div class="overlayer">
       <div class="img-info">Rooms</div>
     </div>
@@ -94,7 +94,7 @@ const date_checker = (date: Dayjs) => {
         <a-card hoverable class="room_card">
           <template #cover>
             <img
-                src="regular.jpg"
+                src="regular.jpg" alt="Regular Room"
             />
           </template>
           <template #actions>
@@ -117,7 +117,7 @@ const date_checker = (date: Dayjs) => {
         <a-card hoverable class="room_card">
           <template #cover>
             <img
-                src="deluxe.jpg"
+                src="deluxe.jpg" alt="Deluxe Room"
             />
           </template>
           <template #actions>
@@ -142,7 +142,7 @@ const date_checker = (date: Dayjs) => {
         <a-card hoverable class="room_card">
           <template #cover>
             <img
-                src="double.jpg"
+                src="double.jpg" alt="Double Room"
             />
           </template>
           <template #actions>
@@ -171,8 +171,8 @@ const date_checker = (date: Dayjs) => {
 .grid {
   display: flex;
   justify-content: center;
-  padding-left: 100px;
-  padding-right: 100px;
+  padding-left: 50px;
+  padding-right: 50px;
 }
 
 .book_box {
