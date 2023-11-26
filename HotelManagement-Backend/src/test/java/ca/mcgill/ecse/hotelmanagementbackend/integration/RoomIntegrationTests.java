@@ -29,7 +29,7 @@ public class RoomIntegrationTests {
     @Autowired
     private RoomRepository roomRepository;
 
-    private final Room room = new Room(RoomType.SUITE, 500);
+    private final Room room = new Room(RoomType.REGULAR, 500);
 
     private Long roomId;
 
@@ -60,7 +60,6 @@ public class RoomIntegrationTests {
         assertTrue(response.getBody().getId() > 0, "Response body should have an ID.");
         assertEquals(room.getType(), response.getBody().getType());
         assertEquals(room.getFee(), response.getBody().getFee());
-        assertEquals(room.getHotel(), response.getBody().getHotel());
         assertEquals(room.getReservations(), response.getBody().getReservations());
         assertEquals(room.getAmenities(), response.getBody().getAmenities());
     }
@@ -78,7 +77,6 @@ public class RoomIntegrationTests {
         assertTrue(responseRoom.getId() > 0, "Response body should have an ID.");
         assertEquals(room.getType(), responseRoom.getType());
         assertEquals(room.getFee(), responseRoom.getFee());
-        assertEquals(room.getHotel(), responseRoom.getHotel());
         assertEquals(room.getReservations(), responseRoom.getReservations());
         assertEquals(room.getAmenities(), responseRoom.getAmenities());
     }
@@ -96,7 +94,6 @@ public class RoomIntegrationTests {
         assertTrue(responseRoom.getId() > 0, "Response body should have an ID.");
         assertEquals(room.getType(), responseRoom.getType());
         assertEquals(room.getFee(), responseRoom.getFee());
-        assertEquals(room.getHotel(), responseRoom.getHotel());
         assertEquals(room.getReservations(), responseRoom.getReservations());
         assertEquals(room.getAmenities(), responseRoom.getAmenities());
     }
@@ -104,7 +101,7 @@ public class RoomIntegrationTests {
     @Test
     @Order(5)
     public void testDeleteById() {
-        Room room = new Room(RoomType.SUITE, 500);
+        Room room = new Room(RoomType.REGULAR, 500);
         ResponseEntity<Long> responseCreate = client.postForEntity("/api/v1/rooms", room, Long.class);
         // Save the ID to read later
         Long roomId = responseCreate.getBody();

@@ -14,8 +14,8 @@ public class Employee extends Admin {
     @ManyToOne
     private TimeTable timeTable;
 
-    public Employee(String name, String username, String email, String password, Hotel hotel, Integer salary) {
-        super(name, username, email, password, hotel);
+    public Employee(String name, String username, String email, String password, Integer salary) {
+        super(name, username, email, password);
         this.salary = salary;
     }
 }

@@ -15,8 +15,6 @@ import static org.springframework.test.util.AssertionErrors.assertEquals;
 public class RoomServiceTest {
     @Autowired
     private RoomService roomService;
-    @Autowired
-    private HotelService hotelService;
 
 
     @Test
@@ -41,21 +39,5 @@ public class RoomServiceTest {
         roomService.save(room);
         assertEquals("checks if room attribute can be saved", RoomType.REGULAR, room.getType());
         assertEquals("checks if room attribute can be saved", 500, room.getFee());
-    }
-
-    @Test
-    @Transactional
-    void testReadAndWriteReference(){
-        Hotel hotel1 = new Hotel();
-        hotelService.save(hotel1);
-        Hotel hotel2 = new Hotel();
-        hotelService.save(hotel2);
-        Room room = new Room(RoomType.DELUXE, 800);
-        room.setHotel(hotel1);
-        roomService.save(room);
-        assertEquals("checks if Room can read and write its attribute which is an instance of Hotel class", hotel1, room.getHotel());
-        room.setHotel(hotel2);
-        roomService.save(room);
-        assertEquals("checks if Room can read and write its attribute which is an instance of Hotel class", hotel2, room.getHotel());
     }
 }

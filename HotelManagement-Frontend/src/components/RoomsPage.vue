@@ -177,7 +177,7 @@ const date_checker = (date: Dayjs) => {
 
 .book_box {
   background: rgba(0, 0, 0, 0.9);
-  width: 490px;
+  width: 465px;
   height: 280px;
   color: white;
 }
@@ -245,6 +245,6 @@ const date_checker = (date: Dayjs) => {
 }
 
 .room_card {
-  width: 350px;
+  width: 340px;
 }
 </style>

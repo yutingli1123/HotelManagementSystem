@@ -131,83 +131,106 @@ const date_checker = (date: Dayjs) => {
     </a-row>
   </div>
   <a-divider/>
-
-  <div>
-    <a-row :wrap=true :gutter=[40,40] justify="center" style="margin-bottom: 30px">
-      <a-col>
-        <a-card hoverable style="width: 350px">
-          <template #cover>
-            <img
-                src="regular.jpg" alt="Regular Room"
-            />
+  <a-row :wrap=true :gutter=[40,40] justify="center" style="margin-bottom: 30px;width: 100%">
+    <a-col>
+      <a-card hoverable style="width: 350px">
+        <template #cover>
+          <img
+              src="regular.jpg" alt="Regular Room"
+          />
+        </template>
+        <template #actions>
+          <a-tooltip title="Wi-Fi">
+            <svg-icon type="mdi" :path="mdiWifi" size="16"/>
+          </a-tooltip>
+          <a-tooltip title="Shower">
+            <svg-icon type="mdi" :path="mdiShower" size="16"/>
+          </a-tooltip>
+          <a-tooltip title="Television">
+            <svg-icon type="mdi" :path="mdiTelevisionClassic" size="16"/>
+          </a-tooltip>
+        </template>
+        <a-card-meta title="Regular Room">
+          <template #description>
+            <TeamOutlined/>
+            2 GUESTS <br/>
+            <div style="margin-top: 10px;margin-bottom: 25px">Room with one queen bed. Amenities include a private
+              washroom with
+              shower.
+            </div>
           </template>
-          <template #actions>
-            <a-tooltip title="Wi-Fi"><svg-icon type="mdi" :path="mdiWifi" size="16"/></a-tooltip>
-            <a-tooltip title="Shower"><svg-icon type="mdi" :path="mdiShower" size="16"/></a-tooltip>
-            <a-tooltip title="Television"><svg-icon type="mdi" :path="mdiTelevisionClassic" size="16"/></a-tooltip>
+        </a-card-meta>
+      </a-card>
+    </a-col>
+    <a-col>
+      <a-card hoverable style="width: 350px">
+        <template #cover>
+          <img
+              src="deluxe.jpg" alt="Deluxe Room"
+          />
+        </template>
+        <template #actions>
+          <a-tooltip title="Wi-Fi">
+            <svg-icon type="mdi" :path="mdiWifi" size="16"/>
+          </a-tooltip>
+          <a-tooltip title="Shower">
+            <svg-icon type="mdi" :path="mdiShower" size="16"/>
+          </a-tooltip>
+          <a-tooltip title="Television">
+            <svg-icon type="mdi" :path="mdiTelevisionClassic" size="16"/>
+          </a-tooltip>
+          <a-tooltip title="Desk">
+            <svg-icon type="mdi" :path="mdiDesk" size="16"/>
+          </a-tooltip>
+          <a-tooltip title="Sofa">
+            <svg-icon type="mdi" :path="mdiSofaSingle" size="16"/>
+          </a-tooltip>
+        </template>
+        <a-card-meta title="Deluxe Room">
+          <template #description>
+            <TeamOutlined/>
+            2 GUESTS <br/>
+            <div style="margin-top: 10px"> Larger room with one queen bed. Amenities include a private washroom with
+              shower, a sofa, a working desk with chair.
+            </div>
           </template>
-          <a-card-meta title="Regular Room">
-            <template #description>
-              <TeamOutlined/>
-              2 GUESTS <br/>
-              <div style="margin-top: 10px;margin-bottom: 25px">Room with one queen bed. Amenities include a private washroom with
-                shower.
-              </div>
-            </template>
-          </a-card-meta>
-        </a-card>
-      </a-col>
-      <a-col>
-        <a-card hoverable style="width: 350px">
-          <template #cover>
-            <img
-                src="deluxe.jpg" alt="Deluxe Room"
-            />
+        </a-card-meta>
+      </a-card>
+    </a-col>
+    <a-col>
+      <a-card hoverable style="width: 350px">
+        <template #cover>
+          <img
+              src="double.jpg" alt="Double Room"
+          />
+        </template>
+        <template #actions>
+          <a-tooltip title="Wi-Fi">
+            <svg-icon type="mdi" :path="mdiWifi" size="16"/>
+          </a-tooltip>
+          <a-tooltip title="Shower">
+            <svg-icon type="mdi" :path="mdiShower" size="16"/>
+          </a-tooltip>
+          <a-tooltip title="Television">
+            <svg-icon type="mdi" :path="mdiTelevisionClassic" size="16"/>
+          </a-tooltip>
+          <a-tooltip title="Sofa">
+            <svg-icon type="mdi" :path="mdiSofaSingle" size="16"/>
+          </a-tooltip>
+        </template>
+        <a-card-meta title="Double Room">
+          <template #description>
+            <TeamOutlined/>
+            4 GUESTS <br/>
+            <div style="margin-top: 10px;margin-bottom: 25px">Room with two queen beds. Amenities include a private
+              washroom with shower
+              and a sofa.
+            </div>
           </template>
-          <template #actions>
-            <a-tooltip title="Wi-Fi"><svg-icon type="mdi" :path="mdiWifi" size="16"/></a-tooltip>
-            <a-tooltip title="Shower"><svg-icon type="mdi" :path="mdiShower" size="16"/></a-tooltip>
-            <a-tooltip title="Television"><svg-icon type="mdi" :path="mdiTelevisionClassic" size="16"/></a-tooltip>
-            <a-tooltip title="Desk"><svg-icon type="mdi" :path="mdiDesk" size="16"/></a-tooltip>
-            <a-tooltip title="Sofa"><svg-icon type="mdi" :path="mdiSofaSingle" size="16"/></a-tooltip>
-          </template>
-          <a-card-meta title="Deluxe Room">
-            <template #description>
-              <TeamOutlined/>
-              2 GUESTS <br/>
-              <div style="margin-top: 10px"> Larger room with one queen bed. Amenities include a private washroom with
-                shower, a sofa, a working desk with chair.
-              </div>
-            </template>
-          </a-card-meta>
-        </a-card>
-      </a-col>
-      <a-col>
-        <a-card hoverable style="width: 350px">
-          <template #cover>
-            <img
-                src="double.jpg" alt="Double Room"
-            />
-          </template>
-          <template #actions>
-            <a-tooltip title="Wi-Fi"><svg-icon type="mdi" :path="mdiWifi" size="16"/></a-tooltip>
-            <a-tooltip title="Shower"><svg-icon type="mdi" :path="mdiShower" size="16"/></a-tooltip>
-            <a-tooltip title="Television"><svg-icon type="mdi" :path="mdiTelevisionClassic" size="16"/></a-tooltip>
-            <a-tooltip title="Sofa"><svg-icon type="mdi" :path="mdiSofaSingle" size="16"/></a-tooltip>
-          </template>
-          <a-card-meta title="Double Room">
-            <template #description>
-              <TeamOutlined/>
-              4 GUESTS <br/>
-              <div style="margin-top: 10px;margin-bottom: 25px">Room with two queen beds. Amenities include a private washroom with shower
-                and a sofa.
-              </div>
-            </template>
-          </a-card-meta>
-        </a-card>
-      </a-col>
-    </a-row>
-  </div>
+        </a-card-meta>
+      </a-card>
+    </a-col>
+  </a-row>
 </template>
 
 <style scoped>
