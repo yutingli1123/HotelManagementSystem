@@ -59,6 +59,10 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/reservations/**")
                         .authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/rooms/available")
+                        .permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/rooms/available/type")
+                        .permitAll()
                         .anyRequest()
                         .hasAnyAuthority("ROLE_OWNER", "ROLE_EMPLOYEE")
                 );
