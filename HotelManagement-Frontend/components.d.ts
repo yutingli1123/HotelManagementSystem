@@ -7,9 +7,6 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
-    AAvatar: typeof import('ant-design-vue/es')['Avatar']
-    ABreadcrumb: typeof import('ant-design-vue/es')['Breadcrumb']
-    ABreadcrumbItem: typeof import('ant-design-vue/es')['BreadcrumbItem']
     AButton: typeof import('ant-design-vue/es')['Button']
     ACard: typeof import('ant-design-vue/es')['Card']
     ACardMeta: typeof import('ant-design-vue/es')['CardMeta']
@@ -28,7 +25,6 @@ declare module 'vue' {
     ALayoutFooter: typeof import('ant-design-vue/es')['LayoutFooter']
     ALayoutHeader: typeof import('ant-design-vue/es')['LayoutHeader']
     AMenu: typeof import('ant-design-vue/es')['Menu']
-    AMenuItem: typeof import('ant-design-vue/es')['MenuItem']
     AModal: typeof import('ant-design-vue/es')['Modal']
     ARow: typeof import('ant-design-vue/es')['Row']
     ASpace: typeof import('ant-design-vue/es')['Space']
@@ -36,7 +32,6 @@ declare module 'vue' {
     ATypography: typeof import('ant-design-vue/es')['Typography']
     ATypographyParagraph: typeof import('ant-design-vue/es')['TypographyParagraph']
     ContactPage: typeof import('./src/components/ContactPage.vue')['default']
-    GalleryPage: typeof import('./src/components/GalleryPage.vue')['default']
     HomePage: typeof import('./src/components/HomePage.vue')['default']
     MainPage: typeof import('./src/components/MainPage.vue')['default']
     RoomsPage: typeof import('./src/components/RoomsPage.vue')['default']

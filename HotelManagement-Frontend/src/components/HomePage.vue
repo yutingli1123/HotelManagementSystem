@@ -3,6 +3,8 @@ import {computed, h, reactive, ref} from "vue";
 import {LoginOutlined} from "@ant-design/icons-vue";
 import type {MenuProps} from "ant-design-vue";
 import {useRoute, useRouter} from "vue-router";
+import axios from 'axios';
+import Cookies from 'js-cookie';
 
 const router = useRouter()
 
@@ -78,6 +80,7 @@ interface RegisterFormState {
   username: string;
   email: string;
   password: string;
+  confirmPassword: string,
 }
 
 const registerFormState = reactive<RegisterFormState>({
@@ -86,6 +89,7 @@ const registerFormState = reactive<RegisterFormState>({
   username: '',
   email: '',
   password: '',
+  confirmPassword: '',
 });
 const onRegisterFinish = (values: any) => {
   console.log('Success:', values);
@@ -98,6 +102,42 @@ const onRegisterFinishFailed = (errorInfo: any) => {
 const registerDisabled = computed(() => {
   return !(registerFormState.username && registerFormState.password);
 });
+
+
+
+axios
+  .post("http://localhost:8080/api/v1/login", {
+    username: loginFormState.username,
+    password: loginFormState.password,
+  })
+  .then((response) => {
+    if (response.status == 200) {
+      Cookies.set(response.data);
+      loginModalOpen.value = false;
+    }
+  })
+  .catch((err) => console.log(err));
+
+
+axios
+  .post("http://localhost:8080/api/v1/register", {
+    firstname: registerFormState.firstName,
+    lastname: registerFormState.lastName,
+    password: registerFormState.password,
+    username: registerFormState.username,
+    email: registerFormState.email,
+  })
+  .then((response) => {
+    if (response.status == 200) {
+      registerModalOpen.value = false;
+      loginModalOpen.value = true;
+      loginFormState.username = registerFormState.username;
+      loginFormState.password = registerFormState.password;
+    }
+  })
+  .catch((err) => console.log(err));
+
+
 </script>
 
 <template>
@@ -182,7 +222,7 @@ const registerDisabled = computed(() => {
         <a-form-item
             label="Email"
             name="email"
-            :rules="[{ required: true, message: 'Please input your email!' }]"
+            :rules="[{ required: true, message: 'Please input your email!' }, {type: 'email', message: 'Not a valid email!'}]"
         >
           <a-input v-model:value="registerFormState.email" style="width: 354px"/>
         </a-form-item>
@@ -200,10 +240,11 @@ const registerDisabled = computed(() => {
         <a-form-item
             label="Confirm Password"
             name="confirmPassword"
-            :rules="[{ required: true, message: 'Please input your password again!' }]"
-
+            :rules="[{ required: true, message: 'Please input your password again!' }, {validator:(rule, value, callback)=>{if (value !== registerFormState.password) {
+          callback('Two input passwords don\'t match!')
+        } else callback()}}]"
         >
-          <a-input-password v-model:value="registerFormState.password" style="width: 353px"/>
+          <a-input-password v-model:value="registerFormState.confirmPassword" style="width: 353px"/>
         </a-form-item>
       </a-row>
     </a-form>
