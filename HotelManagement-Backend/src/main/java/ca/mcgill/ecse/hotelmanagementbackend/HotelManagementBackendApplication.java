@@ -8,6 +8,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 
+import java.time.LocalTime;
+
 @SpringBootApplication(exclude = SecurityAutoConfiguration.class)
 public class HotelManagementBackendApplication {
     @Autowired
@@ -20,7 +22,7 @@ public class HotelManagementBackendApplication {
     @PostConstruct
     public void Init() {
         if (hotelService.findAll().isEmpty()) {
-            Hotel hotel = new Hotel();
+            Hotel hotel = new Hotel(LocalTime.of(8,0),LocalTime.of(22,0));
             hotelService.save(hotel);
         }
     }

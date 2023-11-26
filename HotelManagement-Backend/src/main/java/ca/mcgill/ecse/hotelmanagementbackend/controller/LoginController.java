@@ -3,11 +3,9 @@ package ca.mcgill.ecse.hotelmanagementbackend.controller;
 import ca.mcgill.ecse.hotelmanagementbackend.dto.LoginData;
 import ca.mcgill.ecse.hotelmanagementbackend.dto.RegisterData;
 import ca.mcgill.ecse.hotelmanagementbackend.entity.Customer;
-import ca.mcgill.ecse.hotelmanagementbackend.entity.Hotel;
 import ca.mcgill.ecse.hotelmanagementbackend.enumeration.Role;
 import ca.mcgill.ecse.hotelmanagementbackend.service.CustomerService;
 import ca.mcgill.ecse.hotelmanagementbackend.service.EmployeeService;
-import ca.mcgill.ecse.hotelmanagementbackend.service.HotelService;
 import ca.mcgill.ecse.hotelmanagementbackend.service.OwnerService;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -38,9 +36,6 @@ public class LoginController {
     @Autowired
     private EmployeeService employeeService;
 
-    @Autowired
-    private HotelService hotelService;
-
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginData loginData) {
         Date now = new Date();
@@ -48,7 +43,7 @@ public class LoginController {
         String username = loginData.getUsername();
         String rawPassword = loginData.getPassword();
 
-        if (customerService.findByUsername(username) !=null) {
+        if (customerService.findByUsername(username) != null) {
             String password = customerService.findByUsername(username).getPassword();
             if (passwordEncoder.matches(rawPassword, password)) {
                 return ResponseEntity.ok(JWT.create().withIssuer(username).withClaim("role", Role.CUSTOMER.toString()).withIssuedAt(now).withExpiresAt(expire).sign(Algorithm.HMAC256(secretKey)));
@@ -69,8 +64,7 @@ public class LoginController {
 
     @PostMapping("/register")
     public ResponseEntity<Boolean> login(@RequestBody RegisterData registerData) {
-        Hotel hotel = hotelService.findAll().get(0);
-        Customer customer = new Customer(registerData.getName(),registerData.getUsername(),registerData.getEmail(),passwordEncoder.encode(registerData.getPassword()),hotel);
+        Customer customer = new Customer(registerData.getName(), registerData.getUsername(), registerData.getEmail(), passwordEncoder.encode(registerData.getPassword()));
         customerService.save(customer);
         return ResponseEntity.ok(Boolean.TRUE);
     }

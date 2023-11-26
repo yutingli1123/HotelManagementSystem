@@ -1,7 +1,9 @@
 package ca.mcgill.ecse.hotelmanagementbackend.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -18,14 +20,10 @@ public abstract class User {
     private String email;
     private String password;
 
-    @ManyToOne
-    private Hotel hotel;
-
-    public User(String name, String username, String email, String password, Hotel hotel) {
+    public User(String name, String username, String email, String password) {
         this.name = name;
         this.username = username;
         this.email = email;
         this.password = password;
-        this.hotel = hotel;
     }
 }

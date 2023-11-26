@@ -155,7 +155,7 @@ public class TestRoomService {
     @Test
     public void testFindAllByRoomTypeWithNonexistentType() {
         // Define a room type that does not exist
-        RoomType roomType = RoomType.SUITE;
+        RoomType roomType = RoomType.REGULAR;
 
         // Mock the behavior of roomRepository.findAllByType() when the type is not found
         when(roomRepository.findAllByType(roomType)).thenReturn(Optional.empty());

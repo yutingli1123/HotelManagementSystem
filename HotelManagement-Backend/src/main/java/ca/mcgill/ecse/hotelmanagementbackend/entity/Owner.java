@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class Owner extends Admin {
-    public Owner(String name, String username, String email, String password, Hotel hotel) {
-        super(name, username, email, password, hotel);
+    public Owner(String name, String username, String email, String password) {
+        super(name, username, email, password);
     }
 }
