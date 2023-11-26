@@ -63,7 +63,7 @@ public class LoginController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Boolean> login(@RequestBody RegisterData registerData) {
+    public ResponseEntity<Boolean> register(@RequestBody RegisterData registerData) {
         Customer customer = new Customer(registerData.getName(), registerData.getUsername(), registerData.getEmail(), passwordEncoder.encode(registerData.getPassword()));
         customerService.save(customer);
         return ResponseEntity.ok(Boolean.TRUE);
