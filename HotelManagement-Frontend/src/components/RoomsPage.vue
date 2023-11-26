@@ -31,12 +31,12 @@ const date_checker = (date: Dayjs) => {
 
 <template>
   <div style="position: relative">
-    <img class="image" src="../assets/regular.jpg"/>
+    <img class="background_image" src="regular.jpg"/>
     <div class="overlayer">
       <div class="img-info">Rooms</div>
     </div>
   </div>
-  <div class="divider"></div>
+  <div style="height: 30px"></div>
   <div class="grid">
     <a-col>
       <a-card class="book_box">
@@ -89,24 +89,24 @@ const date_checker = (date: Dayjs) => {
       </a-card>
     </a-col>
 
-    <a-row style="margin-left: 20px" :wrap=true :gutter=[40,40]>
+    <a-row style="margin-left: 20px" :wrap=true :gutter=[40,30]>
       <a-col>
-        <a-card hoverable style="width: 350px">
+        <a-card hoverable class="room_card">
           <template #cover>
             <img
-                src="../assets/regular.jpg"
+                src="regular.jpg"
             />
           </template>
           <template #actions>
-            <svg-icon type="mdi" :path="mdiWifi" size="16"/>
-            <svg-icon type="mdi" :path="mdiShower" size="16"/>
-            <svg-icon type="mdi" :path="mdiTelevisionClassic" size="16"/>
+            <a-tooltip title="Wi-Fi"><svg-icon type="mdi" :path="mdiWifi" size="16"/></a-tooltip>
+            <a-tooltip title="Shower"><svg-icon type="mdi" :path="mdiShower" size="16"/></a-tooltip>
+            <a-tooltip title="Television"><svg-icon type="mdi" :path="mdiTelevisionClassic" size="16"/></a-tooltip>
           </template>
           <a-card-meta title="Regular Room">
             <template #description>
               <TeamOutlined/>
               2 GUESTS <br/>
-              <div style="margin-top: 10px">Room with one queen bed. Amenities include a private washroom with
+              <div style="margin-top: 10px;margin-bottom: 25px">Room with one queen bed. Amenities include a private washroom with
                 shower.
               </div>
             </template>
@@ -114,18 +114,18 @@ const date_checker = (date: Dayjs) => {
         </a-card>
       </a-col>
       <a-col>
-        <a-card hoverable style="width: 350px">
+        <a-card hoverable class="room_card">
           <template #cover>
             <img
-                src="../assets/deluxe.jpg"
+                src="deluxe.jpg"
             />
           </template>
           <template #actions>
-            <svg-icon type="mdi" :path="mdiWifi" size="16"/>
-            <svg-icon type="mdi" :path="mdiShower" size="16"/>
-            <svg-icon type="mdi" :path="mdiTelevisionClassic" size="16"/>
-            <svg-icon type="mdi" :path="mdiDesk" size="16"/>
-            <svg-icon type="mdi" :path="mdiSofaSingle" size="16"/>
+            <a-tooltip title="Wi-Fi"><svg-icon type="mdi" :path="mdiWifi" size="16"/></a-tooltip>
+            <a-tooltip title="Shower"><svg-icon type="mdi" :path="mdiShower" size="16"/></a-tooltip>
+            <a-tooltip title="Television"><svg-icon type="mdi" :path="mdiTelevisionClassic" size="16"/></a-tooltip>
+            <a-tooltip title="Desk"><svg-icon type="mdi" :path="mdiDesk" size="16"/></a-tooltip>
+            <a-tooltip title="Sofa"><svg-icon type="mdi" :path="mdiSofaSingle" size="16"/></a-tooltip>
           </template>
           <a-card-meta title="Deluxe Room">
             <template #description>
@@ -139,23 +139,23 @@ const date_checker = (date: Dayjs) => {
         </a-card>
       </a-col>
       <a-col>
-        <a-card hoverable style="width: 350px">
+        <a-card hoverable class="room_card">
           <template #cover>
             <img
-                src="../assets/double.jpg"
+                src="double.jpg"
             />
           </template>
           <template #actions>
-            <svg-icon type="mdi" :path="mdiWifi" size="16"/>
-            <svg-icon type="mdi" :path="mdiShower" size="16"/>
-            <svg-icon type="mdi" :path="mdiTelevisionClassic" size="16"/>
-            <svg-icon type="mdi" :path="mdiSofaSingle" size="16"/>
+            <a-tooltip title="Wi-Fi"><svg-icon type="mdi" :path="mdiWifi" size="16"/></a-tooltip>
+            <a-tooltip title="Shower"><svg-icon type="mdi" :path="mdiShower" size="16"/></a-tooltip>
+            <a-tooltip title="Television"><svg-icon type="mdi" :path="mdiTelevisionClassic" size="16"/></a-tooltip>
+            <a-tooltip title="Sofa"><svg-icon type="mdi" :path="mdiSofaSingle" size="16"/></a-tooltip>
           </template>
           <a-card-meta title="Double Room">
             <template #description>
               <TeamOutlined/>
               4 GUESTS <br/>
-              <div style="margin-top: 10px">Room with two queen beds. Amenities include a private washroom with shower
+              <div style="margin-top: 10px;margin-bottom: 25px">Room with two queen beds. Amenities include a private washroom with shower
                 and a sofa.
               </div>
             </template>
@@ -219,7 +219,7 @@ const date_checker = (date: Dayjs) => {
   margin-top: 10px;
 }
 
-.image {
+.background_image {
   width: 100%;
   height: 400px;
   object-fit: cover;
@@ -244,11 +244,7 @@ const date_checker = (date: Dayjs) => {
   font-family: "Times New Roman", serif;
 }
 
-.divider {
-  position: relative;
-  top: -3px;
-  height: 80px;
-  background: black;
-  margin-bottom: 20px;
+.room_card {
+  width: 350px;
 }
 </style>
