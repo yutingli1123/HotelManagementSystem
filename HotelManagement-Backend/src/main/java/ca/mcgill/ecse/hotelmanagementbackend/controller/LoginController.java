@@ -17,6 +17,7 @@ import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.HashMap;
 
 @RestController
 @CrossOrigin
@@ -37,26 +38,36 @@ public class LoginController {
     private EmployeeService employeeService;
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginData loginData) {
+    public ResponseEntity<HashMap<String,String>> login(@RequestBody LoginData loginData) {
         Date now = new Date();
         Date expire = new Date(now.getTime() + 15 * 60 * 1000);
+        Date refresh_expire = new Date(now.getTime() + 20 * 60 * 1000);
         String username = loginData.getUsername();
         String rawPassword = loginData.getPassword();
 
         if (customerService.findByUsername(username) != null) {
             String password = customerService.findByUsername(username).getPassword();
             if (passwordEncoder.matches(rawPassword, password)) {
-                return ResponseEntity.ok(JWT.create().withIssuer(username).withClaim("role", Role.CUSTOMER.toString()).withIssuedAt(now).withExpiresAt(expire).sign(Algorithm.HMAC256(secretKey)));
+                HashMap<String, String> responseData = new HashMap<>();
+                responseData.put("token",JWT.create().withIssuer(username).withClaim("role", Role.CUSTOMER.toString()).withIssuedAt(now).withExpiresAt(expire).sign(Algorithm.HMAC256(secretKey)));
+                responseData.put("refresh_token", JWT.create().withIssuer(username).withIssuedAt(now).withExpiresAt(refresh_expire).sign(Algorithm.HMAC256(secretKey)));
+                return ResponseEntity.ok(responseData);
             }
         } else if (employeeService.findByUsername(username) != null) {
             String password = employeeService.findByUsername(username).getPassword();
             if (passwordEncoder.matches(rawPassword, password)) {
-                return ResponseEntity.ok(JWT.create().withIssuer(username).withClaim("role", Role.EMPLOYEE.toString()).withIssuedAt(now).withExpiresAt(expire).sign(Algorithm.HMAC256(secretKey)));
+                HashMap<String, String> responseData = new HashMap<>();
+                responseData.put("token",JWT.create().withIssuer(username).withClaim("role", Role.EMPLOYEE.toString()).withIssuedAt(now).withExpiresAt(expire).sign(Algorithm.HMAC256(secretKey)));
+                responseData.put("refresh_token", JWT.create().withIssuer(username).withIssuedAt(now).withExpiresAt(refresh_expire).sign(Algorithm.HMAC256(secretKey)));
+                return ResponseEntity.ok(responseData);
             }
         } else if (ownerService.findByUsername(username) != null) {
             String password = ownerService.findByUsername(username).getPassword();
             if (passwordEncoder.matches(rawPassword, password)) {
-                return ResponseEntity.ok(JWT.create().withIssuer(username).withClaim("role", Role.OWNER.toString()).withIssuedAt(now).withExpiresAt(expire).sign(Algorithm.HMAC256(secretKey)));
+                HashMap<String, String> responseData = new HashMap<>();
+                responseData.put("token",JWT.create().withIssuer(username).withClaim("role", Role.OWNER.toString()).withIssuedAt(now).withExpiresAt(expire).sign(Algorithm.HMAC256(secretKey)));
+                responseData.put("refresh_token", JWT.create().withIssuer(username).withIssuedAt(now).withExpiresAt(refresh_expire).sign(Algorithm.HMAC256(secretKey)));
+                return ResponseEntity.ok(responseData);
             }
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -64,8 +75,12 @@ public class LoginController {
 
     @PostMapping("/register")
     public ResponseEntity<Boolean> register(@RequestBody RegisterData registerData) {
-        Customer customer = new Customer(registerData.getName(), registerData.getUsername(), registerData.getEmail(), passwordEncoder.encode(registerData.getPassword()));
-        customerService.save(customer);
-        return ResponseEntity.ok(Boolean.TRUE);
+        if (customerService.findByUsername(registerData.getUsername()) == null) {
+            Customer customer = new Customer(registerData.getName(), registerData.getUsername(), registerData.getEmail(), passwordEncoder.encode(registerData.getPassword()));
+            customerService.save(customer);
+            return ResponseEntity.ok(Boolean.TRUE);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 }
