@@ -9,6 +9,7 @@ import ca.mcgill.ecse.hotelmanagementbackend.service.RoomService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 import java.util.List;
@@ -29,7 +30,7 @@ public class RoomController {
     }
 
     @GetMapping("/available")
-    public List<Room> getAllAvailableRooms(@RequestParam Date checkInDate, @RequestParam Date checkOutDate) {
+    public List<Room> getAllAvailableRooms(@RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") Date checkInDate, @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") Date checkOutDate) {
         List<Room> allRooms = roomService.findAll();
         List<Reservation> reservationsInRange = reservationService.findAllByCheckInDateAndCheckOutDateRange(checkInDate, checkOutDate);
         reservationsInRange.forEach((reservation -> allRooms.remove(reservation.getRoom())));

@@ -4,6 +4,7 @@ import ca.mcgill.ecse.hotelmanagementbackend.entity.Reservation;
 import ca.mcgill.ecse.hotelmanagementbackend.service.ReservationService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -22,17 +23,17 @@ public class ReservationController {
     }
 
     @GetMapping("/by-checkin-date")
-    public List<Reservation> getAllReservationsByCheckInDate(@RequestParam Date checkInDate) {
+    public List<Reservation> getAllReservationsByCheckInDate(@RequestParam  @DateTimeFormat(pattern="yyyy-MM-dd") Date checkInDate) {
         return reservationService.findAllByCheckInDate(checkInDate);
     }
 
     @GetMapping("/by-checkout-date")
-    public List<Reservation> getAllReservationsByCheckOutDate(@RequestParam Date checkOutDate) {
+    public List<Reservation> getAllReservationsByCheckOutDate(@RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") Date checkOutDate) {
         return reservationService.findAllByCheckOutDate(checkOutDate);
     }
 
     @GetMapping("/by-date-range")
-    public List<Reservation> getAllReservationsByDateRange(@RequestParam Date checkInDate, @RequestParam Date checkOutDate) {
+    public List<Reservation> getAllReservationsByDateRange(@RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") Date checkInDate, @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") Date checkOutDate) {
         return reservationService.findAllByCheckInDateAndCheckOutDateRange(checkInDate,checkOutDate);
     }
 
