@@ -1,12 +1,13 @@
 package ca.mcgill.ecse.hotelmanagementbackend.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.cglib.core.Local;
 
 import java.time.LocalTime;
-import java.util.Date;
 
 @Entity
 @Data

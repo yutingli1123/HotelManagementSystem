@@ -1,9 +1,7 @@
 package ca.mcgill.ecse.hotelmanagementbackend.service;
 
 
-import ca.mcgill.ecse.hotelmanagementbackend.entity.Employee;
 import ca.mcgill.ecse.hotelmanagementbackend.entity.Request;
-import ca.mcgill.ecse.hotelmanagementbackend.entity.Room;
 import ca.mcgill.ecse.hotelmanagementbackend.repository.RequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,21 +19,13 @@ public class RequestService {
         return requestRepository.findAll();
     }
 
-    @Transactional(readOnly = true)
-    public void addRequest(String title, Room room, String content) {
-        requestRepository.addRequest(title, room, content);
+    @Transactional
+    public void addRequest(Request request) {
+        requestRepository.save(request);
     }
 
-
-    @Transactional(readOnly = true)
+    @Transactional
     public void deleteRequestById(Long requestId) {
         requestRepository.deleteById(requestId);
     }
-
-
-    @Transactional
-    public void distributeTask(Long requestId, Employee employee) {
-        requestRepository.distributeTask(requestId, employee);
-    }
-
 }

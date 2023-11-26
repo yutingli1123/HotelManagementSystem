@@ -23,6 +23,8 @@ public class Room {
     private List<Amenity> amenities = new ArrayList<>();
     @OneToMany(mappedBy = "room")
     private List<Reservation> reservations = new ArrayList<>();
+    @OneToMany(mappedBy = "room")
+    private List<Request> requests = new ArrayList<>();
 
     public Room(RoomType type, Integer fee) {
         this.type = type;
