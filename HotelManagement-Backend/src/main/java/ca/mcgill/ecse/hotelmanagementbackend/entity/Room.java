@@ -21,7 +21,7 @@ public class Room {
     private Integer fee;
     @ElementCollection
     private List<Amenity> amenities = new ArrayList<>();
-    @ManyToMany(mappedBy = "rooms")
+    @OneToMany(mappedBy = "rooms")
     private List<Reservation> reservations = new ArrayList<>();
 
     public Room(RoomType type, Integer fee) {

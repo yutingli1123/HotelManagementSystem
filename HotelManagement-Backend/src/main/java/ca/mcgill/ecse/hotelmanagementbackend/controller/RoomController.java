@@ -1,5 +1,6 @@
 package ca.mcgill.ecse.hotelmanagementbackend.controller;
 
+import ca.mcgill.ecse.hotelmanagementbackend.dto.RoomBatch;
 import ca.mcgill.ecse.hotelmanagementbackend.entity.Reservation;
 import ca.mcgill.ecse.hotelmanagementbackend.entity.Room;
 import ca.mcgill.ecse.hotelmanagementbackend.enumeration.RoomType;
@@ -31,9 +32,7 @@ public class RoomController {
     public List<Room> getAllAvailableRooms(@RequestParam Date checkInDate, @RequestParam Date checkOutDate) {
         List<Room> allRooms = roomService.findAll();
         List<Reservation> reservationsInRange = reservationService.findAllByCheckInDateAndCheckOutDateRange(checkInDate, checkOutDate);
-        reservationsInRange.forEach((reservation -> {
-            allRooms.remove(reservation.getRoom());
-        }));
+        reservationsInRange.forEach((reservation -> allRooms.remove(reservation.getRoom())));
         return allRooms;
     }
 
@@ -41,6 +40,15 @@ public class RoomController {
     public Long saveRoom(@Valid @RequestBody Room room) {
         roomService.save(room);
         return room.getId();
+    }
+
+    @PostMapping("/batch")
+    public void saveRoomInBatch(@RequestBody RoomBatch roomBatch) {
+        Integer number = roomBatch.getNumber();
+        Room room = roomBatch.getRoom();
+        for (int i =0; i<number;i++) {
+            roomService.save(room);
+        }
     }
 
     @GetMapping("/by-type/{roomType}")
