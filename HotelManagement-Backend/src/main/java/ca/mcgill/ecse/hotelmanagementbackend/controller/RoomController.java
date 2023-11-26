@@ -1,6 +1,7 @@
 package ca.mcgill.ecse.hotelmanagementbackend.controller;
 
 import ca.mcgill.ecse.hotelmanagementbackend.dto.RoomBatch;
+import ca.mcgill.ecse.hotelmanagementbackend.dto.RoomResult;
 import ca.mcgill.ecse.hotelmanagementbackend.entity.Reservation;
 import ca.mcgill.ecse.hotelmanagementbackend.entity.Room;
 import ca.mcgill.ecse.hotelmanagementbackend.enumeration.RoomType;
@@ -11,8 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @CrossOrigin
@@ -35,6 +35,30 @@ public class RoomController {
         List<Reservation> reservationsInRange = reservationService.findAllByCheckInDateAndCheckOutDateRange(checkInDate, checkOutDate);
         reservationsInRange.forEach((reservation -> allRooms.remove(reservation.getRoom())));
         return allRooms;
+    }
+
+    @GetMapping("/available/type")
+    public List<RoomResult> getAllAvailableRoomTypes(@RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") Date checkInDate, @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") Date checkOutDate) {
+        List<Room> allRooms = roomService.findAll();
+        List<Reservation> reservationsInRange = reservationService.findAllByCheckInDateAndCheckOutDateRange(checkInDate, checkOutDate);
+        reservationsInRange.forEach((reservation -> allRooms.remove(reservation.getRoom())));
+        Map<RoomType, Integer> availableRoomTypes = new HashMap<>();
+        
+        for (Room room : allRooms) {
+            RoomType roomType = room.getType();
+            Integer fee = room.getFee();
+
+            // Add or update the room type and fee in the map
+            availableRoomTypes.putIfAbsent(roomType, fee);
+        }
+
+        // Convert the map to a list of RoomResult
+        List<RoomResult> roomResults = new ArrayList<>();
+        for (Map.Entry<RoomType, Integer> entry : availableRoomTypes.entrySet()) {
+            RoomResult result = new RoomResult(entry.getKey(),entry.getValue());
+            roomResults.add(result);
+        }
+        return roomResults;
     }
 
     @PostMapping

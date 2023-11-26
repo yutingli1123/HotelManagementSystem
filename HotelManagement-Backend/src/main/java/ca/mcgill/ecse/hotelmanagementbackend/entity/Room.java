@@ -19,8 +19,6 @@ public class Room {
     @Enumerated(EnumType.STRING)
     private RoomType type;
     private Integer fee;
-    @ElementCollection
-    private List<Amenity> amenities = new ArrayList<>();
     @OneToMany(mappedBy = "room")
     private List<Reservation> reservations = new ArrayList<>();
     @OneToMany(mappedBy = "room")

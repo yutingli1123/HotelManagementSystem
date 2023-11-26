@@ -1,5 +1,6 @@
 package ca.mcgill.ecse.hotelmanagementbackend.service;
 
+import ca.mcgill.ecse.hotelmanagementbackend.entity.Customer;
 import ca.mcgill.ecse.hotelmanagementbackend.entity.Reservation;
 import ca.mcgill.ecse.hotelmanagementbackend.repository.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,26 @@ public class ReservationService {
     @Transactional(readOnly = true)
     public List<Reservation> findAllByCheckInDateAndCheckOutDateRange(Date checkInDate, Date checkOutDate) {
         return reservationRepository.findAllByCheckInDateAfterAndCheckOutDateBefore(checkInDate, checkOutDate).orElse(null);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Reservation> findAllByCustomer(Customer customer) {
+        return reservationRepository.findAllByCustomer(customer).orElse(null);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Reservation> findAllByCustomerAndCheckInDate(Customer customer,Date checkInDate) {
+        return reservationRepository.findAllByCustomerAndCheckInDate(customer,checkInDate).orElse(null);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Reservation> findAllByCustomerAndCheckOutDate(Customer customer,Date checkOutDate) {
+        return reservationRepository.findAllByCustomerAndCheckOutDate(customer,checkOutDate).orElse(null);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Reservation> findAllByCustomerAndCheckInDateAndCheckOutDateRange(Customer customer,Date checkInDate, Date checkOutDate) {
+        return reservationRepository.findAllByCustomerAndCheckInDateAfterAndCheckOutDateBefore(customer,checkInDate, checkOutDate).orElse(null);
     }
 
     @Transactional
