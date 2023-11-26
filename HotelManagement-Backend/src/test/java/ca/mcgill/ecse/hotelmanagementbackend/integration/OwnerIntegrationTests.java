@@ -30,7 +30,7 @@ public class OwnerIntegrationTests {
 
     private final Argon2PasswordEncoder passwordEncoder = new Argon2PasswordEncoder(16, 32, 1, 60000, 10);
 
-    private final Owner owner = new Owner("Test", "test", "t@t.com", "test", null);
+    private final Owner owner = new Owner("Test", "test", "t@t.com", "test");
 
     private Long ownerId;
 
@@ -130,7 +130,7 @@ public class OwnerIntegrationTests {
     @Test
     @Order(7)
     public void testDeleteById() {
-        Owner owner = new Owner("Test2", "test2", "t2@t.com", "test2", null);
+        Owner owner = new Owner("Test2", "test2", "t2@t.com", "test2");
         ResponseEntity<Long> responseCreate = client.postForEntity("/api/v1/owners", owner, Long.class);
         // Save the ID to read later
         Long ownerId = responseCreate.getBody();
@@ -142,7 +142,7 @@ public class OwnerIntegrationTests {
     @Test
     @Order(8)
     public void testDeleteByEmail() {
-        Owner owner = new Owner("Test2", "test2", "t2@t.com", "test2", null);
+        Owner owner = new Owner("Test2", "test2", "t2@t.com", "test2");
         ResponseEntity<Long> responseCreate = client.postForEntity("/api/v1/owners", owner, Long.class);
         // Save the ID to read later
         Long ownerId = responseCreate.getBody();
@@ -154,7 +154,7 @@ public class OwnerIntegrationTests {
     @Test
     @Order(9)
     public void testDeleteByUsername() {
-        Owner owner = new Owner("Test2", "test2", "t2@t.com", "test2", null);
+        Owner owner = new Owner("Test2", "test2", "t2@t.com", "test2");
         ResponseEntity<Long> responseCreate = client.postForEntity("/api/v1/owners", owner, Long.class);
         // Save the ID to read later
         Long ownerId = responseCreate.getBody();

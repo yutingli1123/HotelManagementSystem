@@ -3,9 +3,11 @@ package ca.mcgill.ecse.hotelmanagementbackend;
 import ca.mcgill.ecse.hotelmanagementbackend.entity.Customer;
 import ca.mcgill.ecse.hotelmanagementbackend.entity.Hotel;
 import ca.mcgill.ecse.hotelmanagementbackend.entity.Reservation;
+import ca.mcgill.ecse.hotelmanagementbackend.enumeration.RoomType;
 import ca.mcgill.ecse.hotelmanagementbackend.service.CustomerService;
 import ca.mcgill.ecse.hotelmanagementbackend.service.HotelService;
 import ca.mcgill.ecse.hotelmanagementbackend.service.ReservationService;
+import ca.mcgill.ecse.hotelmanagementbackend.entity.Room;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,7 +103,8 @@ class CustomerTest {
         customerService.save(customer);
         //write
         Date today = new Date();
-        Reservation reservation = new Reservation(today, new Date(today.getTime() + 24 * 60 * 60 * 1000));
+        Room room1 = new Room(RoomType.DELUXE,1000);
+        Reservation reservation = new Reservation(today, new Date(today.getTime() + 24 * 60 * 60 * 1000),room1);
         reservationService.save(reservation);
         reservationList.add(reservation);
         customer.setReservationsForCustomer(reservationList);

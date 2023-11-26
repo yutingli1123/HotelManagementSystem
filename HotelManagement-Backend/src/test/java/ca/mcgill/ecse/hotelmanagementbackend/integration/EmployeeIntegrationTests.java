@@ -30,7 +30,7 @@ public class EmployeeIntegrationTests {
 
     private final Argon2PasswordEncoder passwordEncoder = new Argon2PasswordEncoder(16, 32, 1, 60000, 10);
 
-    private final Employee employee = new Employee("Test", "test", "t@t.com", "test", null, 500);
+    private final Employee employee = new Employee("Test", "test", "t@t.com", "test", 500);
 
     private Long employeeId;
 
@@ -130,7 +130,7 @@ public class EmployeeIntegrationTests {
     @Test
     @Order(7)
     public void testDeleteById() {
-        Employee employee = new Employee("Test2", "test2", "t2@t.com", "test2", null, 500);
+        Employee employee = new Employee("Test2", "test2", "t2@t.com", "test2", 500);
         ResponseEntity<Long> responseCreate = client.postForEntity("/api/v1/employees", employee, Long.class);
         // Save the ID to read later
         Long employeeId = responseCreate.getBody();
@@ -143,7 +143,7 @@ public class EmployeeIntegrationTests {
     @Test
     @Order(8)
     public void testDeleteByEmail() {
-        Employee employee = new Employee("Test2", "test2", "t2@t.com", "test2", null, 500);
+        Employee employee = new Employee("Test2", "test2", "t2@t.com", "test2", 500);
         ResponseEntity<Long> responseCreate = client.postForEntity("/api/v1/employees", employee, Long.class);
         // Save the ID to read later
         Long employeeId = responseCreate.getBody();
@@ -155,7 +155,7 @@ public class EmployeeIntegrationTests {
     @Test
     @Order(9)
     public void testDeleteByUsername() {
-        Employee employee = new Employee("Test2", "test2", "t2@t.com", "test2", null, 500);
+        Employee employee = new Employee("Test2", "test2", "t2@t.com", "test2", 500);
         ResponseEntity<Long> responseCreate = client.postForEntity("/api/v1/employees", employee, Long.class);
         // Save the ID to read later
         Long employeeId = responseCreate.getBody();

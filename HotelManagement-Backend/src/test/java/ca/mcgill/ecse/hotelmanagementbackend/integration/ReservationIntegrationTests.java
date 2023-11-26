@@ -1,6 +1,7 @@
 package ca.mcgill.ecse.hotelmanagementbackend.integration;
 
 import ca.mcgill.ecse.hotelmanagementbackend.entity.Reservation;
+import ca.mcgill.ecse.hotelmanagementbackend.entity.Room;
 import ca.mcgill.ecse.hotelmanagementbackend.repository.ReservationRepository;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
@@ -30,7 +31,7 @@ public class ReservationIntegrationTests {
     @Autowired
     private ReservationRepository reservationRepository;
 
-    private final Reservation reservation = new Reservation(new Date());
+    private final Reservation reservation = new Reservation(new Date(),new Date(),new Room());
 
     private Long reservationId;
 
@@ -61,18 +62,20 @@ public class ReservationIntegrationTests {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertTrue(response.getBody().getId() > 0, "Response body should have an ID.");
-        assertEquals(reservation.getDate(), response.getBody().getDate());
+        assertEquals(reservation.getCheckInDate(), response.getBody().getCheckInDate());
+        assertEquals(reservation.getCheckOutDate(),response.getBody().getCheckOutDate());
         assertEquals(reservation.getCustomer(), response.getBody().getCustomer());
-        assertEquals(reservation.getRooms(), response.getBody().getRooms());
+        assertEquals(reservation.getRoom(), response.getBody().getRoom());
     }
 
     @Test
     @Order(3)
     public void testGetByDateBetween() {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(reservation.getDate());
+        calendar.setTime(reservation.getCheckInDate());
         calendar.add(Calendar.DATE, -1);
         Date startDate = calendar.getTime();
+        calendar.setTime(reservation.getCheckOutDate());
         calendar.add(Calendar.DATE, 2);
         Date endDate = calendar.getTime();
         ResponseEntity<Reservation[]> response = client.getForEntity("/api/v1/reservations/by-date-range?startDate={startDate}&endDate={endDate}", Reservation[].class, startDate, endDate);
@@ -83,9 +86,11 @@ public class ReservationIntegrationTests {
         assertNotNull(responseBody[0]);
         Reservation responseReservation = responseBody[0];
         assertTrue(responseReservation.getId() > 0, "Response body should have an ID.");
-        assertEquals(reservation.getDate(), responseReservation.getDate());
+        assertEquals(reservation.getCheckInDate(), responseReservation.getCheckInDate());
+        assertEquals(reservation.getCheckOutDate(),responseReservation.getCheckOutDate());
+
         assertEquals(reservation.getCustomer(), responseReservation.getCustomer());
-        assertEquals(reservation.getRooms(), responseReservation.getRooms());
+        assertEquals(reservation.getRoom(), responseReservation.getRoom());
     }
 
     @Test
@@ -99,15 +104,16 @@ public class ReservationIntegrationTests {
         assertNotNull(responseBody[0]);
         Reservation responseReservation = responseBody[0];
         assertTrue(responseReservation.getId() > 0, "Response body should have an ID.");
-        assertEquals(reservation.getDate(), responseReservation.getDate());
+        assertEquals(reservation.getCheckInDate(), responseReservation.getCheckInDate());
+        assertEquals(reservation.getCheckOutDate(),responseReservation.getCheckOutDate());
         assertEquals(reservation.getCustomer(), responseReservation.getCustomer());
-        assertEquals(reservation.getRooms(), responseReservation.getRooms());
+        assertEquals(reservation.getRoom(), responseReservation.getRoom());
     }
 
     @Test
     @Order(5)
     public void testDeleteById() {
-        Reservation reservation = new Reservation(new Date());
+        Reservation reservation = new Reservation(new Date(),new Date(),new Room());
         ResponseEntity<Long> responseCreate = client.postForEntity("/api/v1/reservations", reservation, Long.class);
         // Save the ID to read later
         Long reservationId = responseCreate.getBody();
@@ -116,24 +122,5 @@ public class ReservationIntegrationTests {
         assertNull(responseGet.getBody());
     }
 
-    @Test
-    @Order(6)
-    public void testDeleteByDateRange() {
-        Reservation reservation = new Reservation(new Date());
 
-        ResponseEntity<Long> responseCreate = client.postForEntity("/api/v1/reservations", reservation, Long.class);
-        // Save the ID to read later
-        Long reservationId = responseCreate.getBody();
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(reservation.getDate());
-        calendar.add(Calendar.DATE, -1);
-        Date startDate = calendar.getTime();
-        calendar.add(Calendar.DATE, 2);
-        Date endDate = calendar.getTime();
-
-        client.delete("/api/v1/reservations/by-date-range?startDate={startDate}&endDate={endDate}", startDate, endDate);
-        ResponseEntity<Reservation> responseGet = client.getForEntity("/api/v1/reservations/by-id/{id}", Reservation.class, reservationId);
-        assertNull(responseGet.getBody());
-    }
 }

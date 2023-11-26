@@ -30,7 +30,7 @@ public class CustomerIntegrationTests {
 
     private final Argon2PasswordEncoder passwordEncoder = new Argon2PasswordEncoder(16, 32, 1, 60000, 10);
 
-    private final Customer customer = new Customer("Test", "test", "t@t.com", "test", null);
+    private final Customer customer = new Customer("Test", "test", "t@t.com", "test");
 
     private Long customerId;
 
@@ -130,7 +130,7 @@ public class CustomerIntegrationTests {
     @Test
     @Order(7)
     public void testDeleteById() {
-        Customer customer = new Customer("Test2", "test2", "t2@t.com", "test2", null);
+        Customer customer = new Customer("Test2", "test2", "t2@t.com", "test2");
         ResponseEntity<Long> responseCreate = client.postForEntity("/api/v1/customers", customer, Long.class);
         // Save the ID to read later
         Long customerId = responseCreate.getBody();
@@ -142,7 +142,7 @@ public class CustomerIntegrationTests {
     @Test
     @Order(8)
     public void testDeleteByEmail() {
-        Customer customer = new Customer("Test2", "test2", "t2@t.com", "test2", null);
+        Customer customer = new Customer("Test2", "test2", "t2@t.com", "test2");
         ResponseEntity<Long> responseCreate = client.postForEntity("/api/v1/customers", customer, Long.class);
         // Save the ID to read later
         Long customerId = responseCreate.getBody();
@@ -154,7 +154,7 @@ public class CustomerIntegrationTests {
     @Test
     @Order(9)
     public void testDeleteByUsername() {
-        Customer customer = new Customer("Test2", "test2", "t2@t.com", "test2", null);
+        Customer customer = new Customer("Test2", "test2", "t2@t.com", "test2");
         ResponseEntity<Long> responseCreate = client.postForEntity("/api/v1/customers", customer, Long.class);
         // Save the ID to read later
         Long customerId = responseCreate.getBody();
