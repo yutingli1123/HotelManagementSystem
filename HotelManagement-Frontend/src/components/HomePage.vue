@@ -78,6 +78,7 @@ interface RegisterFormState {
   username: string;
   email: string;
   password: string;
+  confirmPassword: string,
 }
 
 const registerFormState = reactive<RegisterFormState>({
@@ -86,6 +87,7 @@ const registerFormState = reactive<RegisterFormState>({
   username: '',
   email: '',
   password: '',
+  confirmPassword: '',
 });
 const onRegisterFinish = (values: any) => {
   console.log('Success:', values);
@@ -182,7 +184,7 @@ const registerDisabled = computed(() => {
         <a-form-item
             label="Email"
             name="email"
-            :rules="[{ required: true, message: 'Please input your email!' }]"
+            :rules="[{ required: true, message: 'Please input your email!' }, {type: 'email', message: 'Not a valid email!'}]"
         >
           <a-input v-model:value="registerFormState.email" style="width: 354px"/>
         </a-form-item>
@@ -200,10 +202,11 @@ const registerDisabled = computed(() => {
         <a-form-item
             label="Confirm Password"
             name="confirmPassword"
-            :rules="[{ required: true, message: 'Please input your password again!' }]"
-
+            :rules="[{ required: true, message: 'Please input your password again!' }, {validator:(rule, value, callback)=>{if (value !== registerFormState.password) {
+          callback('Two input passwords don\'t match!')
+        } else callback()}}]"
         >
-          <a-input-password v-model:value="registerFormState.password" style="width: 353px"/>
+          <a-input-password v-model:value="registerFormState.confirmPassword" style="width: 353px"/>
         </a-form-item>
       </a-row>
     </a-form>
