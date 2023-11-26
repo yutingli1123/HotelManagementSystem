@@ -21,12 +21,12 @@ public class RequestController {
         return requestService.findAll();
     }
 
-    @GetMapping("add-request")
+    @PostMapping("add-request")
     public void addRequest(Request request) {
         requestService.addRequest(request);
     }
 
-    @GetMapping("delete-by-Id")
+    @DeleteMapping("delete-by-Id")
     public void deleteRequestById(Long requestId) {
         requestService.deleteRequestById(requestId);
     }
