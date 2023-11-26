@@ -12,11 +12,9 @@ import lombok.NoArgsConstructor;
 public class Request {
     @Id
     @GeneratedValue
-    private long id;
     private String title;
     private String content;
-    public Request(long id,String title, String Content){
-        this.id = id;
+    public Request(String title, String Content){
         this.title = title;
         this.content = Content;
     }
