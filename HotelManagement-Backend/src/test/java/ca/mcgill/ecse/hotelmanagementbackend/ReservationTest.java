@@ -30,7 +30,7 @@ public class ReservationTest {
     @Test
     @Transactional
     void testReadAndWriteReservationObjects() {
-        Reservation reservation = new Reservation(new Date());
+        Reservation reservation = new Reservation(new Date(),new Date(),new Room());
         reservationService.save(reservation);
         assertEquals("checks if reservation is properly saved", 1, reservationService.findAll().size());
     }
@@ -41,7 +41,7 @@ public class ReservationTest {
         Customer customer1 = new Customer("Test1", "test1", "test1@test.com", "test1");
         Customer customer2 = new Customer("Test2", "test2", "test2@test.com", "test2");
         customerService.save(customer1);
-        Reservation reservation = new Reservation(new Date());
+        Reservation reservation = new Reservation(new Date(),new Date(),new Room());
         reservation.setCustomer(customer1);
         reservationService.save(reservation);
         //test read
@@ -55,20 +55,12 @@ public class ReservationTest {
     @Test
     @Transactional
     void testReadAndWriteReference() {
-        Reservation reservation = new Reservation(new Date(),);
-        List<Room> rooms = new ArrayList<>();
+        Reservation reservation = new Reservation(new Date(),new Date(),new Room());
         Room room1 = new Room(RoomType.DELUXE, 1000);
-        roomService.save(room1);
-        Room room2 = new Room(RoomType.REGULAR, 1000);
-        roomService.save(room2);
-        Room room3 = new Room(RoomType.DOUBLE, 1000);
-        roomService.save(room3);
-        rooms.add(room1);
-        rooms.add(room2);
-        rooms.add(room3);
+
         // test read and write reference between room reservation
-        reservation.setRooms(rooms);
+        reservation.setRoom(room1);
         reservationService.save(reservation);
-        assertEquals("checks if reservation can read and write its attribute which is an instance of Room class", rooms, reservation.getRooms());
+        assertEquals("checks if reservation can read and write its attribute which is an instance of Room class", room1, reservation.getRoom());
     }
 }
