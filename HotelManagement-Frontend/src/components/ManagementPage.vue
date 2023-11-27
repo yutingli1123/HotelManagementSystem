@@ -24,6 +24,20 @@ onMounted(() => {
         if (response.status == 200) {
           token.value = response.data['token']
           refresh_token.value = response.data['refresh_token']
+          Cookies.set('token', token.value, {expires: new Date(new Date().getTime() + 15 * 60 * 1000)});
+          Cookies.set('refresh_token', refresh_token.value, {expires: new Date(new Date().getTime() + 20 * 60 * 1000)});
+          store.changeToLogin()
+          axios.get('http://localhost:8080/api/v1/customers/name', {
+            headers: {
+              Authorization: 'Bearer ' + token.value
+            },
+          }).then((response) => {
+            if (response.status == 200) {
+              name.value = response.data
+              loading.value = false
+            }
+          }).catch(() => {
+          })
         } else {
           router.push({name: 'main'})
         }
@@ -31,25 +45,26 @@ onMounted(() => {
         router.push({name: 'main'})
       })
     }
+  } else {
+    axios.get('http://localhost:8080/api/v1/customers/name', {
+      headers: {
+        Authorization: 'Bearer ' + token.value
+      },
+    }).then((response) => {
+      if (response.status == 200) {
+        name.value = response.data
+        loading.value = false
+      }
+    }).catch(() => {
+    })
   }
-  axios.get('http://localhost:8080/api/v1/customers/name', {
-    headers: {
-      Authorization: 'Bearer ' + token.value
-    },
-  }).then((response) => {
-    if (response.status == 200) {
-      name.value = response.data
-      loading.value = false
-    }
-  }).catch(() => {
-  })
 })
 
 const currentRoute = ref<string[]>([current_route.value]);
 // Management page navigation items
 const items = ref<MenuProps['items']>([
   {
-    key: 'reservations',
+    key: 'reservations-manager',
     label: 'Reservations Management',
     title: 'Reservations Management',
   },
@@ -77,7 +92,8 @@ const items = ref<MenuProps['items']>([
     </div>
     <a-layout>
       <a-layout-sider>
-        <a-menu style="height: 500px" v-model:selectedKeys="currentRoute" :items="items" @click="(input)=>{router.push({name:input['key']})}"/>
+        <a-menu style="height: 500px" v-model:selectedKeys="currentRoute" :items="items"
+                @click="(input)=>{router.push({name:input['key']})}"/>
       </a-layout-sider>
       <a-layout-content style="padding: 24px">
         <RouterView :key="$route.fullPath"/>

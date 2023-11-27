@@ -8,6 +8,11 @@ import AccountPage from "@/components/AccountPage.vue";
 import InfoPage from "@/components/InfoPage.vue";
 import ReservationsPage from "@/components/ReservationsPage.vue";
 import ManagementPage from "@/components/ManagementPage.vue";
+import BookPage from "@/components/BookPage.vue";
+import SuccessPage from "@/components/SuccessPage.vue";
+import ReservationManagementPage from "@/components/ReservationManagementPage.vue";
+import UserManagementPage from "@/components/UserManagementPage.vue";
+import TaskManagementPage from "@/components/TaskManagementPage.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -71,7 +76,7 @@ const router = createRouter({
                     children: [
                         {
                             path: '',
-                            name: 'reservations',
+                            name: 'reservations-manager',
                             component: ReservationManagementPage
                         },
                         {

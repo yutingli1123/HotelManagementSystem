@@ -4,6 +4,8 @@ import ca.mcgill.ecse.hotelmanagementbackend.dto.CustomerDto;
 import ca.mcgill.ecse.hotelmanagementbackend.dto.PasswordDto;
 import ca.mcgill.ecse.hotelmanagementbackend.entity.Customer;
 import ca.mcgill.ecse.hotelmanagementbackend.service.CustomerService;
+import ca.mcgill.ecse.hotelmanagementbackend.service.EmployeeService;
+import ca.mcgill.ecse.hotelmanagementbackend.service.OwnerService;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import jakarta.validation.Valid;
@@ -25,6 +27,13 @@ public class CustomerController {
 
     @Autowired
     private CustomerService customerService;
+
+    @Autowired
+    private EmployeeService employeeService;
+
+    @Autowired
+    private OwnerService ownerService;
+
     @Value("${security.jwt.token.secret-key}")
     private String secretKey;
 
@@ -44,9 +53,12 @@ public class CustomerController {
             String[] formattedToken = token.split(" ");
             if (formattedToken[0].equals("Bearer")) {
                 String issuer = JWT.require(Algorithm.HMAC256(secretKey)).build().verify(formattedToken[1]).getIssuer();
-                Customer customer = customerService.findByUsername(issuer);
-                if (customer!=null) {
-                    return ResponseEntity.ok(customer.getName());
+                if (customerService.findByUsername(issuer)!=null) {
+                    return ResponseEntity.ok(customerService.findByUsername(issuer).getName());
+                } else if (employeeService.findByUsername(issuer) != null) {
+                    return ResponseEntity.ok(employeeService.findByUsername(issuer).getName());
+                } else if (ownerService.findByUsername(issuer) != null) {
+                    return ResponseEntity.ok(ownerService.findByUsername(issuer).getName());
                 }
             }
         }
