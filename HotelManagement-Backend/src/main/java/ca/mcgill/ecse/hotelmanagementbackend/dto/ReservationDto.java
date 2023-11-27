@@ -16,4 +16,5 @@ public class ReservationDto {
     private Date checkOutDate;
     private RoomType roomType;
     private Integer fee;
+    private String username;
 }

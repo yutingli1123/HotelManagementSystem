@@ -50,9 +50,7 @@ public class ReservationController {
                         if (customer != null) {
                             List<Reservation> reservationList = reservationService.findAllByCustomer(customer);
                             List<ReservationDto> reservationDtos = new ArrayList<>();
-                            reservationList.forEach(reservation -> {
-                                reservationDtos.add(new ReservationDto(reservation.getId(),reservation.getCheckInDate(),reservation.getCheckOutDate(),reservation.getRoom().getType(),reservation.getRoom().getFee()));
-                            });
+                            reservationList.forEach(reservation -> reservationDtos.add(new ReservationDto(reservation.getId(),reservation.getCheckInDate(),reservation.getCheckOutDate(),reservation.getRoom().getType(),reservation.getRoom().getFee(), reservation.getCustomer().getUsername())));
                             return ResponseEntity.ok(reservationDtos);
                         } else {
                             return ResponseEntity.notFound().build();
@@ -65,9 +63,7 @@ public class ReservationController {
                     if (customer != null) {
                         List<Reservation> reservationList = reservationService.findAllByCustomer(customer);
                         List<ReservationDto> reservationDtos = new ArrayList<>();
-                        reservationList.forEach(reservation -> {
-                            reservationDtos.add(new ReservationDto(reservation.getId(),reservation.getCheckInDate(),reservation.getCheckOutDate(),reservation.getRoom().getType(),reservation.getRoom().getFee()));
-                        });
+                        reservationList.forEach(reservation -> reservationDtos.add(new ReservationDto(reservation.getId(),reservation.getCheckInDate(),reservation.getCheckOutDate(),reservation.getRoom().getType(),reservation.getRoom().getFee(), reservation.getCustomer().getUsername())));
                         return ResponseEntity.ok(reservationDtos);
                     } else {
                         return ResponseEntity.notFound().build();
