@@ -81,7 +81,7 @@ public class LoginController {
             customerService.save(customer);
             return ResponseEntity.ok(Boolean.TRUE);
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }
 

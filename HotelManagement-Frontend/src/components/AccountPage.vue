@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import Cookies from 'js-cookie'
-import {jwtDecode} from "jwt-decode";
-import {onMounted, Ref, ref, watch} from "vue";
+import {h, onMounted, Ref, ref} from "vue";
 import axios from "axios";
 import {useRoute, useRouter} from "vue-router";
 import {MenuProps} from "ant-design-vue";
+import {BookOutlined, InfoCircleOutlined} from "@ant-design/icons-vue";
 
 const router = useRouter()
 const route = useRoute()
@@ -49,11 +49,16 @@ const items = ref<MenuProps['items']>([
     key: 'info',
     label: 'My Info',
     title: 'My Info',
+    icon: h(InfoCircleOutlined)
+  },
+  {
+    type: 'divider'
   },
   {
     key: 'reservations',
     label: 'My Reservations',
     title: 'My Reservations',
+    icon: h(BookOutlined)
   },
 ]);
 
@@ -69,7 +74,8 @@ const items = ref<MenuProps['items']>([
     </div>
     <a-layout>
       <a-layout-sider>
-        <a-menu style="height: 500px" v-model:selectedKeys="current" :items="items" @click="(input)=>{router.push({name:input['key']})}"/>
+        <a-menu style="height: 500px" v-model:selectedKeys="current" :items="items"
+                @click="(input)=>{router.push({name:input['key']})}"/>
       </a-layout-sider>
       <a-layout-content>
         <RouterView :key="$route.fullpath"/>

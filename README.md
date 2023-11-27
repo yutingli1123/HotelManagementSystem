@@ -6,7 +6,7 @@ For our McGill ECSE 321: Introduction to Software Engineering course, We are a s
 The Hotel Management System is a comprehensive web application designed to streamline and enhance the operations of a small hotel in your neighborhood. With 70 rooms consisting of 10 suites, 10 deluxe rooms, 10 luxury rooms, and 40 regular rooms, this system aims to provide a seamless experience for both customers and hotel staff. The primary objective is to facilitate room bookings, fee payments, and customer requests, while also assisting the hotel owner and employees in effectively managing the business.
 
 ## Group members
-Deliverable 1: 
+## Deliverable 1: 
 | No 	| Team Member 	| Responsibilities 	| Individual Efforts(hr) 	|
 |---	|---	|---	|---	|
 | 1 	| Clara, Jabbour 	| 1. Write rough draft of requirements<br>2. Review Pull Requests<br>3. Review requirements and domain model<br>4. Write a detailed use-case specification<br>5. Help teammates test the code, and make their use-case specification 	| 14 hours 	|
@@ -19,7 +19,7 @@ Deliverable 1:
 - Project Report [Project Report ‐ Deliverable 1](https://github.com/McGill-ECSE321-Fall2023/project-group-06/wiki/Deliverable-1:-Report)
 - Meeting Minutes [Meeting Minutes - Deliverable 1](https://github.com/McGill-ECSE321-Fall2023/project-group-06/wiki/Deliverable-1%3A-Meeting-minutes)
 -------------------------------------------
-Deliverable 2: 
+## Deliverable 2: 
 | No 	| Team Member 	| Responsibilities 	| Individual Efforts(hr) 	|
 |---	|---	|---	|---	|
 | 1 	| Clara, Jabbour 	| Testing & Modeling 	| 32 hours 	|
@@ -31,8 +31,8 @@ Deliverable 2:
 ## Project Documentation
 - Project Report [Project Report ‐ Deliverable 2](https://github.com/McGill-ECSE321-Fall2023/project-group-06/wiki/Deliverable-2:-Report#welcome-page)
 - Meeting Minutes [Meeting Minutes ‐ Deliverable 2](https://github.com/McGill-ECSE321-Fall2023/project-group-06/wiki/Deliverable-2%3A-Meeting-minutes) 
-
-Deliverable 3: 
+-------------------------------------------
+## Deliverable 3: 
 | No 	| Team Member 	| Responsibilities 	| Individual Efforts(hr) 	|
 |---	|---	|---	|---	|
 | 1 	| Clara, Jabbour 	| Architectural modeling & Report & Bug fixed 	| 24 hours 	|
@@ -41,3 +41,7 @@ Deliverable 3:
 | 4 	| Li, Yuting 	| Implementation of web frontend GUI &Fixing bugs 	| 26 hours + 	|
 | 5 	| Rao, Simiao 	| Backend test Updating & Controller Updating & Bug fixed	| 21 hours 	|
 | 6 	| Sami, Bayoud 	|  Architectural modeling & Report  	| 20 hours 	|
+
+## Project Documentation 
+- Project Report [Project Report - Deliverable 3](https://github.com/McGill-ECSE321-Fall2023/project-group-06/wiki/Deliverable-3:-Report)
+- Meeting Minutes [Meeting Minutes - Deliverable 3](https://github.com/McGill-ECSE321-Fall2023/project-group-06/wiki/Deliverable-3%3A-Meeting-Minutes)

@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -23,7 +22,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -75,7 +73,15 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/register")
                         .permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/refresh")
+                        .permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/customers/name")
+                        .authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/customers/me")
+                        .authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/customers/update")
+                        .authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/customers/update/password")
                         .authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/v1/reservations/**")
                         .authenticated()
