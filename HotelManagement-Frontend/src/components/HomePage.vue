@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import {computed, h, reactive, Ref, ref, watch} from "vue";
+import {computed, h, onMounted, reactive, Ref, ref} from "vue";
 import {ControlOutlined, LoginOutlined, LogoutOutlined, UserOutlined} from "@ant-design/icons-vue";
 import type {FormInstance, MenuProps} from "ant-design-vue";
 import {useRoute, useRouter} from "vue-router";
 import axios from "axios";
 import Cookies from 'js-cookie';
 import {message} from 'ant-design-vue';
-import {jwtDecode} from "jwt-decode";
+import {useStore} from "@/stores/stateStore";
 
 const router = useRouter()
 
@@ -16,7 +16,8 @@ const current_route = ref(route.name ? route.name.toString() : 'main')
 
 const loginFormRef: Ref<FormInstance> = ref<FormInstance>();
 const registerFormRef: Ref<FormInstance> = ref<FormInstance>();
-
+const token: Ref<string> = ref(Cookies.get('token'))
+const refresh_token: Ref<string> = ref(Cookies.get('refresh_token'))
 const current = ref<string[]>([current_route.value]);
 const items = ref<MenuProps['items']>([
   {
@@ -106,21 +107,21 @@ const onLogin = () => {
         })
         .then((response) => {
           if (response.status == 200) {
-            console.log(response.data)
-            Cookies.set('token', response.data['token'], {expires: new Date(new Date().getTime() + 15 * 60 * 1000)});
+            const token = response.data['token']
+            Cookies.set('token', token, {expires: new Date(new Date().getTime() + 15*60 * 1000)});
             Cookies.set('refresh_token', response.data['refresh_token'], {expires: new Date(new Date().getTime() + 20 * 60 * 1000)});
             loginLoading.value = false;
             loginModalOpen.value = false;
             loginFormState.username = ''
             loginFormState.password = ''
-            login.value = true
+            store.changeToLogin()
           } else {
             message.error('Login Failed!')
           }
           loginLoading.value = false
         })
         .catch((err) => {
-          if (err.response.status == 403) {
+          if (err.response.status == 401) {
             message.error('Login Failed!')
           } else {
             message.error('Internal Server Error!')
@@ -168,30 +169,37 @@ const onRegister = () => {
 
   })
 }
-const token = ref(Cookies.get('token'))
-const login = ref(token.value != null)
-const role = ref(token.value != null ? jwtDecode(token.value)['role'] : '')
-console.log(role.value)
-watch(login, async () => {
-  if (login.value) {
-    token.value = Cookies.get('token')
-    role.value = token.value != null ? jwtDecode(token.value)['role'] : ''
-  }
-})
+const store = useStore()
+const login = computed(() => store.login)
+const role = computed(()=> store.role)
 
 const logout = () => {
   Cookies.remove('token')
   Cookies.remove('refresh_token')
-  role.value = ''
-  login.value = false
+  store.changeToLogout()
   if (current_route.value != 'main' && current_route.value != 'rooms' && current_route.value != 'contact') {
     router.push({name: 'main'})
   }
 }
+
+onMounted(() => {
+  if (token.value == null) {
+    if (refresh_token.value != null) {
+      axios.post('http://localhost:8080/api/v1/refresh', refresh_token.value).then((response) => {
+        if (response.status == 200) {
+          token.value = response.data['token']
+          refresh_token.value = response.data['refresh_token']
+          Cookies.set('token', token.value, {expires: new Date(new Date().getTime() + 15 *60* 1000)});
+          Cookies.set('refresh_token', refresh_token.value, {expires: new Date(new Date().getTime() + 20 * 60 * 1000)});
+          store.changeToLogin()
+        }
+      })
+    }
+  }
+})
 </script>
 
 <template>
-  <RouterLink :to="{name:'management'}">DEBUG!!!</RouterLink>
   <a-modal v-model:open="loginModalOpen" title="Login" :mask-closable=false :closable=false>
     <template #footer>
       <a-button key="loginBack" @click="handleLoginCancel">Cancel</a-button>
@@ -315,7 +323,7 @@ const logout = () => {
           </a-button>
           <a-button v-else-if="role=='EMPLOYEE' || role == 'OWNER'" type="link" :icon="h(ControlOutlined)"
                     class="link-button"
-                    @click="()=>{router.push({name:'management'})}">
+                    @click="()=>{router.push({name:'reservations-manage'})}">
             Manage Hotel
           </a-button>
           <a-button type="link" :icon="h(LogoutOutlined)" class="link-button"

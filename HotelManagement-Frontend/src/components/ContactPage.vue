@@ -4,7 +4,7 @@
 
 <template>
   <div style="position: relative">
-    <img class="background_image" src="contact_background.jpg"/>
+    <img class="background_image" src="/contact_background.jpg"/>
     <div class="overlayer">
       <div class="img-info">Contact</div>
     </div>

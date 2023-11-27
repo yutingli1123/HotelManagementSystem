@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Cookies from 'js-cookie'
-import {onMounted, Ref, ref, watch} from "vue";
+import {onMounted, Ref, ref} from "vue";
 import axios from "axios";
 import {useRoute, useRouter} from "vue-router";
 import {MenuProps} from "ant-design-vue";
@@ -22,7 +22,22 @@ onMounted(() => {
     if (refresh_token.value != null) {
       axios.post('http://localhost:8080/api/v1/refresh', refresh_token.value).then((response) => {
         if (response.status == 200) {
-          token.value = response.data
+          token.value = response.data['token']
+          refresh_token.value = response.data['refresh_token']
+          Cookies.set('token', token.value, {expires: new Date(new Date().getTime() + 15 * 60 * 1000)});
+          Cookies.set('refresh_token', refresh_token.value, {expires: new Date(new Date().getTime() + 20 * 60 * 1000)});
+          store.changeToLogin()
+          axios.get('http://localhost:8080/api/v1/customers/name', {
+            headers: {
+              Authorization: 'Bearer ' + token.value
+            },
+          }).then((response) => {
+            if (response.status == 200) {
+              name.value = response.data
+              loading.value = false
+            }
+          }).catch(() => {
+          })
         } else {
           router.push({name: 'main'})
         }
@@ -30,27 +45,39 @@ onMounted(() => {
         router.push({name: 'main'})
       })
     }
+  } else {
+    axios.get('http://localhost:8080/api/v1/customers/name', {
+      headers: {
+        Authorization: 'Bearer ' + token.value
+      },
+    }).then((response) => {
+      if (response.status == 200) {
+        name.value = response.data
+        loading.value = false
+      }
+    }).catch(() => {
+    })
   }
-  axios.get('http://localhost:8080/api/v1/customers/name', {
-    headers: {
-      Authorization: 'Bearer ' + token.value
-    },
-  }).then((response) => {
-    if (response.status == 200) {
-      name.value = response.data
-      loading.value = false
-    }
-  }).catch(() => {
-  })
 })
 
 const currentRoute = ref<string[]>([current_route.value]);
 // Management page navigation items
 const items = ref<MenuProps['items']>([
   {
-    key: 'reservations',
+    key: 'reservations-manage',
     label: 'Reservations Management',
     title: 'Reservations Management',
+  },
+  {
+    type: "divider"
+  },
+  {
+    key: 'rooms-manage',
+    label: 'Rooms Management',
+    title: 'Rooms Management',
+  },
+  {
+    type: "divider"
   },
   {
     key: 'users',
@@ -58,72 +85,71 @@ const items = ref<MenuProps['items']>([
     title: 'User Management',
   },
   {
+    type: "divider"
+  },
+  {
     key: 'tasks',
     label: 'Task Management',
     title: 'Task Management',
   },
+  {
+    type: "divider"
+  },
+  {
+    key: 'timetables',
+    label: 'Time Table Management',
+    title: 'Time Table Management'
+  }
 ]);
 
 
 </script>
 
 <template>
-  <a-layout>
-    <a-layout-sider>
-      <a-menu style="height: 500px" v-model:selectedKeys="currentRoute" :items="items" @click="(input)=>{router.push({name:input['key']})}"/>
-    </a-layout-sider>
-    <a-layout-content style="padding: 24px">
-      <RouterView :key="$route.fullPath"/>
-    </a-layout-content>
-  </a-layout>
+  <a-spin :spinning="loading">
+    <div style="position: relative">
+      <img class="background_image" src="/account_background.jpg" alt="Background Image"/>
+      <div class="overlayer">
+        <div class="img-info">Hello, {{ name }}</div>
+      </div>
+    </div>
+    <a-layout>
+      <a-layout-sider >
+        <a-menu style="height: 850px" v-model:selectedKeys="currentRoute" :items="items"
+                @click="(input)=>{router.push({name:input['key']})}"/>
+      </a-layout-sider>
+      <a-layout-content style="padding: 24px">
+        <RouterView :key="$route.fullPath"/>
+      </a-layout-content>
+    </a-layout>
+  </a-spin>
 </template>
 
 
 <style scoped>
+.background_image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
 .overlayer {
+  background: rgba(0, 0, 0, 0.4);
   position: absolute;
   top: 0;
+  bottom: 0;
   left: 0;
   right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.a-layout-sider {
-  background: #fff;
-  border-right: 1px solid #e8e8e8;
-}
-
-.a-menu {
-  height: 100%;
-  border-right: none;
-}
-
-.a-menu-item {
-  font-size: 1rem;
-  color: #595959;
-}
-
-.a-menu-item:hover {
-  background: #f5f5f5;
-}
-
-.a-menu-item-selected {
-  background-color: #e6f7ff;
-  color: #1890ff;
-}
-
-.a-layout-content {
-  padding: 24px;
-  background: #fff;
-  min-height: 280px;
-}
-
-.a-spin {
-  max-width: 100%;
+.img-info {
+  color: white;
+  font-size: 60px;
+  text-align: center;
+  font-family: "Times New Roman", serif;
 }
 </style>
 

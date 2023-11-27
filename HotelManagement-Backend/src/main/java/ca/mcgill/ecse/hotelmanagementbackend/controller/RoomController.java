@@ -1,6 +1,7 @@
 package ca.mcgill.ecse.hotelmanagementbackend.controller;
 
 import ca.mcgill.ecse.hotelmanagementbackend.dto.RoomBatch;
+import ca.mcgill.ecse.hotelmanagementbackend.dto.RoomDto;
 import ca.mcgill.ecse.hotelmanagementbackend.dto.RoomResult;
 import ca.mcgill.ecse.hotelmanagementbackend.entity.Reservation;
 import ca.mcgill.ecse.hotelmanagementbackend.entity.Room;
@@ -9,6 +10,7 @@ import ca.mcgill.ecse.hotelmanagementbackend.service.ReservationService;
 import ca.mcgill.ecse.hotelmanagementbackend.service.RoomService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -25,8 +27,11 @@ public class RoomController {
     private ReservationService reservationService;
 
     @GetMapping
-    public List<Room> getAllRooms() {
-        return roomService.findAll();
+    public List<RoomDto> getAllRooms() {
+        List<Room> rooms = roomService.findAll();
+        List<RoomDto> roomDtos = new ArrayList<>();
+        rooms.forEach(room -> roomDtos.add(new RoomDto(room.getId(),room.getType(),room.getFee())));
+        return roomDtos;
     }
 
     @GetMapping("/available")
@@ -67,6 +72,18 @@ public class RoomController {
         return room.getId();
     }
 
+    @PutMapping("/update")
+    public ResponseEntity<Boolean> saveRoom(@Valid @RequestBody RoomDto roomDto) {
+        Room room = roomService.findById(roomDto.getId());
+        if (room != null) {
+            room.setType(roomDto.getType());
+            room.setFee(roomDto.getFee());
+            roomService.save(room);
+            return ResponseEntity.ok(Boolean.TRUE);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
     @PostMapping("/batch")
     public void saveRoomInBatch(@RequestBody RoomBatch roomBatch) {
         Integer number = roomBatch.getNumber();
@@ -87,6 +104,9 @@ public class RoomController {
 
     @DeleteMapping("/by-id/{id}")
     public void deleteRoom(@PathVariable Long id) {
+        Room room = roomService.findById(id);
+        List<Reservation> reservations = room.getReservations();
+        reservations.forEach(reservation -> reservationService.deleteById(reservation.getId()));
         roomService.deleteById(id);
     }
 }

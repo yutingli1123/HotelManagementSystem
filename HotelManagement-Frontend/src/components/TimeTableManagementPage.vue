@@ -1,60 +1,46 @@
 <script setup lang="ts">
 import {onMounted, ref} from 'vue';
-import axios from 'axios';
+import axios, {AxiosResponse} from 'axios';
 import {message} from "ant-design-vue";
 import {Ref} from "vue";
 import Cookies from "js-cookie";
 import router from "@/router";
-import dayjs, {Dayjs} from "dayjs";
 
-interface Reservation {
-  id: number;
-  username: string;
-  checkInDate: number;
-  checkOutDate: number;
-  roomType: string;
-  fee: number;
+interface TimeTable {
+  id:number;
+  timeTableName:string;
+  taskIds:number[];
+  employeeIds:number[];
 }
 
-const reservations: Ref<Reservation[]> = ref([]);
-const loading = ref(false);
-const isEditModalVisible = ref(false);
-const editFormData = ref({
-  id: 0,
-  roomType: '',
-  checkInDate: '',
-  checkOutDate: '',
-});
+const timeTables: Ref<TimeTable[]> = ref([])
+const loading = ref(false)
+const isEditModalVisible = ref(false)
+const editFormData: Ref<TimeTable> = ref({})
 
 const token: Ref<string> = ref(Cookies.get('token'))
 const refresh_token: Ref<string> = ref(Cookies.get('refresh_token'))
 
-
 const columns = [
   {
-    title: 'Reservation ID',
+    title: 'TimeTable ID',
     dataIndex: 'id',
     key: 'id',
   },
   {
-    title: 'Username',
-    dataIndex: 'username',
-    key: 'username',
+    title: 'TimeTable Name',
+    dataIndex: 'timeTableName',
+    key: 'timeTableName',
   },
   {
-    title: 'Room Type',
-    dataIndex: 'roomType',
-    key: 'roomType',
+    title: 'Task IDs',
+    dataIndex: 'taskIds',
+    key: 'taskIds',
   },
   {
-    title: 'Check-In Date',
-    dataIndex: 'checkInDate',
-    key: 'checkInDate',
-  },
-  {
-    title: 'Check-Out Date',
-    dataIndex: 'checkOutDate',
-    key: 'checkOutDate',
+    title: 'Employee IDs',
+    dataIndex: 'employeeIds',
+    key: 'employeeIds',
   },
   {
     title: 'Action',
@@ -62,19 +48,16 @@ const columns = [
   },
 ];
 
-const fetchReservations = () => {
+const fetchTimeTables = () => {
   loading.value = true;
-  axios.get('http://localhost:8080/api/v1/reservations', {
+  axios.get('http://localhost:8080/api/v1/timeTables', {
     headers: {
       Authorization: 'Bearer ' + token.value
     },
   }).then(response => {
     if (response.status == 200) {
-      reservations.value = response.data;
-      reservations.value.forEach(reservation => {
-        reservation.checkInDate = dayjs(reservation.checkInDate).format('MMM / DD / YYYY')
-        reservation.checkOutDate = dayjs(reservation.checkOutDate).format('MMM / DD / YYYY')
-      })
+      console.log(response.data)
+      timeTables.value = response.data;
     }
     loading.value = false
   }).catch(() => {
@@ -83,8 +66,8 @@ const fetchReservations = () => {
 };
 
 
-const deleteReservation = (id) => {
-  axios.delete("http://localhost:8080/api/v1/reservations/by-id/" + id, {
+const deleteTimeTable = (id) => {
+  axios.delete("http://localhost:8080/api/v1/timeTables/by-id/" + id, {
     headers: {
       Authorization: 'Bearer ' + token.value
     },
@@ -92,42 +75,44 @@ const deleteReservation = (id) => {
       .then((response) => {
         if (response.status == 200) {
           message.info('Delete Successfully!')
-          fetchReservations()
+          fetchTasks()
         } else {
           message.error("Delete Failed!")
         }
       })
       .catch(() => message.error("Delete Failed!"))
-};
+}
 
-const openEditModal = (reservation) => {
+const openEditModal = (timeTable: TimeTable) => {
   editFormData.value = {
-    id: reservation.id,
-    roomType: reservation.roomType,
-    checkInDate: dayjs(reservation.checkInDate),
-    checkOutDate: dayjs(reservation.checkOutDate),
+    id: timeTable.id,
+    timeTableName: timeTable.timeTableName,
+    taskIds: timeTable.taskIds,
+    employeeIds: timeTable.employeeIds,
   };
   isEditModalVisible.value = true;
 };
 
-const handleEditReservation = () => {
-  axios.putt('http://localhost:8080/api/v1/reservations/update', editFormData.value, {
+const handleEditTimeTable = () => {
+  console.log(editFormData.value)
+  axios.put('http://localhost:8080/api/v1/timeTables/update', editFormData.value, {
     headers: {
       Authorization: 'Bearer ' + token.value
     },
   }).then(response => {
     if (response.status === 200) {
       // Update the reservations array with the edited data
-      fetchReservations();
+      fetchTimeTables();
       message.info('Update Successfully!')
       isEditModalVisible.value = false;
+      editFormData.value = {}
     } else {
       message.error('Update Failed!')
     }
   }).catch(() => {
     message.error('Update Failed!')
   })
-};
+}
 
 onMounted(() => {
   if (token.value == null) {
@@ -139,7 +124,9 @@ onMounted(() => {
           Cookies.set('token', token.value, {expires: new Date(new Date().getTime() + 15 * 60 * 1000)});
           Cookies.set('refresh_token', refresh_token.value, {expires: new Date(new Date().getTime() + 20 * 60 * 1000)});
           store.changeToLogin()
-          fetchReservations()
+          fetchTimeTables()
+          fetchAllEmployeeIds()
+          fetchAllTaskIds()
         } else {
           router.push({name: 'main'})
         }
@@ -150,26 +137,41 @@ onMounted(() => {
       router.push({name: 'main'})
     }
   } else {
-    fetchReservations();
+    fetchTimeTables();
+    fetchAllEmployeeIds()
+    fetchAllTaskIds()
   }
 });
-const disabled_check_in_date = (date: Dayjs) => {
-  if (date.isBefore(dayjs())) {
-    return true
-  }
+const employees = ref([])
+const fetchAllEmployeeIds = () => {
+  axios.get('http://localhost:8080/api/v1/employees/ids', {
+    headers: {
+      Authorization: 'Bearer ' + token.value
+    },
+  }).then((response: AxiosResponse) => {
+    if (response.status === 200) {
+      response.data.forEach(data=>{
+        employees.value.push({key:data.id, title: data.name})
+      })
+
+    }
+  })
+}
+const tasks = ref([])
+const fetchAllTaskIds = () => {
+  axios.get('http://localhost:8080/api/v1/tasks/ids', {
+    headers: {
+      Authorization: 'Bearer ' + token.value
+    },
+  }).then((response: AxiosResponse) => {
+    if (response.status === 200) {
+      response.data.forEach(data=>{
+        tasks.value.push({key:data, title: data})
+      })
+    }
+  })
 }
 
-const disabled_check_out_date = (date: Dayjs) => {
-  if (date.subtract(1, 'day').isBefore(dayjs(editFormData.value.checkInDate))) {
-    return true
-  }
-}
-
-const date_checker = (date: Dayjs) => {
-  if (date.add(1, 'day').isAfter(dayjs(editFormData.value.checkOutDate))) {
-    editFormData.value.checkOutDate = date.add(1, 'day')
-  }
-}
 </script>
 
 <template>
@@ -182,38 +184,33 @@ const date_checker = (date: Dayjs) => {
     <template #footer>
       <a-button key="registerBack" @click="() => {isEditModalVisible = false}">Cancel</a-button>
       <a-button key="registerSubmit" type="primary" :loading="loading"
-                @click="handleEditReservation">Update
+                @click="handleEditTimeTable">Update
       </a-button>
     </template>
     <a-form
         :model="editFormData"
         :label-col="{ span: 6 }"
-        :wrapper-col="{ span: 8 }"
+        :wrapper-col="{ span: 20 }"
+        layout="vertical"
     >
-      <a-form-item label="Room Type">
-        <a-select v-model:value="editFormData.roomType" placeholder="Select a room type">
-          <a-select-option value="REGULAR">Regular</a-select-option>
-          <a-select-option value="DELUXE">Deluxe</a-select-option>
-          <a-select-option value="DOUBLE">Luxury</a-select-option>
-        </a-select>
+      <a-form-item label="TimeTable Name">
+        <a-input v-model:value="editFormData.timeTableName"></a-input>
       </a-form-item>
-
-      <a-form-item label="Check-in Date">
-        <a-date-picker
-            v-model:value="editFormData.checkInDate"
-            format="MMM / DD / YYYY"
-            placeholder="Select check-in date"
-            :disabled-date="disabled_check_in_date" @change="date_checker"
+      <a-form-item label="Task">
+        <a-transfer
+            v-model:target-keys="editFormData.taskIds"
+            :data-source="tasks"
+            :titles="['Available', 'Selected']"
+            :render="item => item.title"
         />
       </a-form-item>
-
-      <a-form-item label="Check-out Date">
-        <a-date-picker
-            v-model:value="editFormData.checkOutDate"
-            format="MMM / DD / YYYY"
-            placeholder="Select check-out date"
-            :disabled-date="disabled_check_out_date"
-        />
+      <a-form-item label="Employee">
+      <a-transfer
+          v-model:target-keys="editFormData.employeeIds"
+          :data-source="employees"
+          :titles="['Available', 'Selected']"
+          :render="item => '['+item.key+'] '+item.title"
+      />
       </a-form-item>
     </a-form>
   </a-modal>
@@ -222,16 +219,22 @@ const date_checker = (date: Dayjs) => {
   <a-table
       :columns="columns"
       :rowKey="record => record.id"
-      :dataSource="reservations"
+      :dataSource="timeTables"
       :loading="loading"
   >
     <template #bodyCell="{ column, record }">
+      <template v-if="column.key === 'employeeIds'">
+        {{ record.employeeIds.join(', ') }}
+      </template>
+      <template v-if="column.key === 'taskIds'">
+        {{ record.taskIds.join(', ') }}
+      </template>
       <template v-if="column.key === 'action'">
         <a-space>
           <a-button type="primary" @click="openEditModal(record)">Edit</a-button>
           <a-popconfirm
               title="Are you sure to delete this reservation?"
-              @confirm="() => deleteReservation(record.id)"
+              @confirm="() => deleteTimeTable(record.id)"
           >
             <a-button danger>Delete</a-button>
           </a-popconfirm>

@@ -14,15 +14,11 @@ const check_in_date = ref<Dayjs>(today)
 const check_out_date = ref<Dayjs>(today.add(1, 'day'))
 
 const disabled_check_in_date = (date: Dayjs) => {
-  if (date.isBefore(today)) {
-    return true
-  }
+  return date.isBefore(today)
 }
 
 const disabled_check_out_date = (date: Dayjs) => {
-  if (date.subtract(1, 'day').isBefore(check_in_date.value)) {
-    return true
-  }
+  return date.subtract(1, 'day').isBefore(check_in_date.value)
 }
 
 const date_checker = (date: Dayjs) => {
@@ -42,7 +38,7 @@ const submit = () => {
     <a-carousel class="carousel" :autoplay=true>
       <div class="img-container">
 
-        <img src="home1.jpg" class="carousel-image" alt="Home Page Image 1"/>
+        <img src="/home1.jpg" class="carousel-image" alt="Home Page Image 1"/>
         <div class="overlayer">
           <div class="img-info">EXPERIENCE <br/> <span class="primary">LUXURY</span> <br/> AND <br/> <span
               class="primary">COMFORT</span></div>
@@ -50,7 +46,7 @@ const submit = () => {
         </div>
       </div>
       <div class="img-container">
-        <img src="home2.jpg" class="carousel-image" alt="Home Page Image 2"/>
+        <img src="/home2.jpg" class="carousel-image" alt="Home Page Image 2"/>
         <div class="overlayer">
           <div class="img-info">YOUR <br/> <span class="primary">PERFECT <br/> GETAWAY </span> <br/> AWAITS</div>
         </div>
@@ -102,7 +98,7 @@ const submit = () => {
   <div class="center">
     <a-row>
       <a-col style="margin-top: 35px">
-        <img class="img-welcome" src="reception.jpg" alt="Reception Image">
+        <img class="img-welcome" src="/reception.jpg" alt="Reception Image">
       </a-col>
       <a-col class="message">
         <div class="banner"><p>Welcome To <span style="font-style: italic">The<span
@@ -142,7 +138,7 @@ const submit = () => {
       <a-card hoverable style="width: 350px">
         <template #cover>
           <img
-              src="regular.jpg" alt="Regular Room"
+              src="/regular.jpg" alt="Regular Room"
           />
         </template>
         <template #actions>
@@ -172,7 +168,7 @@ const submit = () => {
       <a-card hoverable style="width: 350px">
         <template #cover>
           <img
-              src="deluxe.jpg" alt="Deluxe Room"
+              src="/deluxe.jpg" alt="Deluxe Room"
           />
         </template>
         <template #actions>
@@ -207,7 +203,7 @@ const submit = () => {
       <a-card hoverable style="width: 350px">
         <template #cover>
           <img
-              src="double.jpg" alt="Double Room"
+              src="/double.jpg" alt="Double Room"
           />
         </template>
         <template #actions>

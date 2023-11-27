@@ -8,9 +8,13 @@ import AccountPage from "@/components/AccountPage.vue";
 import InfoPage from "@/components/InfoPage.vue";
 import ReservationsPage from "@/components/ReservationsPage.vue";
 import ManagementPage from "@/components/ManagementPage.vue";
+import BookPage from "@/components/BookPage.vue";
+import SuccessPage from "@/components/SuccessPage.vue";
 import ReservationManagementPage from "@/components/ReservationManagementPage.vue";
 import UserManagementPage from "@/components/UserManagementPage.vue";
 import TaskManagementPage from "@/components/TaskManagementPage.vue";
+import RoomManagementPage from "@/components/RoomManagementPage.vue";
+import TimeTableManagementPage from "@/components/TimeTableManagementPage.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -41,6 +45,16 @@ const router = createRouter({
                     component: ResultPage,
                 },
                 {
+                    path: 'book',
+                    name: 'book',
+                    component: BookPage,
+                },
+                {
+                    path: 'success',
+                    name: 'success',
+                    component: SuccessPage,
+                },
+                {
                     path: 'my-account',
                     name: 'account',
                     component: AccountPage,
@@ -64,7 +78,7 @@ const router = createRouter({
                     children: [
                         {
                             path: '',
-                            name: 'reservations',
+                            name: 'reservations-manage',
                             component: ReservationManagementPage
                         },
                         {
@@ -77,11 +91,20 @@ const router = createRouter({
                             name: 'tasks',
                             component: TaskManagementPage
                         },
+                        {
+                            path: 'rooms-manage',
+                            name: 'rooms-manage',
+                            component: RoomManagementPage
+                        },
+                        {
+                            path: 'timetables',
+                            name: 'timetables',
+                            component: TimeTableManagementPage
+                        },
                     ]
                 },
-            ]
-
-        }
+            ],
+        },
     ]
 })
 

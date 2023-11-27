@@ -5,6 +5,8 @@ import axios, {AxiosResponse} from "axios";
 import {FormInstance, message} from "ant-design-vue";
 import {jwtDecode} from "jwt-decode";
 import dayjs from "dayjs";
+import router from "@/router";
+import {useStore} from "@/stores/stateStore";
 
 interface InfoFormState {
   firstname: string;
@@ -25,7 +27,7 @@ const infoFormState = reactive<InfoFormState>({
   email: '',
   username: '',
 });
-
+const store = useStore()
 const token: Ref<string> = ref(Cookies.get('token'))
 const refresh_token: Ref<string> = ref(Cookies.get('refresh_token'))
 const loading: Ref<boolean> = ref(true)
@@ -39,31 +41,54 @@ onMounted(() => {
     if (refresh_token.value != null) {
       axios.post('http://localhost:8080/api/v1/refresh', refresh_token.value).then((response) => {
         if (response.status == 200) {
-          token.value = response.data
+          token.value = response.data['token']
+          refresh_token.value = response.data['refresh_token']
+          Cookies.set('token', token.value, {expires: new Date(new Date().getTime() + 15 *60* 1000)});
+          Cookies.set('refresh_token', refresh_token.value, {expires: new Date(new Date().getTime() + 20 * 60 * 1000)});
+          store.changeToLogin()
+          axios.get('http://localhost:8080/api/v1/customers/me', {
+            headers: {
+              Authorization: 'Bearer ' + token.value
+            },
+          }).then((response: AxiosResponse<Customer>) => {
+            if (response.status == 200) {
+              const nameList = response.data.name.split(' ')
+              infoFormState.firstname = nameList[0]
+              infoFormState.lastname = nameList[1]
+              infoFormState.email = response.data.email
+              infoFormState.username = response.data.username
+              loading.value = false
+            }
+          }).catch(() => {
+            loading.value = false
+          })
         } else {
           router.push({name: 'main'})
         }
       }).catch(() => {
         router.push({name: 'main'})
       })
+    } else {
+      router.push({name: 'main'})
     }
-  }
-  axios.get('http://localhost:8080/api/v1/customers/me', {
-    headers: {
-      Authorization: 'Bearer ' + token.value
-    },
-  }).then((response: AxiosResponse<Customer>) => {
-    if (response.status == 200) {
-      const nameList = response.data.name.split(' ')
-      infoFormState.firstname = nameList[0]
-      infoFormState.lastname = nameList[1]
-      infoFormState.email = response.data.email
-      infoFormState.username = response.data.username
+  } else {
+    axios.get('http://localhost:8080/api/v1/customers/me', {
+      headers: {
+        Authorization: 'Bearer ' + token.value
+      },
+    }).then((response: AxiosResponse<Customer>) => {
+      if (response.status == 200) {
+        const nameList = response.data.name.split(' ')
+        infoFormState.firstname = nameList[0]
+        infoFormState.lastname = nameList[1]
+        infoFormState.email = response.data.email
+        infoFormState.username = response.data.username
+        loading.value = false
+      }
+    }).catch(() => {
       loading.value = false
-    }
-  }).catch(() => {
-    loading.value = false
-  })
+    })
+  }
 })
 
 const onFinish = (value: InfoFormState) => {
@@ -90,6 +115,7 @@ const onFinish = (value: InfoFormState) => {
     }).then((response) => {
       if (response.status == 200) {
         message.info('Update successfully!')
+        router.push({name: 'success'})
       } else {
         message.error('Update failed!')
       }

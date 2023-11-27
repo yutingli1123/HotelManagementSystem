@@ -1,9 +1,14 @@
 package ca.mcgill.ecse.hotelmanagementbackend.controller;
 
-import ca.mcgill.ecse.hotelmanagementbackend.dto.CustomerDto;
+import ca.mcgill.ecse.hotelmanagementbackend.dto.UpdateUserDto;
 import ca.mcgill.ecse.hotelmanagementbackend.dto.PasswordDto;
 import ca.mcgill.ecse.hotelmanagementbackend.entity.Customer;
+import ca.mcgill.ecse.hotelmanagementbackend.entity.Reservation;
+import ca.mcgill.ecse.hotelmanagementbackend.enumeration.Role;
 import ca.mcgill.ecse.hotelmanagementbackend.service.CustomerService;
+import ca.mcgill.ecse.hotelmanagementbackend.service.EmployeeService;
+import ca.mcgill.ecse.hotelmanagementbackend.service.OwnerService;
+import ca.mcgill.ecse.hotelmanagementbackend.service.ReservationService;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import jakarta.validation.Valid;
@@ -21,10 +26,20 @@ import java.util.List;
 @CrossOrigin
 @RequestMapping("/api/v1/customers") // Updated base path
 public class CustomerController {
-    private final Argon2PasswordEncoder passwordEncoder = new Argon2PasswordEncoder(16,32,1,60000,10);
+    private final Argon2PasswordEncoder passwordEncoder = new Argon2PasswordEncoder(16, 32, 1, 60000, 10);
 
     @Autowired
     private CustomerService customerService;
+
+    @Autowired
+    private EmployeeService employeeService;
+
+    @Autowired
+    private OwnerService ownerService;
+
+    @Autowired
+    private ReservationService reservationService;
+
     @Value("${security.jwt.token.secret-key}")
     private String secretKey;
 
@@ -44,9 +59,12 @@ public class CustomerController {
             String[] formattedToken = token.split(" ");
             if (formattedToken[0].equals("Bearer")) {
                 String issuer = JWT.require(Algorithm.HMAC256(secretKey)).build().verify(formattedToken[1]).getIssuer();
-                Customer customer = customerService.findByUsername(issuer);
-                if (customer!=null) {
-                    return ResponseEntity.ok(customer.getName());
+                if (customerService.findByUsername(issuer) != null) {
+                    return ResponseEntity.ok(customerService.findByUsername(issuer).getName());
+                } else if (employeeService.findByUsername(issuer) != null) {
+                    return ResponseEntity.ok(employeeService.findByUsername(issuer).getName());
+                } else if (ownerService.findByUsername(issuer) != null) {
+                    return ResponseEntity.ok(ownerService.findByUsername(issuer).getName());
                 }
             }
         }
@@ -54,15 +72,15 @@ public class CustomerController {
     }
 
     @GetMapping("/me") // Updated endpoint
-    public ResponseEntity<CustomerDto> getCustomerSelf(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+    public ResponseEntity<UpdateUserDto> getCustomerSelf(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         if (token != null) {
             String[] formattedToken = token.split(" ");
             if (formattedToken[0].equals("Bearer")) {
                 String issuer = JWT.require(Algorithm.HMAC256(secretKey)).build().verify(formattedToken[1]).getIssuer();
                 Customer customer = customerService.findByUsername(issuer);
-                if (customer!=null) {
-                    CustomerDto customerDto = new CustomerDto(customer.getName(),customer.getUsername(),customer.getEmail());
-                    return ResponseEntity.ok(customerDto);
+                if (customer != null) {
+                    UpdateUserDto updateUserDto = new UpdateUserDto(customer.getName(), customer.getUsername(), customer.getEmail());
+                    return ResponseEntity.ok(updateUserDto);
                 }
             }
         }
@@ -76,33 +94,54 @@ public class CustomerController {
         return customer.getId();
     }
 
-    @PutMapping ("/update")// Updated endpoint
-    public ResponseEntity<Boolean> updateCustomer(@Valid @RequestBody CustomerDto customerDto, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+    @PutMapping("/update")// Updated endpoint
+    public ResponseEntity<Boolean> updateCustomer(@Valid @RequestBody UpdateUserDto updateUserDto, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         if (token != null) {
             String[] formattedToken = token.split(" ");
             if (formattedToken[0].equals("Bearer")) {
-                String issuer = JWT.require(Algorithm.HMAC256(secretKey)).build().verify(formattedToken[1]).getIssuer();
-                Customer customer = customerService.findByUsername(issuer);
-                if (customer!=null) {
-                    customer.setName(customerDto.getName());
-                    customer.setEmail(customerDto.getEmail());
-                    customerService.save(customer);
-                    return ResponseEntity.ok(Boolean.TRUE);
+                Role role = JWT.require(Algorithm.HMAC256(secretKey)).build().verify(formattedToken[1]).getClaim("role").as(Role.class);
+                if (role == Role.CUSTOMER) {
+                    String issuer = JWT.require(Algorithm.HMAC256(secretKey)).build().verify(formattedToken[1]).getIssuer();
+                    Customer customer = customerService.findByUsername(issuer);
+                    if (customer != null) {
+                        customer.setName(updateUserDto.getName());
+                        customer.setEmail(updateUserDto.getEmail());
+                        customerService.save(customer);
+                        return ResponseEntity.ok(Boolean.TRUE);
+                    }
+                } else if (role == Role.EMPLOYEE || role == Role.OWNER) {
+                    Customer customer = customerService.findByUsername(updateUserDto.getUsername());
+                    if (customer != null) {
+                        customer.setName(updateUserDto.getName());
+                        customer.setEmail(updateUserDto.getEmail());
+                        customerService.save(customer);
+                        return ResponseEntity.ok(Boolean.TRUE);
+                    }
                 }
             }
         }
         return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
-    @PutMapping ("/update/password")// Updated endpoint
+    @PutMapping("/update/password")// Updated endpoint
     public ResponseEntity<Boolean> updateCustomerPassword(@Valid @RequestBody PasswordDto passwordDto, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         if (token != null) {
             String[] formattedToken = token.split(" ");
             if (formattedToken[0].equals("Bearer")) {
-                String issuer = JWT.require(Algorithm.HMAC256(secretKey)).build().verify(formattedToken[1]).getIssuer();
-                Customer customer = customerService.findByUsername(issuer);
-                if (customer!=null) {
-                    if (passwordEncoder.matches(passwordDto.getOldPass(), customer.getPassword())) {
+                Role role = JWT.require(Algorithm.HMAC256(secretKey)).build().verify(formattedToken[1]).getClaim("role").as(Role.class);
+                if (role == Role.CUSTOMER) {
+                    String issuer = JWT.require(Algorithm.HMAC256(secretKey)).build().verify(formattedToken[1]).getIssuer();
+                    Customer customer = customerService.findByUsername(issuer);
+                    if (customer != null) {
+                        if (passwordEncoder.matches(passwordDto.getOldPass(), customer.getPassword())) {
+                            customer.setPassword(passwordEncoder.encode(passwordDto.getNewPass()));
+                            customerService.save(customer);
+                            return ResponseEntity.ok(Boolean.TRUE);
+                        }
+                    }
+                } else if (role == Role.EMPLOYEE || role == Role.OWNER) {
+                    Customer customer = customerService.findByUsername(passwordDto.getUsername());
+                    if (customer != null) {
                         customer.setPassword(passwordEncoder.encode(passwordDto.getNewPass()));
                         customerService.save(customer);
                         return ResponseEntity.ok(Boolean.TRUE);
@@ -130,16 +169,25 @@ public class CustomerController {
 
     @DeleteMapping("/by-username/{username}") // Updated endpoint
     public void deleteCustomerByUsername(@PathVariable String username) {
+        Customer customer = customerService.findByUsername(username);
+        List<Reservation> reservations = customer.getReservationsForCustomer();
+        reservations.forEach(reservation -> reservationService.deleteById(reservation.getId()));
         customerService.deleteByUsername(username);
     }
 
     @DeleteMapping("/by-email/{email}") // Updated endpoint
     public void deleteCustomerByEmail(@PathVariable String email) {
+        Customer customer = customerService.findByEmail(email);
+        List<Reservation> reservations = customer.getReservationsForCustomer();
+        reservations.forEach(reservation -> reservationService.deleteById(reservation.getId()));
         customerService.deleteByEmail(email);
     }
 
     @DeleteMapping("/by-id/{id}") // Updated endpoint
     public void deleteCustomerById(@PathVariable Long id) {
+        Customer customer = customerService.findById(id);
+        List<Reservation> reservations = customer.getReservationsForCustomer();
+        reservations.forEach(reservation -> reservationService.deleteById(reservation.getId()));
         customerService.deleteById(id);
     }
 

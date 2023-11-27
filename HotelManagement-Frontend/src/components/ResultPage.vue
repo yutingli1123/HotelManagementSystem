@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {useRoute} from 'vue-router';
+import {useRoute, useRouter} from 'vue-router';
 import axios from 'axios'
 import {onMounted, ref} from "vue";
 
@@ -9,6 +9,7 @@ interface Room {
 }
 
 const route = useRoute()
+const router = useRouter()
 
 const checkIn = route.query.checkIn
 const checkOut = route.query.checkOut
@@ -36,10 +37,8 @@ onMounted(() => {
 
 <template>
   <div style="position: relative">
-    <img class="background_image" src="regular.jpg" alt="Background Image"/>
-    <div class="overlayer">
-
-    </div>
+    <img class="background_image" src="/regular.jpg" alt="Background Image"/>
+    <div class="overlayer"/>
   </div>
   <div style="height: 30px"></div>
 
@@ -85,7 +84,10 @@ onMounted(() => {
                 </a-row>
               </a-col>
               <a-col style="display: flex;align-items: center;margin-left: 20px">
-                <a-button type="primary" size="large">Book</a-button>
+                <a-button type="primary" size="large"
+                          @click="()=>{router.push({name:'book',query:{checkIn: checkIn, checkOut: checkOut, guests: guests, type: item.roomType}})}">
+                  Book
+                </a-button>
               </a-col>
             </a-row>
           </a-card>
