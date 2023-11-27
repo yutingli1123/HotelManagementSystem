@@ -16,14 +16,16 @@ interface Room {
 const rooms: Ref<Room[]> = ref([])
 const loading = ref(false)
 const isEditModalVisible = ref(false)
+const isAddModalVisible = ref(false)
 const editFormData: Ref<Room> = ref({})
+const addFormData: Ref<Room> = ref({})
 
 const token: Ref<string> = ref(Cookies.get('token'))
 const refresh_token: Ref<string> = ref(Cookies.get('refresh_token'))
 
 const columns = [
   {
-    title: 'Task ID',
+    title: 'Room ID',
     dataIndex: 'id',
     key: 'id',
   },
@@ -87,18 +89,26 @@ const openEditModal = (task: Room) => {
   isEditModalVisible.value = true;
 };
 
-const handleEditTask = () => {
+const openAddModal = () => {
+  addFormData.value = {
+    id: null,
+    type: '',
+    fee: 0,
+  }
+  isAddModalVisible.value = true;
+}
+
+const handleEditRoom = () => {
   axios.put('http://localhost:8080/api/v1/rooms/update', editFormData.value, {
     headers: {
       Authorization: 'Bearer ' + token.value
     },
   }).then(response => {
     if (response.status === 200) {
-      // Update the reservations array with the edited data
+      // Update the rooms array with the edited data
       fetchRooms();
       message.info('Update Successfully!')
       isEditModalVisible.value = false;
-      editFormData.value = {}
     } else {
       message.error('Update Failed!')
     }
@@ -106,6 +116,26 @@ const handleEditTask = () => {
     message.error('Update Failed!')
   })
 }
+
+const handleAddRoom = () => {
+  axios.post('http://localhost:8080/api/v1/rooms', addFormData.value, {
+    headers: {
+      Authorization: 'Bearer ' + token.value
+    },
+  }).then(response => {
+    if (response.status === 200) {
+      // Update the rooms array with the edited data
+      fetchRooms();
+      message.info('Add Successfully!')
+      isEditModalVisible.value = false;
+    } else {
+      message.error('Add Failed!')
+    }
+  }).catch(() => {
+    message.error('Add Failed!')
+  })
+}
+
 
 onMounted(() => {
   if (token.value == null) {
@@ -131,40 +161,8 @@ onMounted(() => {
     fetchRooms();
   }
 });
-const submitDisabled = computed(() => {
-  return editFormData.value.taskDescription == '' || editFormData.value.taskName == ''
-})
 
-const date_checker = (time: Dayjs) => {
-  if (time.add(1, 'minute').isAfter(editFormData.value.endTime)) {
-    editFormData.value.endTime = time.add(1, 'minute')
-  }
-}
 
-const disabledEndTime = () => {
-  const selectedStartTime = editFormData.value.startTime;
-  const selectedHour = selectedStartTime.hour();
-  const selectedMinute = selectedStartTime.minute();
-
-  return {
-    disabledHours: () => {
-      const hours = [];
-      for (let i = 0; i < selectedHour; i++) {
-        hours.push(i);
-      }
-      return hours;
-    },
-    disabledMinutes: (selectedHour) => {
-      const minutes = [];
-      if (selectedHour === selectedStartTime.hour()) {
-        for (let i = 0; i < selectedMinute + 1; i++) {
-          minutes.push(i);
-        }
-      }
-      return minutes;
-    },
-  };
-}
 </script>
 
 <template>
@@ -176,15 +174,17 @@ const disabledEndTime = () => {
   >
     <template #footer>
       <a-button key="registerBack" @click="() => {isEditModalVisible = false}">Cancel</a-button>
-      <a-button key="registerSubmit" type="primary" :loading="loading" :disabled="submitDisabled"
-                @click="handleEditTask">Update
-      </a-button>
+      <a-button key="registerSubmit" type="primary" @click="handleEditRoom">Update</a-button>
     </template>
     <a-form
         :model="editFormData"
         :label-col="{ span: 6 }"
         :wrapper-col="{ span: 12 }"
     >
+      <a-form-item label="Reservation ID">
+        <a-input-number v-model:value="editFormData.id" disabled />
+      </a-form-item>
+
       <a-form-item label="Room Type">
         <a-select v-model:value="editFormData.type">
           <a-select-option value="REGULAR">Regular</a-select-option>
@@ -200,6 +200,38 @@ const disabledEndTime = () => {
     </a-form>
   </a-modal>
 
+  <a-modal
+      v-model:open="isAddModalVisible"
+      title="Add Room"
+      :closable="false"
+      :mask-closable="false"
+  >
+    <template #footer>
+      <a-button key="addBack" @click="() => {isAddModalVisible = false}">Cancel</a-button>
+      <a-button key="addSubmit" type="primary" @click="handleAddRoom">Add</a-button>
+    </template>
+    <a-form
+        :model="addFormData"
+        :label-col="{ span: 6 }"
+        :wrapper-col="{ span: 12 }"
+    >
+      <a-form-item label="User ID">
+        <a-input-number v-model:value="addFormData.id" placeholder="Enter user ID" />
+      </a-form-item>
+
+      <a-form-item label="Room Type">
+        <a-select v-model:value="addFormData.type">
+          <a-select-option value="REGULAR">Regular</a-select-option>
+          <a-select-option value="DELUXE">Deluxe</a-select-option>
+          <a-select-option value="DOUBLE">Double</a-select-option>
+        </a-select>
+      </a-form-item>
+
+      <a-form-item label="Fee">
+        <a-input-number v-model:value="addFormData.fee"></a-input-number>
+      </a-form-item>
+    </a-form>
+  </a-modal>
 
   <a-table
       :columns="columns"
@@ -217,6 +249,7 @@ const disabledEndTime = () => {
           >
             <a-button danger>Delete</a-button>
           </a-popconfirm>
+          <a-button type="primary" @click="openAddModal()">Add</a-button>
         </a-space>
       </template>
     </template>
