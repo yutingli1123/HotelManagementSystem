@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, h, reactive, ref, watch} from "vue";
+import {computed, h, reactive, Ref, ref, watch} from "vue";
 import {ControlOutlined, LoginOutlined, LogoutOutlined, UserOutlined} from "@ant-design/icons-vue";
 import type {FormInstance, MenuProps} from "ant-design-vue";
 import {useRoute, useRouter} from "vue-router";
@@ -14,8 +14,8 @@ const route = useRoute()
 
 const current_route = ref(route.name ? route.name.toString() : 'main')
 
-const loginFormRef: FormInstance = ref<FormInstance>();
-const registerFormRef: FormInstance = ref<FormInstance>();
+const loginFormRef: Ref<FormInstance> = ref<FormInstance>();
+const registerFormRef: Ref<FormInstance> = ref<FormInstance>();
 
 const current = ref<string[]>([current_route.value]);
 const items = ref<MenuProps['items']>([
@@ -115,17 +115,17 @@ const onLogin = () => {
             loginFormState.password = ''
             login.value = true
           } else {
-            loginLoading.value = false;
             message.error('Login Failed!')
           }
+          loginLoading.value = false
         })
         .catch((err) => {
-          loginLoading.value = false
-          if (err.response.status == 401) {
+          if (err.response.status == 403) {
             message.error('Login Failed!')
           } else {
             message.error('Internal Server Error!')
           }
+          loginLoading.value = false
         });
   })
 }
@@ -145,19 +145,27 @@ const onRegister = () => {
             loginFormState.username = registerFormState.username;
             loginFormState.password = registerFormState.password;
             registerModalOpen.value = false;
+            registerFormState.password = ''
+            registerFormState.username = ''
+            registerFormState.email = ''
+            registerFormState.lastName = ''
+            registerFormState.firstName = ''
+            registerFormState.confirmPassword = ''
             loginModalOpen.value = true;
           } else {
-            registerLoading.value = false
+            message.error('Register Failed!')
           }
+          registerLoading.value = false
         })
         .catch((err) => {
-          registerLoading.value = false
           if (err.response.status == 400) {
             message.error('Register Failed!')
           } else {
             message.error('Internal Server Error!')
           }
+          registerLoading.value = false
         });
+
   })
 }
 const token = ref(Cookies.get('token'))
@@ -167,7 +175,7 @@ console.log(role.value)
 watch(login, async () => {
   if (login.value) {
     token.value = Cookies.get('token')
-    role.value = token.value !=null ? jwtDecode(token.value)['role']: ''
+    role.value = token.value != null ? jwtDecode(token.value)['role'] : ''
   }
 })
 
