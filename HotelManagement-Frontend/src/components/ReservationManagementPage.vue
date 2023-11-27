@@ -28,7 +28,13 @@ const editFormData = ref({
 
 const token: Ref<string> = ref(Cookies.get('token'))
 const refresh_token: Ref<string> = ref(Cookies.get('refresh_token'))
-
+const isAddModalVisible = ref(false);
+const addFormData = ref({
+  id: 0,
+  roomType: '',
+  checkInDate: '',
+  checkOutDate: '',
+});
 
 const columns = [
   {
@@ -111,7 +117,7 @@ const openEditModal = (reservation) => {
 };
 
 const handleEditReservation = () => {
-  axios.putt('http://localhost:8080/api/v1/reservations/update', editFormData.value, {
+  axios.put('http://localhost:8080/api/v1/reservations/update', editFormData.value, {
     headers: {
       Authorization: 'Bearer ' + token.value
     },
@@ -126,6 +132,24 @@ const handleEditReservation = () => {
     }
   }).catch(() => {
     message.error('Update Failed!')
+  })
+};
+
+const handleAddReservation = () => {
+  axios.post('http://localhost:8080/api/v1/reservations', addFormData.value, {
+    headers: {
+      Authorization: 'Bearer ' + token.value
+    },
+  }).then(response => {
+    if (response.status === 200) {
+      fetchReservations();
+      message.info('Add Successfully!')
+      isAddModalVisible.value = false;
+    } else {
+      message.error('Unable to Add this reservation!!')
+    }
+  }).catch(() => {
+    message.error('Add Failed!')
   })
 };
 
@@ -194,7 +218,7 @@ const date_checker = (date: Dayjs) => {
         <a-select v-model:value="editFormData.roomType" placeholder="Select a room type">
           <a-select-option value="REGULAR">Regular</a-select-option>
           <a-select-option value="DELUXE">Deluxe</a-select-option>
-          <a-select-option value="DOUBLE">Luxury</a-select-option>
+          <a-select-option value="DOUBLE">Double</a-select-option>
         </a-select>
       </a-form-item>
 
@@ -218,6 +242,54 @@ const date_checker = (date: Dayjs) => {
     </a-form>
   </a-modal>
 
+  <a-modal
+      v-model:open="isAddModalVisible"
+      title="Add Reservation"
+      :closable="false"
+      :mask-closable="false"
+  >
+    <template #footer>
+      <a-button key="addBack" @click="() => {isEditModalVisible = false}">Cancel</a-button>
+      <a-button key="addSubmit" type="primary" :loading="loading"
+                @click="handleAddReservation">Add
+      </a-button>
+    </template>
+    <a-form
+        :model="addFormData"
+        :label-col="{ span: 6 }"
+        :wrapper-col="{ span: 8 }"
+    >
+      <a-form-item label="User ID">
+        <a-input-number v-model:value="addFormData.id" placeholder="Enter user ID" />
+      </a-form-item>
+
+      <a-form-item label="Room Type">
+        <a-select v-model:value="addFormData.roomType" placeholder="Select a room type">
+          <a-select-option value="REGULAR">Regular</a-select-option>
+          <a-select-option value="DELUXE">Deluxe</a-select-option>
+          <a-select-option value="DOUBLE">Double</a-select-option>
+        </a-select>
+      </a-form-item>
+
+      <a-form-item label="Check-in Date">
+        <a-date-picker
+            v-model:value="addFormData.checkInDate"
+            format="MMM / DD / YYYY"
+            placeholder="Select check-in date"
+            :disabled-date="disabled_check_in_date" @change="date_checker"
+        />
+      </a-form-item>
+
+      <a-form-item label="Check-out Date">
+        <a-date-picker
+            v-model:value="addFormData.checkOutDate"
+            format="MMM / DD / YYYY"
+            placeholder="Select check-out date"
+            :disabled-date="disabled_check_out_date"
+        />
+      </a-form-item>
+    </a-form>
+  </a-modal>
 
   <a-table
       :columns="columns"
