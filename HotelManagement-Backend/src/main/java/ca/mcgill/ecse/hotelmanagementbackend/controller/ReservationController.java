@@ -41,12 +41,10 @@ public class ReservationController {
 
     @GetMapping
     public List<ReservationDto> getAllReservations() {
-
         List<Reservation> reservationList = reservationService.findAll();
         List<ReservationDto> reservationDtos = new ArrayList<>();
         reservationList.forEach(reservation -> reservationDtos.add(new ReservationDto(reservation.getId(), reservation.getCheckInDate(), reservation.getCheckOutDate(), reservation.getRoom().getType(), reservation.getRoom().getFee(), reservation.getCustomer().getUsername())));
         return reservationDtos;
-
     }
 
     @GetMapping("/{username}")
@@ -158,7 +156,7 @@ public class ReservationController {
         return reservation.getId();
     }
 
-    @PostMapping("/update")
+    @PutMapping("/update")
     public ResponseEntity<Boolean> updateReservation(@Valid @RequestBody ReservationDto reservationDto) {
         Reservation reservationByDto = reservationService.findById(reservationDto.getId());
 
