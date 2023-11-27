@@ -30,7 +30,7 @@ const token: Ref<string> = ref(Cookies.get('token'))
 const refresh_token: Ref<string> = ref(Cookies.get('refresh_token'))
 const loading: Ref<boolean> = ref(true)
 const updateInfoLoading = ref(false)
-const updateInfoDisabled = computed(()=>{
+const updateInfoDisabled = computed(() => {
   return infoFormState.email == '' || infoFormState.firstname == '' || infoFormState.lastname == ''
 })
 
@@ -104,17 +104,22 @@ const onFinish = (value: InfoFormState) => {
 
 const changePasswordOpen = ref(false)
 const updatePassLoading = ref(false)
-const changePasswordDisabled = computed(()=>{
+const changePasswordDisabled = computed(() => {
   return changePassFormState.oldPass == '' || changePassFormState.newPass == '' || changePassFormState.confirmPass == ''
 })
 
-const onChangePassword = () =>{
+const onChangePassword = () => {
   updatePassLoading.value = true
-  changePassFormRef.value.validateFields().then(()=>{
-    axios.put('http://localhost:8080/api/v1/customers/update/password',{
-      'oldPass': changePassFormState.oldPass,
-      'newPass': changePassFormState.newPass,
-    }).then((response)=>{
+  changePassFormRef.value.validateFields().then(() => {
+    axios.put('http://localhost:8080/api/v1/customers/update/password', {
+          'oldPass': changePassFormState.oldPass,
+          'newPass': changePassFormState.newPass,
+        }, {
+          headers: {
+            Authorization: 'Bearer ' + token.value
+          }
+        }
+    ).then((response) => {
       if (response.status == 200) {
         message.info('Change Successfully!')
         changePasswordOpen.value = false
@@ -125,7 +130,7 @@ const onChangePassword = () =>{
         message.error('Change Failed!')
       }
       updatePassLoading.value = false
-    }).catch(()=>{
+    }).catch(() => {
       updatePassLoading.value = false
     })
   })
@@ -149,7 +154,8 @@ const changePassFormRef: Ref<FormInstance> = ref<FormInstance>();
   <a-modal :closable="false" :mask-closable="false" v-model:open="changePasswordOpen" title="Change Password">
     <template #footer>
       <a-button key="changePassBack" @click="()=>{changePasswordOpen = false}">Cancel</a-button>
-      <a-button key="changePassSubmit" type="primary" :loading="updatePassLoading" :disabled="changePasswordDisabled" @click="onChangePassword">
+      <a-button key="changePassSubmit" type="primary" :loading="updatePassLoading" :disabled="changePasswordDisabled"
+                @click="onChangePassword">
         Change
       </a-button>
     </template>
@@ -227,7 +233,9 @@ const changePassFormRef: Ref<FormInstance> = ref<FormInstance>();
           <a-button style="margin-top: 20px" @click="()=>{changePasswordOpen = true}">Change Password</a-button>
         </a-col>
         <a-col>
-          <a-button style="margin-top: 20px" type="primary" html-type="submit" :loading="updateInfoLoading" :disabled="updateInfoDisabled">Update</a-button>
+          <a-button style="margin-top: 20px" type="primary" html-type="submit" :loading="updateInfoLoading"
+                    :disabled="updateInfoDisabled">Update
+          </a-button>
         </a-col>
       </a-space>
     </a-row>
