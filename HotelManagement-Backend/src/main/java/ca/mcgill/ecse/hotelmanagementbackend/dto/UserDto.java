@@ -1,5 +1,6 @@
 package ca.mcgill.ecse.hotelmanagementbackend.dto;
 
+import ca.mcgill.ecse.hotelmanagementbackend.enumeration.AccountType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,8 +8,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PasswordDto {
+public class UserDto {
+    private Long id;
+    private AccountType accountType;
+    private String name;
     private String username;
-    private String oldPass;
-    private String newPass;
+    private String email;
 }
