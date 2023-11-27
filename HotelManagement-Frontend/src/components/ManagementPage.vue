@@ -1,198 +1,141 @@
-<script lang="ts" setup>
+<script setup lang="ts">
+import Cookies from 'js-cookie'
+import {onMounted, Ref, ref, watch} from "vue";
+import axios from "axios";
+import {useRoute, useRouter} from "vue-router";
+import {MenuProps} from "ant-design-vue";
 
-import {ref} from "vue";
 
-const userModalOpen = ref(false)
-const taskModalOpen = ref(false)
-const reservationModalOpen = ref(false)
+const router = useRouter()
+const route = useRoute()
+
+const current_route = ref(route.name ? route.name.toString() : 'info')
+
+const token: Ref<string> = ref(Cookies.get('token'))
+const refresh_token: Ref<string> = ref(Cookies.get('refresh_token'))
+const loading: Ref<boolean> = ref(true)
+const name: Ref<string> = ref('')
+
+
+onMounted(() => {
+  if (token.value == null) {
+    if (refresh_token.value != null) {
+      axios.post('http://localhost:8080/api/v1/refresh', refresh_token.value).then((response) => {
+        if (response.status == 200) {
+          token.value = response.data
+        } else {
+          router.push({name: 'main'})
+        }
+      }).catch(() => {
+        router.push({name: 'main'})
+      })
+    }
+  }
+  axios.get('http://localhost:8080/api/v1/customers/name', {
+    headers: {
+      Authorization: 'Bearer ' + token.value
+    },
+  }).then((response) => {
+    if (response.status == 200) {
+      name.value = response.data
+      loading.value = false
+    }
+  }).catch(() => {
+  })
+})
+
+const currentRoute = ref<string[]>([current_route.value]);
+// Management page navigation items
+const items = ref<MenuProps['items']>([
+  {
+    key: 'info',
+    label: 'My Info',
+    title: 'My Info',
+  },
+  {
+    key: 'reservations',
+    label: 'My Reservations',
+    title: 'My Reservations',
+  },
+  {
+    key: 'users',
+    label: 'User Management',
+    title: 'User Management',
+  },
+  {
+    key: 'tasks',
+    label: 'Task Management',
+    title: 'Task Management',
+  },
+]);
+
+
 </script>
 
 <template>
-  <!-- User Management Modal -->
-  <a-modal v-model:open="userModalOpen" title="Manage User" :mask-closable=false :closable=false>
-    <template #footer>
-      <a-button key="userBack" @click="handleUserCancel">Cancel</a-button>
-      <a-button key="userSubmit" type="primary" :loading="userLoading" @click="onManageUser">
-        Submit
-      </a-button>
-    </template>
-    <div style="height: 20px"></div>
-    <a-form :model="userFormState"
-            ref="userFormRef"
-            autocomplete="off"
-            :label-col="{ span: 8 }"
-            :wrapper-col="{ span: 12 }"
-    >
-      <a-form-item
-          label="Name"
-          name="name"
-          :rules="[{ required: true, message: 'Please input user name!' }]"
-      >
-        <a-input v-model:value="userFormState.name"/>
-      </a-form-item>
-
-      <a-form-item
-          label="Email"
-          name="email"
-          :rules="[{ required: true, message: 'Please input email!' }, { type: 'email', message: 'Invalid email format' }]"
-      >
-        <a-input v-model:value="userFormState.email"/>
-      </a-form-item>
-
-      <a-form-item
-          label="Role"
-          name="role"
-      >
-        <a-select v-model:value="userFormState.role">
-          <a-select-option value="owner">Admin</a-select-option>
-          <a-select-option value="user">User</a-select-option>
-          <a-select-option value="employee">User</a-select-option>
-        </a-select>
-      </a-form-item>
-    </a-form>
-  </a-modal>
-
-  <!-- Task Management Modal -->
-  <a-modal v-model:open="taskModalOpen" title="Manage Task" :mask-closable=false :closable=false>
-    <template #footer>
-      <a-button key="taskBack" @click="handleTaskCancel">Cancel</a-button>
-      <a-button key="taskSubmit" type="primary" :loading="taskLoading" @click="onManageTask">
-        Submit
-      </a-button>
-    </template>
-    <div style="height: 20px"></div>
-    <a-form :model="taskFormState"
-            ref="taskFormRef"
-            autocomplete="off"
-            :label-col="{ span: 8 }"
-            :wrapper-col="{ span: 12 }"
-    >
-      <a-form-item
-          label="Task Description"
-          name="description"
-          :rules="[{ required: true, message: 'Please input task description!' }]"
-      >
-        <a-input v-model:value="taskFormState.description"/>
-      </a-form-item>
-
-      <a-form-item
-          label="Assignee"
-          name="assignee"
-          :rules="[{ required: true, message: 'Please select an assignee!' }]"
-      >
-        <a-select v-model:value="taskFormState.assignee">
-          <a-select-option value="employee1">Employee 1</a-select-option>
-          <a-select-option value="employee2">Employee 2</a-select-option>
-
-        </a-select>
-      </a-form-item>
-
-      <a-form-item
-          label="Due Date"
-          name="dueDate"
-      >
-        <a-date-picker v-model:value="taskFormState.dueDate"/>
-      </a-form-item>
-    </a-form>
-  </a-modal>
-
-  <!-- Reservation Management Modal -->
-  <a-modal v-model:open="reservationModalOpen" title="Manage Reservation" :mask-closable=false :closable=false>
-    <template #footer>
-      <a-button key="reservationBack" @click="handleReservationCancel">Cancel</a-button>
-      <a-button key="reservationSubmit" type="primary" :loading="reservationLoading" @click="onManageReservation">
-        Submit
-      </a-button>
-    </template>
-    <div style="height: 20px"></div>
-    <a-form :model="reservationFormState"
-            ref="reservationFormRef"
-            autocomplete="off"
-            :label-col="{ span: 8 }"
-            :wrapper-col="{ span: 12 }"
-    >
-      <a-form-item
-          label="Guest Name"
-          name="guestName"
-          :rules="[{ required: true, message: 'Please input guest name!' }]"
-      >
-        <a-input v-model:value="reservationFormState.guestName"/>
-      </a-form-item>
-
-      <a-form-item
-          label="Room"
-          name="room"
-          :rules="[{ required: true, message: 'Please select a room!' }]"
-      >
-        <a-select v-model:value="reservationFormState.room">
-          <a-select-option value="regular">Room 1</a-select-option>
-          <a-select-option value="deluex">Room 2</a-select-option>
-          <a-select-option value="luxury">Room 2</a-select-option>
-        </a-select>
-      </a-form-item>
-
-      <a-form-item
-          label="Check-in Date"
-          name="checkInDate"
-          :rules="[{ required: true, message: 'Please select check-in date!' }]"
-      >
-        <a-date-picker v-model:value="reservationFormState.checkInDate"/>
-      </a-form-item>
-
-      <a-form-item
-          label="Check-out Date"
-          name="checkOutDate"
-          :rules="[{ required: true, message: 'Please select check-out date!' }]"
-      >
-        <a-date-picker v-model:value="reservationFormState.checkOutDate"/>
-      </a-form-item>
-    </a-form>
-  </a-modal>
+  <a-spin :spinning="loading">
+    <div class="header-image">
+      <div class="overlayer">
+        <div class="img-info">Hello, {{ name }}</div>
+      </div>
+    </div>
+    <a-layout>
+      <a-layout-sider>
+        <a-menu style="height: 500px" v-model:selectedKeys="currentRoute" :items="items" @click="(input)=>{router.push({name:input['key']})}"/>
+      </a-layout-sider>
+      <a-layout-content style="padding: 24px">
+        <RouterView :key="$route.fullPath"/>
+      </a-layout-content>
+    </a-layout>
+  </a-spin>
 </template>
 
+
 <style scoped>
-.management-modal .a-modal-content {
+.overlayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.a-layout-sider {
+  background: #fff;
+  border-right: 1px solid #e8e8e8;
+}
+
+.a-menu {
+  height: 100%;
+  border-right: none;
+}
+
+.a-menu-item {
+  font-size: 1rem;
+  color: #595959;
+}
+
+.a-menu-item:hover {
+  background: #f5f5f5;
+}
+
+.a-menu-item-selected {
+  background-color: #e6f7ff;
+  color: #1890ff;
+}
+
+.a-layout-content {
   padding: 24px;
-  background-color: #f5f5f5;
-  border-radius: 8px;
+  background: #fff;
+  min-height: 280px;
 }
 
-.management-modal .a-modal-header {
-  font-size: 18px;
-  font-weight: bold;
-  color: #333;
-  text-align: center;
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 15px;
+.a-spin {
+  max-width: 100%;
 }
-
-.management-modal .a-modal-body {
-  padding-top: 20px;
-}
-
-.management-modal .a-form-item-label {
-  text-align: left;
-  font-size: 16px;
-  color: #666;
-}
-
-.management-modal .a-form-item-control {
-  padding-top: 4px;
-}
-
-.management-modal .a-input,
-.management-modal .a-select,
-.management-modal .a-date-picker {
-  border-radius: 4px;
-}
-
-.management-modal .footer-buttons {
-  margin-top: 30px;
-  text-align: right;
-}
-
-.management-modal .footer-buttons a-button {
-  margin-left: 10px;
-}
-
 </style>
+
