@@ -2,8 +2,13 @@ package ca.mcgill.ecse.hotelmanagementbackend.controller;
 
 import ca.mcgill.ecse.hotelmanagementbackend.entity.Customer;
 import ca.mcgill.ecse.hotelmanagementbackend.service.CustomerService;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +22,8 @@ public class CustomerController {
 
     @Autowired
     private CustomerService customerService;
+    @Value("${security.jwt.token.secret-key}")
+    private String secretKey;
 
     @GetMapping // Updated endpoint
     public List<Customer> getAllCustomers() {
@@ -26,6 +33,21 @@ public class CustomerController {
     @GetMapping("/by-name/{name}") // Updated endpoint
     public List<Customer> getAllCustomersByName(@PathVariable String name) {
         return customerService.findAllByName(name);
+    }
+
+    @GetMapping("/name") // Updated endpoint
+    public ResponseEntity<String> getCustomerName(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        if (token != null) {
+            String[] formattedToken = token.split(" ");
+            if (formattedToken[0].equals("Bearer")) {
+                String issuer = JWT.require(Algorithm.HMAC256(secretKey)).build().verify(formattedToken[1]).getIssuer();
+                Customer customer = customerService.findByUsername(issuer);
+                if (customer!=null) {
+                    return ResponseEntity.ok(customer.getName());
+                }
+            }
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @PostMapping // Updated endpoint

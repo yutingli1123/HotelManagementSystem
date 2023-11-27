@@ -75,6 +75,8 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/register")
                         .permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/customers/name")
+                        .authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/v1/reservations/**")
                         .authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/v1/rooms/available")
