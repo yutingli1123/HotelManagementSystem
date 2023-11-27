@@ -31,3 +31,13 @@ Deliverable 2:
 ## Project Documentation
 - Project Report [Project Report ‐ Deliverable 2](https://github.com/McGill-ECSE321-Fall2023/project-group-06/wiki/Deliverable-2:-Report#welcome-page)
 - Meeting Minutes [Meeting Minutes ‐ Deliverable 2](https://github.com/McGill-ECSE321-Fall2023/project-group-06/wiki/Deliverable-2%3A-Meeting-minutes) 
+
+Deliverable 3: 
+| No 	| Team Member 	| Responsibilities 	| Individual Efforts(hr) 	|
+|---	|---	|---	|---	|
+| 1 	| Clara, Jabbour 	| Architectural modeling & Report 	| 20 hours 	|
+| 2 	| Hing, Hong Way 	| None 	| 0 hours 	|
+| 3 	| Cao, Simon 	| Integration of web frontend with backend services 	| 22 hours 	|
+| 4 	| Li, Yuting 	| Implementation of web frontend GUI &Fixing bugs 	| 26 hours + 	|
+| 5 	| Rao, Simiao 	| Backend test Updating & Controller Updating	| 20 hours 	|
+| 6 	| Sami, Bayoud 	|  Architectural modeling & Report  	| 20 hours 	|
