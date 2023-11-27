@@ -2,8 +2,10 @@ package ca.mcgill.ecse.hotelmanagementbackend.controller;
 
 import ca.mcgill.ecse.hotelmanagementbackend.dto.TimeTableDto;
 import ca.mcgill.ecse.hotelmanagementbackend.entity.Employee;
+import ca.mcgill.ecse.hotelmanagementbackend.entity.Task;
 import ca.mcgill.ecse.hotelmanagementbackend.entity.TimeTable;
 import ca.mcgill.ecse.hotelmanagementbackend.service.EmployeeService;
+import ca.mcgill.ecse.hotelmanagementbackend.service.TaskService;
 import ca.mcgill.ecse.hotelmanagementbackend.service.TimeTableService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,9 @@ public class TimeTableController {
 
     @Autowired
     private EmployeeService employeeService;
+
+    @Autowired
+    private TaskService taskService;
 
     @GetMapping
     public List<TimeTableDto> getAllTimeTables() {
@@ -72,6 +77,12 @@ public class TimeTableController {
 
     @DeleteMapping("/by-id/{id}")
     public void deleteTimeTable(@PathVariable Long id) {
+        TimeTable timeTable = timeTableService.findById(id);
+        List<Task> tasks = timeTable.getTasks();
+        tasks.forEach(task -> {
+            task.setTimeTable(null);
+            taskService.save(task);
+        });
         timeTableService.deleteById(id);
     }
 }

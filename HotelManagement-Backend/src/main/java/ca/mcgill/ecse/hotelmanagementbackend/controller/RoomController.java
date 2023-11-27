@@ -104,6 +104,9 @@ public class RoomController {
 
     @DeleteMapping("/by-id/{id}")
     public void deleteRoom(@PathVariable Long id) {
+        Room room = roomService.findById(id);
+        List<Reservation> reservations = room.getReservations();
+        reservations.forEach(reservation -> reservationService.deleteById(reservation.getId()));
         roomService.deleteById(id);
     }
 }
