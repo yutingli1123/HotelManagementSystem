@@ -8,8 +8,6 @@ import AccountPage from "@/components/AccountPage.vue";
 import InfoPage from "@/components/InfoPage.vue";
 import ReservationsPage from "@/components/ReservationsPage.vue";
 import ManagementPage from "@/components/ManagementPage.vue";
-import BookPage from "@/components/BookPage.vue";
-import SuccessPage from "@/components/SuccessPage.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -70,6 +68,23 @@ const router = createRouter({
                     path: 'management',
                     name: 'management',
                     component: ManagementPage,
+                    children: [
+                        {
+                            path: '',
+                            name: 'reservations',
+                            component: ReservationManagementPage
+                        },
+                        {
+                            path: 'users',
+                            name: 'users',
+                            component: UserManagementPage
+                        },
+                        {
+                            path: 'tasks',
+                            name: 'tasks',
+                            component: TaskManagementPage
+                        },
+                    ]
                 },
             ],
         },
