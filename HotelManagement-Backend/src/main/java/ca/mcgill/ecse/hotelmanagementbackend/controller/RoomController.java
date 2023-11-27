@@ -1,6 +1,7 @@
 package ca.mcgill.ecse.hotelmanagementbackend.controller;
 
 import ca.mcgill.ecse.hotelmanagementbackend.dto.RoomBatch;
+import ca.mcgill.ecse.hotelmanagementbackend.dto.RoomDto;
 import ca.mcgill.ecse.hotelmanagementbackend.dto.RoomResult;
 import ca.mcgill.ecse.hotelmanagementbackend.entity.Reservation;
 import ca.mcgill.ecse.hotelmanagementbackend.entity.Room;
@@ -25,8 +26,11 @@ public class RoomController {
     private ReservationService reservationService;
 
     @GetMapping
-    public List<Room> getAllRooms() {
-        return roomService.findAll();
+    public List<RoomDto> getAllRooms() {
+        List<Room> rooms = roomService.findAll();
+        List<RoomDto> roomDtos = new ArrayList<>();
+        rooms.forEach(room -> roomDtos.add(new RoomDto(room.getId(),room.getType(),room.getFee())));
+        return roomDtos;
     }
 
     @GetMapping("/available")
