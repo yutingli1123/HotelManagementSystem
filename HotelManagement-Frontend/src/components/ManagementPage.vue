@@ -22,7 +22,8 @@ onMounted(() => {
     if (refresh_token.value != null) {
       axios.post('http://localhost:8080/api/v1/refresh', refresh_token.value).then((response) => {
         if (response.status == 200) {
-          token.value = response.data
+          token.value = response.data['token']
+          refresh_token.value = response.data['refresh_token']
         } else {
           router.push({name: 'main'})
         }

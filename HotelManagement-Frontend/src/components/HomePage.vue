@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import {computed, h, reactive, Ref, ref, watch} from "vue";
+import {computed, h, onMounted, reactive, Ref, ref, watch} from "vue";
 import {ControlOutlined, LoginOutlined, LogoutOutlined, UserOutlined} from "@ant-design/icons-vue";
 import type {FormInstance, MenuProps} from "ant-design-vue";
 import {useRoute, useRouter} from "vue-router";
 import axios from "axios";
 import Cookies from 'js-cookie';
 import {message} from 'ant-design-vue';
+import {useStore} from "@/stores/stateStore";
 import {jwtDecode} from "jwt-decode";
 
 const router = useRouter()
@@ -106,21 +107,21 @@ const onLogin = () => {
         })
         .then((response) => {
           if (response.status == 200) {
-            console.log(response.data)
-            Cookies.set('token', response.data['token'], {expires: new Date(new Date().getTime() + 15 * 60 * 1000)});
+            const token = response.data['token']
+            Cookies.set('token', token, {expires: new Date(new Date().getTime() + 3 * 1000)});
             Cookies.set('refresh_token', response.data['refresh_token'], {expires: new Date(new Date().getTime() + 20 * 60 * 1000)});
             loginLoading.value = false;
             loginModalOpen.value = false;
             loginFormState.username = ''
             loginFormState.password = ''
-            login.value = true
+            store.changeToLogin()
           } else {
             message.error('Login Failed!')
           }
           loginLoading.value = false
         })
         .catch((err) => {
-          if (err.response.status == 403) {
+          if (err.response.status == 401) {
             message.error('Login Failed!')
           } else {
             message.error('Internal Server Error!')
@@ -168,22 +169,14 @@ const onRegister = () => {
 
   })
 }
-const token = ref(Cookies.get('token'))
-const login = ref(token.value != null)
-const role = ref(token.value != null ? jwtDecode(token.value)['role'] : '')
-console.log(role.value)
-watch(login, async () => {
-  if (login.value) {
-    token.value = Cookies.get('token')
-    role.value = token.value != null ? jwtDecode(token.value)['role'] : ''
-  }
-})
+const store = useStore()
+const login = computed(() => store.login)
+const role = computed(()=> store.role)
 
 const logout = () => {
   Cookies.remove('token')
   Cookies.remove('refresh_token')
-  role.value = ''
-  login.value = false
+  store.changeToLogout()
   if (current_route.value != 'main' && current_route.value != 'rooms' && current_route.value != 'contact') {
     router.push({name: 'main'})
   }

@@ -39,9 +39,11 @@ declare module 'vue' {
     ASkeleton: typeof import('ant-design-vue/es')['Skeleton']
     ASpace: typeof import('ant-design-vue/es')['Space']
     ASpin: typeof import('ant-design-vue/es')['Spin']
+    ATable: typeof import('ant-design-vue/es')['Table']
     ATooltip: typeof import('ant-design-vue/es')['Tooltip']
     ATypography: typeof import('ant-design-vue/es')['Typography']
     ATypographyParagraph: typeof import('ant-design-vue/es')['TypographyParagraph']
+    BookPage: typeof import('./src/components/BookPage.vue')['default']
     ContactPage: typeof import('./src/components/ContactPage.vue')['default']
     HomePage: typeof import('./src/components/HomePage.vue')['default']
     InfoPage: typeof import('./src/components/InfoPage.vue')['default']
@@ -52,5 +54,6 @@ declare module 'vue' {
     RoomsPage: typeof import('./src/components/RoomsPage.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SuccessPage: typeof import('./src/components/SuccessPage.vue')['default']
   }
 }

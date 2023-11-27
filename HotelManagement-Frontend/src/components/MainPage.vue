@@ -42,7 +42,7 @@ const submit = () => {
     <a-carousel class="carousel" :autoplay=true>
       <div class="img-container">
 
-        <img src="home1.jpg" class="carousel-image" alt="Home Page Image 1"/>
+        <img src="/home1.jpg" class="carousel-image" alt="Home Page Image 1"/>
         <div class="overlayer">
           <div class="img-info">EXPERIENCE <br/> <span class="primary">LUXURY</span> <br/> AND <br/> <span
               class="primary">COMFORT</span></div>
@@ -50,7 +50,7 @@ const submit = () => {
         </div>
       </div>
       <div class="img-container">
-        <img src="home2.jpg" class="carousel-image" alt="Home Page Image 2"/>
+        <img src="/home2.jpg" class="carousel-image" alt="Home Page Image 2"/>
         <div class="overlayer">
           <div class="img-info">YOUR <br/> <span class="primary">PERFECT <br/> GETAWAY </span> <br/> AWAITS</div>
         </div>
@@ -102,7 +102,7 @@ const submit = () => {
   <div class="center">
     <a-row>
       <a-col style="margin-top: 35px">
-        <img class="img-welcome" src="reception.jpg" alt="Reception Image">
+        <img class="img-welcome" src="/reception.jpg" alt="Reception Image">
       </a-col>
       <a-col class="message">
         <div class="banner"><p>Welcome To <span style="font-style: italic">The<span
