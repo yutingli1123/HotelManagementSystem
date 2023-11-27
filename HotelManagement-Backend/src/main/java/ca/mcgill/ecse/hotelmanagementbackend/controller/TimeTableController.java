@@ -8,6 +8,7 @@ import ca.mcgill.ecse.hotelmanagementbackend.service.EmployeeService;
 import ca.mcgill.ecse.hotelmanagementbackend.service.TaskService;
 import ca.mcgill.ecse.hotelmanagementbackend.service.TimeTableService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,7 @@ import java.util.List;
 @RestController
 @CrossOrigin
 @RequestMapping("/api/v1/timeTables")
+@Slf4j
 public class TimeTableController {
     @Autowired
     private TimeTableService timeTableService;
@@ -36,7 +38,10 @@ public class TimeTableController {
             List<Employee> employees = timeTable.getEmployees();
             List<Long> employeeIds = new ArrayList<>();
             employees.forEach(employee -> employeeIds.add(employee.getId()));
-            timeTableDtos.add(new TimeTableDto(timeTable.getId(), timeTable.getTimeTableName(), employeeIds));
+            List<Task> tasks = timeTable.getTasks();
+            List<Long> taskIds = new ArrayList<>();
+            tasks.forEach(task -> taskIds.add(task.getId()));
+            timeTableDtos.add(new TimeTableDto(timeTable.getId(), timeTable.getTimeTableName(), taskIds, employeeIds));
         });
         return timeTableDtos;
     }
@@ -61,16 +66,30 @@ public class TimeTableController {
                 employee.setTimeTable(null);
                 employeeService.save(employee);
             });
+            List<Task> tasks = timeTable.getTasks();
+            tasks.forEach(task -> {
+                task.setTimeTable(null);
+                taskService.save(task);
+            });
             List<Long> employeeIds = timeTableDto.getEmployeeIds();
             List<Employee> employeesFromIds = new ArrayList<>();
             employeeIds.forEach(id -> employeesFromIds.add(employeeService.findById(id)));
+            List<Long> taskIds = timeTableDto.getTaskIds();
+            List<Task> tasksFromIds = new ArrayList<>();
+            taskIds.forEach(id -> tasksFromIds.add(taskService.findById(id)));
             timeTable.setTimeTableName(timeTableDto.getTimeTableName());
-            timeTable.setEmployees(employees);
+            timeTable.setEmployees(employeesFromIds);
+            timeTable.setTasks(tasksFromIds);
             timeTableService.save(timeTable);
             employeesFromIds.forEach(employee -> {
                 employee.setTimeTable(timeTable);
                 employeeService.save(employee);
             });
+            tasksFromIds.forEach(task -> {
+                task.setTimeTable(timeTable);
+                taskService.save(task);
+            });
+            return ResponseEntity.ok(Boolean.TRUE);
         }
         return ResponseEntity.notFound().build();
     }

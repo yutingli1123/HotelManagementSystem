@@ -9,6 +9,7 @@ import router from "@/router";
 interface TimeTable {
   id:number;
   timeTableName:string;
+  taskIds:number[];
   employeeIds:number[];
 }
 
@@ -30,6 +31,11 @@ const columns = [
     title: 'TimeTable Name',
     dataIndex: 'timeTableName',
     key: 'timeTableName',
+  },
+  {
+    title: 'Task IDs',
+    dataIndex: 'taskIds',
+    key: 'taskIds',
   },
   {
     title: 'Employee IDs',
@@ -81,7 +87,8 @@ const openEditModal = (timeTable: TimeTable) => {
   editFormData.value = {
     id: timeTable.id,
     timeTableName: timeTable.timeTableName,
-    employeeIds: timeTable.employeeIds
+    taskIds: timeTable.taskIds,
+    employeeIds: timeTable.employeeIds,
   };
   isEditModalVisible.value = true;
 };
@@ -119,6 +126,7 @@ onMounted(() => {
           store.changeToLogin()
           fetchTimeTables()
           fetchAllEmployeeIds()
+          fetchAllTaskIds()
         } else {
           router.push({name: 'main'})
         }
@@ -131,6 +139,7 @@ onMounted(() => {
   } else {
     fetchTimeTables();
     fetchAllEmployeeIds()
+    fetchAllTaskIds()
   }
 });
 const employees = ref([])
@@ -148,7 +157,20 @@ const fetchAllEmployeeIds = () => {
     }
   })
 }
-
+const tasks = ref([])
+const fetchAllTaskIds = () => {
+  axios.get('http://localhost:8080/api/v1/tasks/ids', {
+    headers: {
+      Authorization: 'Bearer ' + token.value
+    },
+  }).then((response: AxiosResponse) => {
+    if (response.status === 200) {
+      response.data.forEach(data=>{
+        tasks.value.push({key:data, title: data})
+      })
+    }
+  })
+}
 
 </script>
 
@@ -174,6 +196,14 @@ const fetchAllEmployeeIds = () => {
       <a-form-item label="TimeTable Name">
         <a-input v-model:value="editFormData.timeTableName"></a-input>
       </a-form-item>
+      <a-form-item label="Task">
+        <a-transfer
+            v-model:target-keys="editFormData.taskIds"
+            :data-source="tasks"
+            :titles="['Available', 'Selected']"
+            :render="item => item.title"
+        />
+      </a-form-item>
       <a-form-item label="Employee">
       <a-transfer
           v-model:target-keys="editFormData.employeeIds"
@@ -195,6 +225,9 @@ const fetchAllEmployeeIds = () => {
     <template #bodyCell="{ column, record }">
       <template v-if="column.key === 'employeeIds'">
         {{ record.employeeIds.join(', ') }}
+      </template>
+      <template v-if="column.key === 'taskIds'">
+        {{ record.taskIds.join(', ') }}
       </template>
       <template v-if="column.key === 'action'">
         <a-space>

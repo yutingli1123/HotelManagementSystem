@@ -19,5 +19,6 @@ import java.util.List;
 public class TimeTableDto {
     private Long id;
     private String timeTableName;
+    private List<Long> taskIds;
     private List<Long> employeeIds;
 }

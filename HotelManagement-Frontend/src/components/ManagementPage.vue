@@ -114,8 +114,8 @@ const items = ref<MenuProps['items']>([
       </div>
     </div>
     <a-layout>
-      <a-layout-sider>
-        <a-menu style="height: 500px" v-model:selectedKeys="currentRoute" :items="items"
+      <a-layout-sider >
+        <a-menu style="height: 850px" v-model:selectedKeys="currentRoute" :items="items"
                 @click="(input)=>{router.push({name:input['key']})}"/>
       </a-layout-sider>
       <a-layout-content style="padding: 24px">
