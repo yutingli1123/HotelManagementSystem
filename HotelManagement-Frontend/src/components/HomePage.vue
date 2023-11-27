@@ -191,6 +191,7 @@ const logout = () => {
 </script>
 
 <template>
+  <RouterLink :to="{name:'management'}">DEBUG!!!</RouterLink>
   <a-modal v-model:open="loginModalOpen" title="Login" :mask-closable=false :closable=false>
     <template #footer>
       <a-button key="loginBack" @click="handleLoginCancel">Cancel</a-button>
