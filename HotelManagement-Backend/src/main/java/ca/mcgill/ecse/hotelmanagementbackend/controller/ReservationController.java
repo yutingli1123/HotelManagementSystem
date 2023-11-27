@@ -242,13 +242,13 @@ public class ReservationController {
     }
 
     @GetMapping("/by-id/{id}")
-    public Reservation getReservation(@PathVariable Long id) {
-        return reservationService.findById(id);
+    public Reservation getReservation(@PathVariable String id) {
+        return reservationService.findById(Long.parseLong(id));
     }
 
     @DeleteMapping("/by-id/{id}")
-    public void deleteReservation(@PathVariable Long id) {
-        reservationService.deleteById(id);
+    public void deleteReservation(@PathVariable String id) {
+        reservationService.deleteById(Long.parseLong(id));
     }
 }
 
