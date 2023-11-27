@@ -158,6 +158,45 @@ public class ReservationController {
         return reservation.getId();
     }
 
+    @PostMapping("/update")
+    public ResponseEntity<Boolean> updateReservation(@Valid @RequestBody ReservationDto reservationDto) {
+        Reservation reservationByDto = reservationService.findById(reservationDto.getId());
+
+        Customer customer = reservationByDto.getCustomer();
+
+        List<Reservation> customerReservations = customer.getReservationsForCustomer();
+        customerReservations.remove(reservationByDto);
+
+        List<Room> rooms = roomService.findAllByRoomType(reservationDto.getRoomType());
+        Iterator<Room> roomIterator = rooms.iterator();
+
+        while (roomIterator.hasNext()) {
+            Room room = roomIterator.next();
+            List<Reservation> reservations = room.getReservations();
+            for (Reservation reservation : reservations) {
+                if (!(reservation.getCheckOutDate().before(reservationDto.getCheckInDate())
+                        || reservation.getCheckInDate().after(reservationDto.getCheckOutDate()))) {
+                    roomIterator.remove();
+                    break;
+                }
+            }
+        }
+        Room room = rooms.get(0);
+        Date checkIn = reservationDto.getCheckInDate();
+        Date checkOut = reservationDto.getCheckOutDate();
+        long diffInMillies = checkOut.getTime() - checkIn.getTime();
+        long diffInDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+        reservationByDto.setCheckInDate(reservationDto.getCheckInDate());
+        reservationByDto.setCheckOutDate(reservationDto.getCheckOutDate());
+        reservationByDto.setRoom(room);
+        reservationByDto.setTotalFee((int) diffInDays * room.getFee());
+        customerReservations.add(reservationByDto);
+        customer.setReservationsForCustomer(customerReservations);
+        reservationService.save(reservationByDto);
+        customerService.save(customer);
+        return ResponseEntity.ok(Boolean.TRUE);
+    }
+
     @PostMapping("/book")
     public ResponseEntity<Boolean> bookReservation(@Valid @RequestBody BookInfoDto bookInfoDto, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         if (token != null) {
