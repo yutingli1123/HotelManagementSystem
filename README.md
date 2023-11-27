@@ -35,7 +35,7 @@ Deliverable 2:
 Deliverable 3: 
 | No 	| Team Member 	| Responsibilities 	| Individual Efforts(hr) 	|
 |---	|---	|---	|---	|
-| 1 	| Clara, Jabbour 	| Architectural modeling & Report 	| 20 hours 	|
+| 1 	| Clara, Jabbour 	| Architectural modeling & Report & Bug fixed 	| 24 hours 	|
 | 2 	| Hing, Hong Way 	| None 	| 0 hours 	|
 | 3 	| Cao, Simon 	| Integration of web frontend with backend services 	| 22 hours 	|
 | 4 	| Li, Yuting 	| Implementation of web frontend GUI &Fixing bugs 	| 26 hours + 	|
