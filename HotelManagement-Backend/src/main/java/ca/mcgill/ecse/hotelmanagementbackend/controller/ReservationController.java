@@ -1,5 +1,6 @@
 package ca.mcgill.ecse.hotelmanagementbackend.controller;
 
+import ca.mcgill.ecse.hotelmanagementbackend.dto.ReservationDto;
 import ca.mcgill.ecse.hotelmanagementbackend.entity.Customer;
 import ca.mcgill.ecse.hotelmanagementbackend.entity.Reservation;
 import ca.mcgill.ecse.hotelmanagementbackend.enumeration.Role;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -36,7 +38,7 @@ public class ReservationController {
     }
 
     @GetMapping("/{username}")
-    public ResponseEntity<List<Reservation>> getAllReservationsByUsername(@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @PathVariable String username) {
+    public ResponseEntity<List<ReservationDto>> getAllReservationsByUsername(@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @PathVariable String username) {
         if (token != null) {
             String[] formattedToken = token.split(" ");
             if (formattedToken[0].equals("Bearer")) {
@@ -46,7 +48,12 @@ public class ReservationController {
                     if (issuer.equals(username)) {
                         Customer customer = customerService.findByUsername(username);
                         if (customer != null) {
-                            return ResponseEntity.ok(reservationService.findAllByCustomer(customer));
+                            List<Reservation> reservationList = reservationService.findAllByCustomer(customer);
+                            List<ReservationDto> reservationDtos = new ArrayList<>();
+                            reservationList.forEach(reservation -> {
+                                reservationDtos.add(new ReservationDto(reservation.getId(),reservation.getCheckInDate(),reservation.getCheckOutDate(),reservation.getRoom().getType(),reservation.getRoom().getFee()));
+                            });
+                            return ResponseEntity.ok(reservationDtos);
                         } else {
                             return ResponseEntity.notFound().build();
                         }
@@ -56,7 +63,12 @@ public class ReservationController {
                 } else if (role == Role.OWNER || role == Role.EMPLOYEE) {
                     Customer customer = customerService.findByUsername(username);
                     if (customer != null) {
-                        return ResponseEntity.ok(reservationService.findAllByCustomer(customer));
+                        List<Reservation> reservationList = reservationService.findAllByCustomer(customer);
+                        List<ReservationDto> reservationDtos = new ArrayList<>();
+                        reservationList.forEach(reservation -> {
+                            reservationDtos.add(new ReservationDto(reservation.getId(),reservation.getCheckInDate(),reservation.getCheckOutDate(),reservation.getRoom().getType(),reservation.getRoom().getFee()));
+                        });
+                        return ResponseEntity.ok(reservationDtos);
                     } else {
                         return ResponseEntity.notFound().build();
                     }
