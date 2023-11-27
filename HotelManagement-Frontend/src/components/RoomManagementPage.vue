@@ -168,7 +168,7 @@ onMounted(() => {
 <template>
   <a-modal
       v-model:open="isEditModalVisible"
-      title="Edit Reservation"
+      title="Edit Room"
       :closable="false"
       :mask-closable="false"
   >
