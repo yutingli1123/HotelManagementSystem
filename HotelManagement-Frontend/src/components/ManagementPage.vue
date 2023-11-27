@@ -68,21 +68,14 @@ const items = ref<MenuProps['items']>([
 </script>
 
 <template>
-  <a-spin :spinning="loading">
-    <div class="header-image">
-      <div class="overlayer">
-        <div class="img-info">Hello, {{ name }}</div>
-      </div>
-    </div>
-    <a-layout>
-      <a-layout-sider>
-        <a-menu style="height: 500px" v-model:selectedKeys="currentRoute" :items="items" @click="(input)=>{router.push({name:input['key']})}"/>
-      </a-layout-sider>
-      <a-layout-content style="padding: 24px">
-        <RouterView :key="$route.fullPath"/>
-      </a-layout-content>
-    </a-layout>
-  </a-spin>
+  <a-layout>
+    <a-layout-sider>
+      <a-menu style="height: 500px" v-model:selectedKeys="currentRoute" :items="items" @click="(input)=>{router.push({name:input['key']})}"/>
+    </a-layout-sider>
+    <a-layout-content style="padding: 24px">
+      <RouterView :key="$route.fullPath"/>
+    </a-layout-content>
+  </a-layout>
 </template>
 
 

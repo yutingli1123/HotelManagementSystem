@@ -40,7 +40,7 @@ const columns = [
   },
 ];
 
-const fetchReservations = async (searchText = '') => {
+const fetchReservations = async () => {
   loading.value = true;
   try {
     const response = await axios.get(`http://localhost:8080/api/v1/reservations`);
