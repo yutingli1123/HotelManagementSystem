@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import {computed, h, reactive, ref} from "vue";
-import {LoginOutlined} from "@ant-design/icons-vue";
+import {computed, h, reactive, ref, watch} from "vue";
+import {ControlOutlined, LoginOutlined, LogoutOutlined, UserOutlined} from "@ant-design/icons-vue";
 import type {FormInstance, MenuProps} from "ant-design-vue";
 import {useRoute, useRouter} from "vue-router";
 import axios from "axios";
 import Cookies from 'js-cookie';
 import {message} from 'ant-design-vue';
+import {jwtDecode} from "jwt-decode";
 
 const router = useRouter()
 
@@ -54,13 +55,11 @@ const loginLoading = ref(false)
 interface LoginFormState {
   username: string;
   password: string;
-  remember: boolean;
 }
 
 const loginFormState = reactive<LoginFormState>({
   username: '',
   password: '',
-  remember: false,
 });
 
 const loginDisabled = computed(() => {
@@ -161,7 +160,26 @@ const onRegister = () => {
         });
   })
 }
-const login = ref(Cookies.get('token') != null)
+const token = ref(Cookies.get('token'))
+const login = ref(token.value != null)
+const role = ref(token.value != null ? jwtDecode(token.value)['role'] : '')
+console.log(role.value)
+watch(login, async () => {
+  if (login.value) {
+    token.value = Cookies.get('token')
+    role.value = token.value !=null ? jwtDecode(token.value)['role']: ''
+  }
+})
+
+const logout = () => {
+  Cookies.remove('token')
+  Cookies.remove('refresh_token')
+  role.value = ''
+  login.value = false
+  if (current_route.value != 'main' && current_route.value != 'rooms' && current_route.value != 'contact') {
+    router.push({name: 'main'})
+  }
+}
 </script>
 
 <template>
@@ -193,10 +211,6 @@ const login = ref(Cookies.get('token') != null)
           :rules="[{ required: true, message: 'Please input your password!' }]"
       >
         <a-input-password v-model:value="loginFormState.password"/>
-      </a-form-item>
-
-      <a-form-item name="remember" :wrapper-col="{ offset: 8, span: 16 }">
-        <a-checkbox v-model:checked="loginFormState.remember">Remember me</a-checkbox>
       </a-form-item>
     </a-form>
   </a-modal>
@@ -285,10 +299,19 @@ const login = ref(Cookies.get('token') != null)
           <a-divider type="vertical"/>
           <a-button type="link" class="link-button" @click="()=>{registerModalOpen=true}">Register</a-button>
         </div>
-        <div v-if="login">
-          <a-button type="link" :icon="h(LoginOutlined)" class="link-button"
-                    @click="()=>{router.push({name:'account'})}">
+        <div v-else>
+          <a-button v-if="role==='CUSTOMER'" type="link" :icon="h(UserOutlined)" class="link-button"
+                    @click="()=>{router.push({name:'info'})}">
             My Account
+          </a-button>
+          <a-button v-else-if="role=='EMPLOYEE' || role == 'OWNER'" type="link" :icon="h(ControlOutlined)"
+                    class="link-button"
+                    @click="()=>{router.push({name:'management'})}">
+            Manage Hotel
+          </a-button>
+          <a-button type="link" :icon="h(LogoutOutlined)" class="link-button"
+                    @click="logout">
+            Logout
           </a-button>
         </div>
       </a-space>

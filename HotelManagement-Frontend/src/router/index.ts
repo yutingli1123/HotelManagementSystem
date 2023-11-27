@@ -5,6 +5,9 @@ import RoomsPage from "@/components/RoomsPage.vue";
 import ContactPage from "@/components/ContactPage.vue";
 import ResultPage from "@/components/ResultPage.vue";
 import AccountPage from "@/components/AccountPage.vue";
+import InfoPage from "@/components/InfoPage.vue";
+import ReservationsPage from "@/components/ReservationsPage.vue";
+import ManagementPage from "@/components/ManagementPage.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -34,13 +37,31 @@ const router = createRouter({
                     name: 'result',
                     component: ResultPage
                 },
+                {
+                    path: 'my-account',
+                    name: 'account',
+                    component: AccountPage,
+                    children: [
+                        {
+                            path: '',
+                            name: 'info',
+                            component: InfoPage
+                        },
+                        {
+                            path: 'reservations',
+                            name: 'reservations',
+                            component: ReservationsPage
+                        }
+                    ]
+                },
+                {
+                    path: 'management',
+                    name: 'management',
+                    component: ManagementPage,
+                }
             ]
         },
-        {
-            path:'/my-account',
-            name: 'account',
-            component: AccountPage
-        }
+
     ]
 })
 

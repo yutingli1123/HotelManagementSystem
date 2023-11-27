@@ -1,12 +1,10 @@
 <script lang="ts" setup>
-import axios from 'axios'
-import Cookies from 'js-cookie'
-import { useRouter } from 'vue-router'
-import { computed, onMounted, reactive, ref } from 'vue'
-import type { FormInstance } from 'ant-design-vue'
-import jwtDecode from 'jwt-decode'
 
+import {ref} from "vue";
 
+const userModalOpen = ref(false)
+const taskModalOpen = ref(false)
+const reservationModalOpen = ref(false)
 </script>
 
 <template>
