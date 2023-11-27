@@ -215,10 +215,6 @@ onMounted(() => {
         :label-col="{ span: 6 }"
         :wrapper-col="{ span: 12 }"
     >
-      <a-form-item label="User ID">
-        <a-input-number v-model:value="addFormData.id" placeholder="Enter user ID" />
-      </a-form-item>
-
       <a-form-item label="Room Type">
         <a-select v-model:value="addFormData.type">
           <a-select-option value="REGULAR">Regular</a-select-option>
