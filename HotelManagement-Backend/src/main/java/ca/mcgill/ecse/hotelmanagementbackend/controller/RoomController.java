@@ -10,6 +10,7 @@ import ca.mcgill.ecse.hotelmanagementbackend.service.ReservationService;
 import ca.mcgill.ecse.hotelmanagementbackend.service.RoomService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -69,6 +70,18 @@ public class RoomController {
     public Long saveRoom(@Valid @RequestBody Room room) {
         roomService.save(room);
         return room.getId();
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<Boolean> saveRoom(@Valid @RequestBody RoomDto roomDto) {
+        Room room = roomService.findById(roomDto.getId());
+        if (room != null) {
+            room.setType(roomDto.getType());
+            room.setFee(roomDto.getFee());
+            roomService.save(room);
+            return ResponseEntity.ok(Boolean.TRUE);
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @PostMapping("/batch")
