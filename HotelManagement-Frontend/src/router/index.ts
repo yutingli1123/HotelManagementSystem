@@ -58,9 +58,26 @@ const router = createRouter({
                     path: 'management',
                     name: 'management',
                     component: ManagementPage,
-                }
+                    children: [
+                        {
+                            path: '',
+                            name: 'reservations',
+                            component: ReservationManagementPage
+                        },
+                        {
+                            path: 'users',
+                            name: 'users',
+                            component: UserManagementPage
+                        },
+                        {
+                            path: 'tasks',
+                            name: 'tasks',
+                            component: TaskManagementPage
+                        }
+                    ]
+                },
             ]
-        },
+        }
 
     ]
 })
