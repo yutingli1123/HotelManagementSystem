@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import {onMounted, ref} from 'vue';
+import {computed, onMounted, ref} from 'vue';
 import axios from 'axios';
 import {message} from "ant-design-vue";
 import {Ref} from "vue";
 import Cookies from "js-cookie";
 import router from "@/router";
-import dayjs from "dayjs";
+import dayjs, {Dayjs} from "dayjs";
 
 interface Reservation {
   id: number;
@@ -70,7 +70,6 @@ const fetchReservations = () => {
     },
   }).then(response => {
     if (response.status == 200) {
-
       reservations.value = response.data;
       reservations.value.forEach(reservation => {
         reservation.checkInDate = dayjs(reservation.checkInDate).format('MMM / DD / YYYY')
@@ -84,14 +83,19 @@ const fetchReservations = () => {
 };
 
 
-const deleteReservation = async (id) => {
-  axios.delete("http://localhost:8080/api/v1/reservations/by-id/{" + id + "}", {
+const deleteReservation = (id) => {
+  axios.delete("http://localhost:8080/api/v1/reservations/by-id/" + id, {
     headers: {
       Authorization: 'Bearer ' + token.value
     },
   })
-      .then(() => {
-        fetchReservations()
+      .then((response) => {
+        if (response.status == 200) {
+          message.info('Delete Successfully!')
+          fetchReservations()
+        } else {
+          message.error("Delete Failed!")
+        }
       })
       .catch(() => message.error("Delete Failed!"))
 };
@@ -106,24 +110,24 @@ const openEditModal = (reservation) => {
   isEditModalVisible.value = true;
 };
 
-
-const handleEditReservation = async () => {
-  try {
-    const response = await axios.post('http://localhost:8080/api/v1/reservations/update', editFormData.value, {
-      headers: {
-        Authorization: 'Bearer ' + token.value
-      },
-    });
+const handleEditReservation = () => {
+  axios.post('http://localhost:8080/api/v1/reservations/update', editFormData.value, {
+    headers: {
+      Authorization: 'Bearer ' + token.value
+    },
+  }).then(response => {
     if (response.status === 200) {
       // Update the reservations array with the edited data
       fetchReservations();
+      message.info('Update Successfully!')
       isEditModalVisible.value = false;
+    } else {
+      message.error('Update Failed!')
     }
-  } catch (error) {
-    console.error('Error updating reservation:', error);
-  }
+  }).catch(() => {
+    message.error('Update Failed!')
+  })
 };
-
 
 onMounted(() => {
   if (token.value == null) {
@@ -149,22 +153,43 @@ onMounted(() => {
     fetchReservations();
   }
 });
+const disabled_check_in_date = (date: Dayjs) => {
+  if (date.isBefore(dayjs())) {
+    return true
+  }
+}
 
+const disabled_check_out_date = (date: Dayjs) => {
+  if (date.subtract(1, 'day').isBefore(dayjs(editFormData.value.checkInDate))) {
+    return true
+  }
+}
+
+const date_checker = (date: Dayjs) => {
+  if (date.add(1, 'day').isAfter(dayjs(editFormData.value.checkOutDate))) {
+    editFormData.value.checkOutDate = date.add(1, 'day')
+  }
+}
 </script>
 
 <template>
   <a-modal
       v-model:open="isEditModalVisible"
       title="Edit Reservation"
-      @ok="handleEditReservation"
-      @cancel="() => {isEditModalVisible = false}"
+      :closable="false"
+      :mask-closable="false"
   >
+    <template #footer>
+      <a-button key="registerBack" @click="() => {isEditModalVisible = false}">Cancel</a-button>
+      <a-button key="registerSubmit" type="primary" :loading="loading"
+                @click="handleEditReservation">Update
+      </a-button>
+    </template>
     <a-form
         :model="editFormData"
-        :label-col="{ span: 5 }"
-        :wrapper-col="{ span: 19 }"
+        :label-col="{ span: 6 }"
+        :wrapper-col="{ span: 8 }"
     >
-      <!-- Room Type Dropdown -->
       <a-form-item label="Room Type">
         <a-select v-model:value="editFormData.roomType" placeholder="Select a room type">
           <a-select-option value="REGULAR">Regular</a-select-option>
@@ -173,56 +198,47 @@ onMounted(() => {
         </a-select>
       </a-form-item>
 
-      <!-- Check-in Date Selector -->
       <a-form-item label="Check-in Date">
         <a-date-picker
             v-model:value="editFormData.checkInDate"
             format="MMM / DD / YYYY"
             placeholder="Select check-in date"
+            :disabled-date="disabled_check_in_date" @change="date_checker"
         />
       </a-form-item>
 
-      <!-- Check-out Date Selector -->
       <a-form-item label="Check-out Date">
         <a-date-picker
             v-model:value="editFormData.checkOutDate"
             format="MMM / DD / YYYY"
             placeholder="Select check-out date"
+            :disabled-date="disabled_check_out_date"
         />
       </a-form-item>
     </a-form>
   </a-modal>
-  <!-- Main Layout -->
 
 
-  <!-- Reservation Table -->
-  <a-row :gutter="16" style="margin-top: 20px;">
-    <a-col :span="24">
-      <a-table
-          :columns="columns"
-          :rowKey="record => record.id"
-          :dataSource="reservations"
-          :loading="loading"
-      >
-        <template #bodyCell="{ column, record }">
-          <template v-if="column.key === 'action'">
-            <a-space>
-              <a-button type="primary" @click="openEditModal(record)">Edit</a-button>
-              <a-popconfirm
-                  title="Are you sure to delete this reservation?"
-                  @confirm="() => deleteReservation(record.id)"
-              >
-                <a-button danger>Delete</a-button>
-              </a-popconfirm>
-            </a-space>
-          </template>
-        </template>
-      </a-table>
-    </a-col>
-  </a-row>
-
-
-  <!-- Edit Reservation Modal -->
+  <a-table
+      :columns="columns"
+      :rowKey="record => record.id"
+      :dataSource="reservations"
+      :loading="loading"
+  >
+    <template #bodyCell="{ column, record }">
+      <template v-if="column.key === 'action'">
+        <a-space>
+          <a-button type="primary" @click="openEditModal(record)">Edit</a-button>
+          <a-popconfirm
+              title="Are you sure to delete this reservation?"
+              @confirm="() => deleteReservation(record.id)"
+          >
+            <a-button danger>Delete</a-button>
+          </a-popconfirm>
+        </a-space>
+      </template>
+    </template>
+  </a-table>
 
 </template>
 
