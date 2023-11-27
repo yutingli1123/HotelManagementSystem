@@ -1,5 +1,6 @@
 package ca.mcgill.ecse.hotelmanagementbackend.controller;
 
+import ca.mcgill.ecse.hotelmanagementbackend.dto.EmployeeDto;
 import ca.mcgill.ecse.hotelmanagementbackend.dto.PasswordDto;
 import ca.mcgill.ecse.hotelmanagementbackend.dto.UpdateUserDto;
 import ca.mcgill.ecse.hotelmanagementbackend.entity.Customer;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -34,6 +36,14 @@ public class EmployeeController {
     @GetMapping
     public List<Employee> getAllEmployees() {
         return employeeService.findAll();
+    }
+
+    @GetMapping("/ids")
+    public List<EmployeeDto> getAllEmployeeIds() {
+        List<Employee> employees = employeeService.findAll();
+        List<EmployeeDto> employeeDtos = new ArrayList<>();
+        employees.forEach(employee -> employeeDtos.add(new EmployeeDto(employee.getId(),employee.getName())));
+        return employeeDtos;
     }
 
     @GetMapping("/by-name/{name}") // Updated endpoint

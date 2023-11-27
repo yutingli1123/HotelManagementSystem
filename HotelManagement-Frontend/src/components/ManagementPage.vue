@@ -69,9 +69,15 @@ const items = ref<MenuProps['items']>([
     title: 'Reservations Management',
   },
   {
+    type: "divider"
+  },
+  {
     key: 'rooms-manage',
     label: 'Rooms Management',
     title: 'Rooms Management',
+  },
+  {
+    type: "divider"
   },
   {
     key: 'users',
@@ -79,9 +85,15 @@ const items = ref<MenuProps['items']>([
     title: 'User Management',
   },
   {
+    type: "divider"
+  },
+  {
     key: 'tasks',
     label: 'Task Management',
     title: 'Task Management',
+  },
+  {
+    type: "divider"
   },
   {
     key: 'timetables',

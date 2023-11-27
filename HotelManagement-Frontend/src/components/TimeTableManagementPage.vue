@@ -1,59 +1,40 @@
 <script setup lang="ts">
-import {computed, onMounted, ref} from 'vue';
-import axios from 'axios';
+import {onMounted, ref} from 'vue';
+import axios, {AxiosResponse} from 'axios';
 import {message} from "ant-design-vue";
 import {Ref} from "vue";
 import Cookies from "js-cookie";
 import router from "@/router";
-import dayjs, {Dayjs} from "dayjs";
 
-interface Task {
-  id: number;
-  startTime: number;
-  endTime: number;
-  dayOfTheWeek: string;
-  taskName: string;
-  taskDescription: string;
+interface TimeTable {
+  id:number;
+  timeTableName:string;
+  employeeIds:number[];
 }
 
-const tasks: Ref<Task[]> = ref([])
+const timeTables: Ref<TimeTable[]> = ref([])
 const loading = ref(false)
 const isEditModalVisible = ref(false)
-const editFormData: Ref<Task> = ref({})
+const editFormData: Ref<TimeTable> = ref({})
 
 const token: Ref<string> = ref(Cookies.get('token'))
 const refresh_token: Ref<string> = ref(Cookies.get('refresh_token'))
 
 const columns = [
   {
-    title: 'Task ID',
+    title: 'TimeTable ID',
     dataIndex: 'id',
     key: 'id',
   },
   {
-    title: 'Task Name',
-    dataIndex: 'taskName',
-    key: 'taskName',
+    title: 'TimeTable Name',
+    dataIndex: 'timeTableName',
+    key: 'timeTableName',
   },
   {
-    title: 'Task Description',
-    dataIndex: 'taskDescription',
-    key: 'taskDescription',
-  },
-  {
-    title: 'Day',
-    dataIndex: 'dayOfTheWeek',
-    key: 'dayOfTheWeek',
-  },
-  {
-    title: 'Start Time',
-    dataIndex: 'startTime',
-    key: 'startTime',
-  },
-  {
-    title: 'End Time',
-    dataIndex: 'endTime',
-    key: 'endTime',
+    title: 'Employee IDs',
+    dataIndex: 'employeeIds',
+    key: 'employeeIds',
   },
   {
     title: 'Action',
@@ -61,19 +42,16 @@ const columns = [
   },
 ];
 
-const fetchTasks = () => {
+const fetchTimeTables = () => {
   loading.value = true;
-  axios.get('http://localhost:8080/api/v1/tasks', {
+  axios.get('http://localhost:8080/api/v1/timeTables', {
     headers: {
       Authorization: 'Bearer ' + token.value
     },
   }).then(response => {
     if (response.status == 200) {
-      tasks.value = response.data;
-      tasks.value.forEach(task => {
-        task.startTime = dayjs(task.startTime, 'HH:mm:ss').format('hh:mm A')
-        task.endTime = dayjs(task.endTime, 'HH:mm:ss').format('hh:mm A')
-      })
+      console.log(response.data)
+      timeTables.value = response.data;
     }
     loading.value = false
   }).catch(() => {
@@ -82,8 +60,8 @@ const fetchTasks = () => {
 };
 
 
-const deleteTask = (id) => {
-  axios.delete("http://localhost:8080/api/v1/tasks/by-id/" + id, {
+const deleteTimeTable = (id) => {
+  axios.delete("http://localhost:8080/api/v1/timeTables/by-id/" + id, {
     headers: {
       Authorization: 'Bearer ' + token.value
     },
@@ -99,34 +77,25 @@ const deleteTask = (id) => {
       .catch(() => message.error("Delete Failed!"))
 }
 
-const openEditModal = (task: Task) => {
+const openEditModal = (timeTable: TimeTable) => {
   editFormData.value = {
-    id: task.id,
-    startTime: dayjs(task.startTime, 'HH:mm A'),
-    endTime: dayjs(task.endTime, 'HH:mm A'),
-    dayOfTheWeek: task.dayOfTheWeek,
-    taskName: task.taskName,
-    taskDescription: task.taskDescription,
+    id: timeTable.id,
+    timeTableName: timeTable.timeTableName,
+    employeeIds: timeTable.employeeIds
   };
   isEditModalVisible.value = true;
 };
 
-const handleEditTask = () => {
-  axios.put('http://localhost:8080/api/v1/tasks/update', {
-    id: editFormData.value.id,
-    startTime: editFormData.value.startTime.format('HH:mm:ss'),
-    endTime: editFormData.value.endTime.format('HH:mm:ss'),
-    dayOfTheWeek: editFormData.value.dayOfTheWeek,
-    taskName: editFormData.value.taskName,
-    taskDescription: editFormData.value.taskDescription,
-  }, {
+const handleEditTimeTable = () => {
+  console.log(editFormData.value)
+  axios.put('http://localhost:8080/api/v1/timeTables/update', editFormData.value, {
     headers: {
       Authorization: 'Bearer ' + token.value
     },
   }).then(response => {
     if (response.status === 200) {
       // Update the reservations array with the edited data
-      fetchTasks();
+      fetchTimeTables();
       message.info('Update Successfully!')
       isEditModalVisible.value = false;
       editFormData.value = {}
@@ -148,7 +117,8 @@ onMounted(() => {
           Cookies.set('token', token.value, {expires: new Date(new Date().getTime() + 15 * 60 * 1000)});
           Cookies.set('refresh_token', refresh_token.value, {expires: new Date(new Date().getTime() + 20 * 60 * 1000)});
           store.changeToLogin()
-          fetchTasks()
+          fetchTimeTables()
+          fetchAllEmployeeIds()
         } else {
           router.push({name: 'main'})
         }
@@ -159,43 +129,27 @@ onMounted(() => {
       router.push({name: 'main'})
     }
   } else {
-    fetchTasks();
+    fetchTimeTables();
+    fetchAllEmployeeIds()
   }
 });
-const submitDisabled = computed(() => {
-  return editFormData.value.taskDescription == '' || editFormData.value.taskName == ''
-})
+const employees = ref([])
+const fetchAllEmployeeIds = () => {
+  axios.get('http://localhost:8080/api/v1/employees/ids', {
+    headers: {
+      Authorization: 'Bearer ' + token.value
+    },
+  }).then((response: AxiosResponse) => {
+    if (response.status === 200) {
+      response.data.forEach(data=>{
+        employees.value.push({key:data.id, title: data.name})
+      })
 
-const date_checker = (time: Dayjs) => {
-  if (time.add(1, 'minute').isAfter(editFormData.value.endTime)) {
-    editFormData.value.endTime = time.add(1, 'minute')
-  }
+    }
+  })
 }
 
-const disabledEndTime = () => {
-  const selectedStartTime = editFormData.value.startTime;
-  const selectedHour = selectedStartTime.hour();
-  const selectedMinute = selectedStartTime.minute();
 
-  return {
-    disabledHours: () => {
-      const hours = [];
-      for (let i = 0; i < selectedHour; i++) {
-        hours.push(i);
-      }
-      return hours;
-    },
-    disabledMinutes: (selectedHour) => {
-      const minutes = [];
-      if (selectedHour === selectedStartTime.hour()) {
-        for (let i = 0; i < selectedMinute + 1; i++) {
-          minutes.push(i);
-        }
-      }
-      return minutes;
-    },
-  };
-}
 </script>
 
 <template>
@@ -207,45 +161,27 @@ const disabledEndTime = () => {
   >
     <template #footer>
       <a-button key="registerBack" @click="() => {isEditModalVisible = false}">Cancel</a-button>
-      <a-button key="registerSubmit" type="primary" :loading="loading" :disabled="submitDisabled"
-                @click="handleEditTask">Update
+      <a-button key="registerSubmit" type="primary" :loading="loading"
+                @click="handleEditTimeTable">Update
       </a-button>
     </template>
     <a-form
         :model="editFormData"
         :label-col="{ span: 6 }"
-        :wrapper-col="{ span: 16 }"
+        :wrapper-col="{ span: 20 }"
+        layout="vertical"
     >
-
-      <a-form-item label="Start Time">
-        <a-time-picker v-model:value="editFormData.startTime" format="HH:mm A" :use12-hours="true"
-                       @change="date_checker"/>
+      <a-form-item label="TimeTable Name">
+        <a-input v-model:value="editFormData.timeTableName"></a-input>
       </a-form-item>
-
-      <a-form-item label="End Time">
-        <a-time-picker v-model:value="editFormData.endTime" format="HH:mm A" :disabled-time="disabledEndTime"
-                       :use12-hours="true"/>
+      <a-form-item label="Employee">
+      <a-transfer
+          v-model:target-keys="editFormData.employeeIds"
+          :data-source="employees"
+          :titles="['Available', 'Selected']"
+          :render="item => '['+item.key+'] '+item.title"
+      />
       </a-form-item>
-      <a-form-item label="Day">
-        <a-select v-model:value="editFormData.dayOfTheWeek">
-          <a-select-option value="Mon">Mon</a-select-option>
-          <a-select-option value="Tue">Tue</a-select-option>
-          <a-select-option value="Wen">Wen</a-select-option>
-          <a-select-option value="Thu">Thu</a-select-option>
-          <a-select-option value="Fri">Fri</a-select-option>
-          <a-select-option value="Sat">Sat</a-select-option>
-          <a-select-option value="Sun">Sun</a-select-option>
-        </a-select>
-      </a-form-item>
-
-      <a-form-item label="Task Name">
-        <a-input v-model:value="editFormData.taskName"></a-input>
-      </a-form-item>
-
-      <a-form-item label="Task Description">
-        <a-input v-model:value="editFormData.taskDescription"></a-input>
-      </a-form-item>
-
     </a-form>
   </a-modal>
 
@@ -253,16 +189,19 @@ const disabledEndTime = () => {
   <a-table
       :columns="columns"
       :rowKey="record => record.id"
-      :dataSource="tasks"
+      :dataSource="timeTables"
       :loading="loading"
   >
     <template #bodyCell="{ column, record }">
+      <template v-if="column.key === 'employeeIds'">
+        {{ record.employeeIds.join(', ') }}
+      </template>
       <template v-if="column.key === 'action'">
         <a-space>
           <a-button type="primary" @click="openEditModal(record)">Edit</a-button>
           <a-popconfirm
               title="Are you sure to delete this reservation?"
-              @confirm="() => deleteTask(record.id)"
+              @confirm="() => deleteTimeTable(record.id)"
           >
             <a-button danger>Delete</a-button>
           </a-popconfirm>
