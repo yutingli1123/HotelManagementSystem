@@ -2,6 +2,10 @@
 import {onMounted, ref} from 'vue';
 import axios from 'axios';
 import {message} from "ant-design-vue";
+import {Ref} from "vue/dist/vue";
+import Cookies from "js-cookie";
+import {AxiosResponse} from "axios";
+import router from "@/router";
 
 const reservations = ref([]);
 const loading = ref(false);
@@ -12,6 +16,10 @@ const editFormData = ref({
   checkOutDate: '',
 });
 
+const token: Ref<string> = ref(Cookies.get('token'))
+const refresh_token: Ref<string> = ref(Cookies.get('refresh_token'))
+
+
 const columns = [
   {
     title: 'Reservation ID',
@@ -19,9 +27,9 @@ const columns = [
     key: 'id',
   },
   {
-    title: 'User Name',
-    dataIndex: 'userName',
-    key: 'userName',
+    title: 'Username',
+    dataIndex: 'username',
+    key: 'username',
   },
   {
     title: 'Room Type',
@@ -29,33 +37,44 @@ const columns = [
     key: 'roomType',
   },
   {
-    title: 'Check-in Date',
+    title: 'Check-In Date',
     dataIndex: 'checkInDate',
     key: 'checkInDate',
   },
   {
-    title: 'Check-out Date',
+    title: 'Check-Out Date',
     dataIndex: 'checkOutDate',
     key: 'checkOutDate',
   },
 ];
 
-const fetchReservations = async (searchText = '') => {
+const fetchReservations = () => {
   loading.value = true;
-  try {
-    const response = await axios.get(`http://localhost:8080/api/v1/reservations`);
-    reservations.value = response.data;
-  } catch (error) {
-    console.error('Failed to fetch reservations:', error);
-  } finally {
-    loading.value = false;
-  }
+  axios.get('http://localhost:8080/api/v1/reservations', {
+    headers: {
+      Authorization: 'Bearer ' + token.value
+    },
+  }).then(response => {
+    if (response.status == 200) {
+      console.log(response.data)
+      reservations.value = response.data;
+    }
+    loading.value = false
+  }).catch(() => {
+    loading.value = false
+  })
 };
 
 
 const deleteReservation = async (id) => {
-  axios.delete("http://localhost:8080/api/v1/reservations/by-id/{" + id + "}")
-      .then(() => {fetchReservations()})
+  axios.delete("http://localhost:8080/api/v1/reservations/by-id/{" + id + "}", {
+    headers: {
+      Authorization: 'Bearer ' + token.value
+    },
+  })
+      .then(() => {
+        fetchReservations()
+      })
       .catch((err) => message.error("delete failed"))
 };
 
@@ -71,7 +90,11 @@ const openEditModal = (reservation) => {
 
 const handleEditReservation = async () => {
   try {
-    const response = await axios.post(`http://localhost:8080/api/v1/reservations/${editFormData.value}`);
+    const response = await axios.post('http://localhost:8080/api/v1/reservations', editFormData.value, {
+      headers: {
+        Authorization: 'Bearer ' + token.value
+      },
+    });
     if (response.status === 200) {
       // Update the reservations array with the edited data
       fetchReservations();
@@ -84,7 +107,44 @@ const handleEditReservation = async () => {
 
 
 onMounted(() => {
-  fetchReservations();
+  if (token.value == null) {
+    if (refresh_token.value != null) {
+      axios.post('http://localhost:8080/api/v1/refresh', refresh_token.value).then((response) => {
+        if (response.status == 200) {
+          token.value = response.data['token']
+          refresh_token.value = response.data['refresh_token']
+          Cookies.set('token', token.value, {expires: new Date(new Date().getTime() + 15 * 60 * 1000)});
+          Cookies.set('refresh_token', refresh_token.value, {expires: new Date(new Date().getTime() + 20 * 60 * 1000)});
+          store.changeToLogin()
+          axios.get('http://localhost:8080/api/v1/customers/me', {
+            headers: {
+              Authorization: 'Bearer ' + token.value
+            },
+          }).then((response: AxiosResponse<Customer>) => {
+            if (response.status == 200) {
+              const nameList = response.data.name.split(' ')
+              infoFormState.firstname = nameList[0]
+              infoFormState.lastname = nameList[1]
+              infoFormState.email = response.data.email
+              infoFormState.username = response.data.username
+              loading.value = false
+              fetchReservations();
+            }
+          }).catch(() => {
+            loading.value = false
+          })
+        } else {
+          router.push({name: 'main'})
+        }
+      }).catch(() => {
+        router.push({name: 'main'})
+      })
+    } else {
+      router.push({name: 'main'})
+    }
+  } else {
+    fetchReservations();
+  }
 });
 
 </script>
@@ -115,7 +175,7 @@ onMounted(() => {
                     title="Are you sure to delete this reservation?"
                     @confirm="() => deleteReservation(record.id)"
                 >
-                  <a-button type="danger">Delete</a-button>
+                  <a-button danger>Delete</a-button>
                 </a-popconfirm>
               </a-space>
             </template>
@@ -185,13 +245,5 @@ onMounted(() => {
 .header-content {
   color: #fff;
   font-size: 20px;
-}
-
-.a-layout-header {
-  background-color: #1890ff;
-}
-
-.a-layout-footer {
-  background-color: #f0f2f5;
 }
 </style>

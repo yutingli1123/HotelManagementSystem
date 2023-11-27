@@ -40,8 +40,13 @@ public class ReservationController {
     private String secretKey;
 
     @GetMapping
-    public List<Reservation> getAllReservations() {
-        return reservationService.findAll();
+    public List<ReservationDto> getAllReservations() {
+
+        List<Reservation> reservationList = reservationService.findAll();
+        List<ReservationDto> reservationDtos = new ArrayList<>();
+        reservationList.forEach(reservation -> reservationDtos.add(new ReservationDto(reservation.getId(), reservation.getCheckInDate(), reservation.getCheckOutDate(), reservation.getRoom().getType(), reservation.getRoom().getFee(), reservation.getCustomer().getUsername())));
+        return reservationDtos;
+
     }
 
     @GetMapping("/{username}")
