@@ -64,9 +64,14 @@ const currentRoute = ref<string[]>([current_route.value]);
 // Management page navigation items
 const items = ref<MenuProps['items']>([
   {
-    key: 'reservations-manager',
+    key: 'reservations-manage',
     label: 'Reservations Management',
     title: 'Reservations Management',
+  },
+  {
+    key: 'rooms-manage',
+    label: 'Rooms Management',
+    title: 'Rooms Management',
   },
   {
     key: 'users',
@@ -78,6 +83,11 @@ const items = ref<MenuProps['items']>([
     label: 'Task Management',
     title: 'Task Management',
   },
+  {
+    key: 'timetables',
+    label: 'Time Table Management',
+    title: 'Time Table Management'
+  }
 ]);
 
 

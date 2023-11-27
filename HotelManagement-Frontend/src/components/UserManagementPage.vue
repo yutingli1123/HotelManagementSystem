@@ -83,7 +83,7 @@ const deleteUser = (id, accountType) => {
         .then((response) => {
           if (response.status == 200) {
             message.info('Delete Successfully!')
-            fetchReservations()
+            fetchUsers()
           } else {
             message.error("Delete Failed!")
           }
@@ -98,7 +98,7 @@ const deleteUser = (id, accountType) => {
         .then((response) => {
           if (response.status == 200) {
             message.info('Delete Successfully!')
-            fetchReservations()
+            fetchUsers()
           } else {
             message.error("Delete Failed!")
           }
@@ -113,7 +113,7 @@ const deleteUser = (id, accountType) => {
         .then((response) => {
           if (response.status == 200) {
             message.info('Delete Successfully!')
-            fetchReservations()
+            fetchUsers()
           } else {
             message.error("Delete Failed!")
           }
@@ -245,7 +245,7 @@ const submitDisabled = computed(() => {
         <a-input v-model:value="editFormData.lastName"></a-input>
       </a-form-item>
 
-      <a-form-item label="Check-out Date">
+      <a-form-item label="Email">
         <a-input v-model:value="editFormData.email"/>
       </a-form-item>
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, onMounted, ref} from 'vue';
+import {onMounted, ref} from 'vue';
 import axios from 'axios';
 import {message} from "ant-design-vue";
 import {Ref} from "vue";
@@ -111,7 +111,7 @@ const openEditModal = (reservation) => {
 };
 
 const handleEditReservation = () => {
-  axios.post('http://localhost:8080/api/v1/reservations/update', editFormData.value, {
+  axios.putt('http://localhost:8080/api/v1/reservations/update', editFormData.value, {
     headers: {
       Authorization: 'Bearer ' + token.value
     },

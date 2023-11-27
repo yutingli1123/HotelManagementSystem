@@ -41,6 +41,8 @@ declare module 'vue' {
     ASpace: typeof import('ant-design-vue/es')['Space']
     ASpin: typeof import('ant-design-vue/es')['Spin']
     ATable: typeof import('ant-design-vue/es')['Table']
+    ATimePicker: typeof import('ant-design-vue/es')['TimePicker']
+    ATimeRangePicker: typeof import('ant-design-vue/es')['TimeRangePicker']
     ATooltip: typeof import('ant-design-vue/es')['Tooltip']
     ATypography: typeof import('ant-design-vue/es')['Typography']
     ATypographyParagraph: typeof import('ant-design-vue/es')['TypographyParagraph']
@@ -53,11 +55,13 @@ declare module 'vue' {
     ReservationManagementPage: typeof import('./src/components/ReservationManagementPage.vue')['default']
     ReservationsPage: typeof import('./src/components/ReservationsPage.vue')['default']
     ResultPage: typeof import('./src/components/ResultPage.vue')['default']
+    RoomManagementPage: typeof import('./src/components/RoomManagementPage.vue')['default']
     RoomsPage: typeof import('./src/components/RoomsPage.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SuccessPage: typeof import('./src/components/SuccessPage.vue')['default']
     TaskManagementPage: typeof import('./src/components/TaskManagementPage.vue')['default']
+    TimeTableManagementPage: typeof import('./src/components/TimeTableManagementPage.vue')['default']
     UserManagementPage: typeof import('./src/components/UserManagementPage.vue')['default']
   }
 }

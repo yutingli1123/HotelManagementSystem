@@ -13,6 +13,8 @@ import SuccessPage from "@/components/SuccessPage.vue";
 import ReservationManagementPage from "@/components/ReservationManagementPage.vue";
 import UserManagementPage from "@/components/UserManagementPage.vue";
 import TaskManagementPage from "@/components/TaskManagementPage.vue";
+import RoomManagementPage from "@/components/RoomManagementPage.vue";
+import TimeTableManagementPage from "@/components/TimeTableManagementPage.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -76,7 +78,7 @@ const router = createRouter({
                     children: [
                         {
                             path: '',
-                            name: 'reservations-manager',
+                            name: 'reservations-manage',
                             component: ReservationManagementPage
                         },
                         {
@@ -88,6 +90,16 @@ const router = createRouter({
                             path: 'tasks',
                             name: 'tasks',
                             component: TaskManagementPage
+                        },
+                        {
+                            path: 'rooms-manage',
+                            name: 'rooms-manage',
+                            component: RoomManagementPage
+                        },
+                        {
+                            path: 'timetables',
+                            name: 'timetables',
+                            component: TimeTableManagementPage
                         },
                     ]
                 },

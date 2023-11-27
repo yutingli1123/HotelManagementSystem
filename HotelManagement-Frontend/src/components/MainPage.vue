@@ -14,15 +14,11 @@ const check_in_date = ref<Dayjs>(today)
 const check_out_date = ref<Dayjs>(today.add(1, 'day'))
 
 const disabled_check_in_date = (date: Dayjs) => {
-  if (date.isBefore(today)) {
-    return true
-  }
+  return date.isBefore(today)
 }
 
 const disabled_check_out_date = (date: Dayjs) => {
-  if (date.subtract(1, 'day').isBefore(check_in_date.value)) {
-    return true
-  }
+  return date.subtract(1, 'day').isBefore(check_in_date.value)
 }
 
 const date_checker = (date: Dayjs) => {
@@ -142,7 +138,7 @@ const submit = () => {
       <a-card hoverable style="width: 350px">
         <template #cover>
           <img
-              src="regular.jpg" alt="Regular Room"
+              src="/regular.jpg" alt="Regular Room"
           />
         </template>
         <template #actions>
@@ -172,7 +168,7 @@ const submit = () => {
       <a-card hoverable style="width: 350px">
         <template #cover>
           <img
-              src="deluxe.jpg" alt="Deluxe Room"
+              src="/deluxe.jpg" alt="Deluxe Room"
           />
         </template>
         <template #actions>
@@ -207,7 +203,7 @@ const submit = () => {
       <a-card hoverable style="width: 350px">
         <template #cover>
           <img
-              src="double.jpg" alt="Double Room"
+              src="/double.jpg" alt="Double Room"
           />
         </template>
         <template #actions>

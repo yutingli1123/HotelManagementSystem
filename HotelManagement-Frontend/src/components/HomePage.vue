@@ -323,7 +323,7 @@ onMounted(() => {
           </a-button>
           <a-button v-else-if="role=='EMPLOYEE' || role == 'OWNER'" type="link" :icon="h(ControlOutlined)"
                     class="link-button"
-                    @click="()=>{router.push({name:'reservations-manager'})}">
+                    @click="()=>{router.push({name:'reservations-manage'})}">
             Manage Hotel
           </a-button>
           <a-button type="link" :icon="h(LogoutOutlined)" class="link-button"
