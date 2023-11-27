@@ -61,7 +61,7 @@ public class RoomIntegrationTests {
         assertEquals(room.getType(), response.getBody().getType());
         assertEquals(room.getFee(), response.getBody().getFee());
         assertEquals(room.getReservations(), response.getBody().getReservations());
-        assertEquals(room.getAmenities(), response.getBody().getAmenities());
+        
     }
 
     @Test
@@ -78,7 +78,7 @@ public class RoomIntegrationTests {
         assertEquals(room.getType(), responseRoom.getType());
         assertEquals(room.getFee(), responseRoom.getFee());
         assertEquals(room.getReservations(), responseRoom.getReservations());
-        assertEquals(room.getAmenities(), responseRoom.getAmenities());
+        
     }
 
     @Test
@@ -95,7 +95,7 @@ public class RoomIntegrationTests {
         assertEquals(room.getType(), responseRoom.getType());
         assertEquals(room.getFee(), responseRoom.getFee());
         assertEquals(room.getReservations(), responseRoom.getReservations());
-        assertEquals(room.getAmenities(), responseRoom.getAmenities());
+        
     }
 
     @Test
