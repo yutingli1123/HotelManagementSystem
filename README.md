@@ -39,7 +39,7 @@ The Hotel Management System is a comprehensive web application designed to strea
 | 2 	| Hing, Hong Way 	| None 	| 0 hours 	|
 | 3 	| Cao, Simon 	| Integration of web frontend with backend services 	| 24 hours 	|
 | 4 	| Li, Yuting 	| Implementation of web frontend GUI &Fixing bugs 	| 28 hours + 	|
-| 5 	| Rao, Simiao 	| Backend test Updating & Controller Updating & Bug fixed	| 21 hours 	|
+| 5 	| Rao, Simiao 	| Backend test Updating & Controller Updating & Report	| 21 hours 	|
 | 6 	| Sami, Bayoud 	|  Architectural modeling & Report  	| 20 hours 	|
 
 ## Project Documentation 
