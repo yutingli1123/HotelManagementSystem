@@ -2,15 +2,25 @@
 import {onMounted, ref} from 'vue';
 import axios from 'axios';
 import {message} from "ant-design-vue";
-import {Ref} from "vue/dist/vue";
+import {Ref} from "vue";
 import Cookies from "js-cookie";
-import {AxiosResponse} from "axios";
 import router from "@/router";
+import dayjs from "dayjs";
 
-const reservations = ref([]);
+interface Reservation {
+  id: number;
+  username: string;
+  checkInDate: number;
+  checkOutDate: number;
+  roomType: string;
+  fee: number;
+}
+
+const reservations: Ref<Reservation[]> = ref([]);
 const loading = ref(false);
 const isEditModalVisible = ref(false);
 const editFormData = ref({
+  id: 0,
   roomType: '',
   checkInDate: '',
   checkOutDate: '',
@@ -46,6 +56,10 @@ const columns = [
     dataIndex: 'checkOutDate',
     key: 'checkOutDate',
   },
+  {
+    title: 'Action',
+    key: 'action',
+  },
 ];
 
 const fetchReservations = () => {
@@ -56,8 +70,12 @@ const fetchReservations = () => {
     },
   }).then(response => {
     if (response.status == 200) {
-      console.log(response.data)
+
       reservations.value = response.data;
+      reservations.value.forEach(reservation => {
+        reservation.checkInDate = dayjs(reservation.checkInDate).format('MMM / DD / YYYY')
+        reservation.checkOutDate = dayjs(reservation.checkOutDate).format('MMM / DD / YYYY')
+      })
     }
     loading.value = false
   }).catch(() => {
@@ -75,14 +93,15 @@ const deleteReservation = async (id) => {
       .then(() => {
         fetchReservations()
       })
-      .catch((err) => message.error("delete failed"))
+      .catch(() => message.error("Delete Failed!"))
 };
 
 const openEditModal = (reservation) => {
   editFormData.value = {
+    id: reservation.id,
     roomType: reservation.roomType,
-    checkInDate: reservation.checkInDate,
-    checkOutDate: reservation.checkOutDate,
+    checkInDate: dayjs(reservation.checkInDate),
+    checkOutDate: dayjs(reservation.checkOutDate),
   };
   isEditModalVisible.value = true;
 };
@@ -90,7 +109,7 @@ const openEditModal = (reservation) => {
 
 const handleEditReservation = async () => {
   try {
-    const response = await axios.post('http://localhost:8080/api/v1/reservations', editFormData.value, {
+    const response = await axios.post('http://localhost:8080/api/v1/reservations/update', editFormData.value, {
       headers: {
         Authorization: 'Bearer ' + token.value
       },
@@ -116,23 +135,7 @@ onMounted(() => {
           Cookies.set('token', token.value, {expires: new Date(new Date().getTime() + 15 * 60 * 1000)});
           Cookies.set('refresh_token', refresh_token.value, {expires: new Date(new Date().getTime() + 20 * 60 * 1000)});
           store.changeToLogin()
-          axios.get('http://localhost:8080/api/v1/customers/me', {
-            headers: {
-              Authorization: 'Bearer ' + token.value
-            },
-          }).then((response: AxiosResponse<Customer>) => {
-            if (response.status == 200) {
-              const nameList = response.data.name.split(' ')
-              infoFormState.firstname = nameList[0]
-              infoFormState.lastname = nameList[1]
-              infoFormState.email = response.data.email
-              infoFormState.username = response.data.username
-              loading.value = false
-              fetchReservations();
-            }
-          }).catch(() => {
-            loading.value = false
-          })
+          fetchReservations()
         } else {
           router.push({name: 'main'})
         }
@@ -150,63 +153,23 @@ onMounted(() => {
 </script>
 
 <template>
-  <!-- Main Layout -->
-  <a-layout class="layout">
-    <a-layout-header>
-      <!-- Header Section -->
-      <div class="header-content">Reservation Management</div>
-    </a-layout-header>
-
-    <a-layout-content style="padding: 50px">
-
-      <!-- Reservation Table -->
-      <a-row :gutter="16" style="margin-top: 20px;">
-        <a-col :span="24">
-          <a-table
-              :columns="columns"
-              :rowKey="record => record.id"
-              :dataSource="reservations"
-              :loading="loading"
-          >
-            <template #actions="{ record }">
-              <a-space>
-                <a-button type="primary" @click="openEditModal(record)">Edit</a-button>
-                <a-popconfirm
-                    title="Are you sure to delete this reservation?"
-                    @confirm="() => deleteReservation(record.id)"
-                >
-                  <a-button danger>Delete</a-button>
-                </a-popconfirm>
-              </a-space>
-            </template>
-          </a-table>
-        </a-col>
-      </a-row>
-    </a-layout-content>
-
-    <a-layout-footer style="text-align: center">
-      Reservation Management System ©2023
-    </a-layout-footer>
-  </a-layout>
-
-  <!-- Edit Reservation Modal -->
   <a-modal
-      v-model:visible="isEditModalVisible"
+      v-model:open="isEditModalVisible"
       title="Edit Reservation"
       @ok="handleEditReservation"
-      @cancel="() => isEditModalVisible = false"
+      @cancel="() => {isEditModalVisible = false}"
   >
     <a-form
         :model="editFormData"
-        label-col="{ span: 5 }"
-        wrapper-col="{ span: 19 }"
+        :label-col="{ span: 5 }"
+        :wrapper-col="{ span: 19 }"
     >
       <!-- Room Type Dropdown -->
       <a-form-item label="Room Type">
         <a-select v-model:value="editFormData.roomType" placeholder="Select a room type">
-          <a-select-option value="regular">Regular</a-select-option>
-          <a-select-option value="deluxe">Deluxe</a-select-option>
-          <a-select-option value="luxury">Luxury</a-select-option>
+          <a-select-option value="REGULAR">Regular</a-select-option>
+          <a-select-option value="DELUXE">Deluxe</a-select-option>
+          <a-select-option value="DOUBLE">Luxury</a-select-option>
         </a-select>
       </a-form-item>
 
@@ -214,7 +177,7 @@ onMounted(() => {
       <a-form-item label="Check-in Date">
         <a-date-picker
             v-model:value="editFormData.checkInDate"
-            format="YYYY-MM-DD"
+            format="MMM / DD / YYYY"
             placeholder="Select check-in date"
         />
       </a-form-item>
@@ -223,27 +186,47 @@ onMounted(() => {
       <a-form-item label="Check-out Date">
         <a-date-picker
             v-model:value="editFormData.checkOutDate"
-            format="YYYY-MM-DD"
+            format="MMM / DD / YYYY"
             placeholder="Select check-out date"
         />
       </a-form-item>
     </a-form>
   </a-modal>
+  <!-- Main Layout -->
+
+
+  <!-- Reservation Table -->
+  <a-row :gutter="16" style="margin-top: 20px;">
+    <a-col :span="24">
+      <a-table
+          :columns="columns"
+          :rowKey="record => record.id"
+          :dataSource="reservations"
+          :loading="loading"
+      >
+        <template #bodyCell="{ column, record }">
+          <template v-if="column.key === 'action'">
+            <a-space>
+              <a-button type="primary" @click="openEditModal(record)">Edit</a-button>
+              <a-popconfirm
+                  title="Are you sure to delete this reservation?"
+                  @confirm="() => deleteReservation(record.id)"
+              >
+                <a-button danger>Delete</a-button>
+              </a-popconfirm>
+            </a-space>
+          </template>
+        </template>
+      </a-table>
+    </a-col>
+  </a-row>
+
+
+  <!-- Edit Reservation Modal -->
+
 </template>
 
 
 <style scoped>
-.layout {
-  background: #f0f2f5;
-}
 
-.header-content {
-  color: #fff;
-  font-size: 20px;
-}
-
-.header-content {
-  color: #fff;
-  font-size: 20px;
-}
 </style>

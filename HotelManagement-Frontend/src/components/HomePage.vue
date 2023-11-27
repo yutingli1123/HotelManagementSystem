@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, h, onMounted, reactive, Ref, ref, watch} from "vue";
+import {computed, h, onMounted, reactive, Ref, ref} from "vue";
 import {ControlOutlined, LoginOutlined, LogoutOutlined, UserOutlined} from "@ant-design/icons-vue";
 import type {FormInstance, MenuProps} from "ant-design-vue";
 import {useRoute, useRouter} from "vue-router";
@@ -7,7 +7,6 @@ import axios from "axios";
 import Cookies from 'js-cookie';
 import {message} from 'ant-design-vue';
 import {useStore} from "@/stores/stateStore";
-import {jwtDecode} from "jwt-decode";
 
 const router = useRouter()
 
@@ -17,7 +16,8 @@ const current_route = ref(route.name ? route.name.toString() : 'main')
 
 const loginFormRef: Ref<FormInstance> = ref<FormInstance>();
 const registerFormRef: Ref<FormInstance> = ref<FormInstance>();
-
+const token: Ref<string> = ref(Cookies.get('token'))
+const refresh_token: Ref<string> = ref(Cookies.get('refresh_token'))
 const current = ref<string[]>([current_route.value]);
 const items = ref<MenuProps['items']>([
   {
@@ -108,7 +108,7 @@ const onLogin = () => {
         .then((response) => {
           if (response.status == 200) {
             const token = response.data['token']
-            Cookies.set('token', token, {expires: new Date(new Date().getTime() + 3 * 1000)});
+            Cookies.set('token', token, {expires: new Date(new Date().getTime() + 15*60 * 1000)});
             Cookies.set('refresh_token', response.data['refresh_token'], {expires: new Date(new Date().getTime() + 20 * 60 * 1000)});
             loginLoading.value = false;
             loginModalOpen.value = false;
@@ -181,10 +181,25 @@ const logout = () => {
     router.push({name: 'main'})
   }
 }
+
+onMounted(() => {
+  if (token.value == null) {
+    if (refresh_token.value != null) {
+      axios.post('http://localhost:8080/api/v1/refresh', refresh_token.value).then((response) => {
+        if (response.status == 200) {
+          token.value = response.data['token']
+          refresh_token.value = response.data['refresh_token']
+          Cookies.set('token', token.value, {expires: new Date(new Date().getTime() + 15 *60* 1000)});
+          Cookies.set('refresh_token', refresh_token.value, {expires: new Date(new Date().getTime() + 20 * 60 * 1000)});
+          store.changeToLogin()
+        }
+      })
+    }
+  }
+})
 </script>
 
 <template>
-  <RouterLink :to="{name:'management'}">DEBUG!!!</RouterLink>
   <a-modal v-model:open="loginModalOpen" title="Login" :mask-closable=false :closable=false>
     <template #footer>
       <a-button key="loginBack" @click="handleLoginCancel">Cancel</a-button>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Cookies from 'js-cookie'
-import {onMounted, Ref, ref, watch} from "vue";
+import {onMounted, Ref, ref} from "vue";
 import axios from "axios";
 import {useRoute, useRouter} from "vue-router";
 import {MenuProps} from "ant-design-vue";
@@ -85,7 +85,8 @@ const items = ref<MenuProps['items']>([
 
 <template>
   <a-spin :spinning="loading">
-    <div class="header-image">
+    <div style="position: relative">
+      <img class="background_image" src="/account_background.jpg" alt="Background Image"/>
       <div class="overlayer">
         <div class="img-info">Hello, {{ name }}</div>
       </div>
@@ -104,50 +105,29 @@ const items = ref<MenuProps['items']>([
 
 
 <style scoped>
+.background_image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
 .overlayer {
+  background: rgba(0, 0, 0, 0.4);
   position: absolute;
   top: 0;
+  bottom: 0;
   left: 0;
   right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.a-layout-sider {
-  background: #fff;
-  border-right: 1px solid #e8e8e8;
-}
-
-.a-menu {
-  height: 100%;
-  border-right: none;
-}
-
-.a-menu-item {
-  font-size: 1rem;
-  color: #595959;
-}
-
-.a-menu-item:hover {
-  background: #f5f5f5;
-}
-
-.a-menu-item-selected {
-  background-color: #e6f7ff;
-  color: #1890ff;
-}
-
-.a-layout-content {
-  padding: 24px;
-  background: #fff;
-  min-height: 280px;
-}
-
-.a-spin {
-  max-width: 100%;
+.img-info {
+  color: white;
+  font-size: 60px;
+  text-align: center;
+  font-family: "Times New Roman", serif;
 }
 </style>
 
