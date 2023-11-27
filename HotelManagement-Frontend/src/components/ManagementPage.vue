@@ -49,8 +49,8 @@ const currentRoute = ref<string[]>([current_route.value]);
 const items = ref<MenuProps['items']>([
   {
     key: 'reservations',
-    label: 'My Reservations',
-    title: 'My Reservations',
+    label: 'Reservations Management',
+    title: 'Reservations Management',
   },
   {
     key: 'users',
