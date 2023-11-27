@@ -49,11 +49,14 @@ declare module 'vue' {
     InfoPage: typeof import('./src/components/InfoPage.vue')['default']
     MainPage: typeof import('./src/components/MainPage.vue')['default']
     ManagementPage: typeof import('./src/components/ManagementPage.vue')['default']
+    ReservationManagementPage: typeof import('./src/components/ReservationManagementPage.vue')['default']
     ReservationsPage: typeof import('./src/components/ReservationsPage.vue')['default']
     ResultPage: typeof import('./src/components/ResultPage.vue')['default']
     RoomsPage: typeof import('./src/components/RoomsPage.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SuccessPage: typeof import('./src/components/SuccessPage.vue')['default']
+    TaskManagementPage: typeof import('./src/components/TaskManagementPage.vue')['default']
+    UserManagementPage: typeof import('./src/components/UserManagementPage.vue')['default']
   }
 }

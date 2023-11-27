@@ -1,11 +1,14 @@
 package ca.mcgill.ecse.hotelmanagementbackend.controller;
 
+import ca.mcgill.ecse.hotelmanagementbackend.dto.BookInfoDto;
 import ca.mcgill.ecse.hotelmanagementbackend.dto.ReservationDto;
 import ca.mcgill.ecse.hotelmanagementbackend.entity.Customer;
 import ca.mcgill.ecse.hotelmanagementbackend.entity.Reservation;
+import ca.mcgill.ecse.hotelmanagementbackend.entity.Room;
 import ca.mcgill.ecse.hotelmanagementbackend.enumeration.Role;
 import ca.mcgill.ecse.hotelmanagementbackend.service.CustomerService;
 import ca.mcgill.ecse.hotelmanagementbackend.service.ReservationService;
+import ca.mcgill.ecse.hotelmanagementbackend.service.RoomService;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import jakarta.validation.Valid;
@@ -19,7 +22,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @CrossOrigin
@@ -29,6 +34,8 @@ public class ReservationController {
     private ReservationService reservationService;
     @Autowired
     private CustomerService customerService;
+    @Autowired
+    private RoomService roomService;
     @Value("${security.jwt.token.secret-key}")
     private String secretKey;
 
@@ -50,7 +57,7 @@ public class ReservationController {
                         if (customer != null) {
                             List<Reservation> reservationList = reservationService.findAllByCustomer(customer);
                             List<ReservationDto> reservationDtos = new ArrayList<>();
-                            reservationList.forEach(reservation -> reservationDtos.add(new ReservationDto(reservation.getId(),reservation.getCheckInDate(),reservation.getCheckOutDate(),reservation.getRoom().getType(),reservation.getRoom().getFee(), reservation.getCustomer().getUsername())));
+                            reservationList.forEach(reservation -> reservationDtos.add(new ReservationDto(reservation.getId(), reservation.getCheckInDate(), reservation.getCheckOutDate(), reservation.getRoom().getType(), reservation.getRoom().getFee(), reservation.getCustomer().getUsername())));
                             return ResponseEntity.ok(reservationDtos);
                         } else {
                             return ResponseEntity.notFound().build();
@@ -63,7 +70,7 @@ public class ReservationController {
                     if (customer != null) {
                         List<Reservation> reservationList = reservationService.findAllByCustomer(customer);
                         List<ReservationDto> reservationDtos = new ArrayList<>();
-                        reservationList.forEach(reservation -> reservationDtos.add(new ReservationDto(reservation.getId(),reservation.getCheckInDate(),reservation.getCheckOutDate(),reservation.getRoom().getType(),reservation.getRoom().getFee(), reservation.getCustomer().getUsername())));
+                        reservationList.forEach(reservation -> reservationDtos.add(new ReservationDto(reservation.getId(), reservation.getCheckInDate(), reservation.getCheckOutDate(), reservation.getRoom().getType(), reservation.getRoom().getFee(), reservation.getCustomer().getUsername())));
                         return ResponseEntity.ok(reservationDtos);
                     } else {
                         return ResponseEntity.notFound().build();
@@ -133,7 +140,7 @@ public class ReservationController {
                         return ResponseEntity.notFound().build();
                     }
                 } else if (role == Role.OWNER || role == Role.EMPLOYEE) {
-                    return ResponseEntity.ok(reservationService.findAllByCheckInDateAndCheckOutDateRange(checkInDate,checkOutDate));
+                    return ResponseEntity.ok(reservationService.findAllByCheckInDateAndCheckOutDateRange(checkInDate, checkOutDate));
                 }
             }
         }
@@ -144,6 +151,50 @@ public class ReservationController {
     public Long saveReservation(@Valid @RequestBody Reservation reservation) {
         reservationService.save(reservation);
         return reservation.getId();
+    }
+
+    @PostMapping("/book")
+    public ResponseEntity<Boolean> bookReservation(@Valid @RequestBody BookInfoDto bookInfoDto, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        if (token != null) {
+            String[] formattedToken = token.split(" ");
+            if (formattedToken[0].equals("Bearer")) {
+                String issuer = JWT.require(Algorithm.HMAC256(secretKey)).build().verify(formattedToken[1]).getIssuer();
+
+                Customer customer = customerService.findByUsername(issuer);
+                if (customer != null) {
+                    List<Room> rooms = roomService.findAllByRoomType(bookInfoDto.getRoomType());
+                    Iterator<Room> roomIterator = rooms.iterator();
+
+                    while (roomIterator.hasNext()) {
+                        Room room = roomIterator.next();
+                        List<Reservation> reservations = room.getReservations();
+                        for (Reservation reservation : reservations) {
+                            if (!(reservation.getCheckOutDate().before(bookInfoDto.getCheckInDate())
+                                    || reservation.getCheckInDate().after(bookInfoDto.getCheckOutDate()))) {
+                                roomIterator.remove();
+                                break;
+                            }
+                        }
+                    }
+                    Room room = rooms.get(0);
+                    Date checkIn = bookInfoDto.getCheckInDate();
+                    Date checkOut = bookInfoDto.getCheckOutDate();
+                    long diffInMillies = checkOut.getTime() - checkIn.getTime();
+                    long diffInDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+                    Reservation reservation = new Reservation(bookInfoDto.getCheckInDate(), bookInfoDto.getCheckOutDate(), room, (int) diffInDays * room.getFee());
+                    reservation.setCustomer(customer);
+                    List<Reservation> customerReservations = customer.getReservationsForCustomer();
+                    customerReservations.add(reservation);
+                    customer.setReservationsForCustomer(customerReservations);
+                    reservationService.save(reservation);
+                    customerService.save(customer);
+                    return ResponseEntity.ok(Boolean.TRUE);
+                } else {
+                    return ResponseEntity.notFound().build();
+                }
+            }
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
     @GetMapping("/by-id/{id}")

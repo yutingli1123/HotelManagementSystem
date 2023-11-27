@@ -18,15 +18,17 @@ public class Reservation {
     private Long id;
     private Date checkInDate;
     private Date checkOutDate;
+    private Integer totalFee;
     @ManyToOne
     private Room room;
     @ManyToOne
     private Customer customer;
 
 
-    public Reservation(Date checkInDate, Date checkOutDate, Room room) {
+    public Reservation(Date checkInDate, Date checkOutDate, Room room, Integer totalFee) {
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
         this.room = room;
+        this.totalFee = totalFee;
     }
 }
