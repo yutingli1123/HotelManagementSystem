@@ -20,22 +20,22 @@ const router = createRouter({
                 {
                     path: '',
                     name: 'main',
-                    component: MainPage
+                    component: MainPage,
                 },
                 {
                     path: 'rooms',
                     name: 'rooms',
-                    component: RoomsPage
+                    component: RoomsPage,
                 },
                 {
                     path: 'contact',
                     name: 'contact',
-                    component: ContactPage
+                    component: ContactPage,
                 },
                 {
                     path: 'result',
                     name: 'result',
-                    component: ResultPage
+                    component: ResultPage,
                 },
                 {
                     path: 'my-account',
@@ -45,12 +45,12 @@ const router = createRouter({
                         {
                             path: '',
                             name: 'info',
-                            component: InfoPage
+                            component: InfoPage,
                         },
                         {
                             path: 'reservations',
                             name: 'reservations',
-                            component: ReservationsPage
+                            component: ReservationsPage,
                         }
                     ]
                 },
@@ -58,10 +58,9 @@ const router = createRouter({
                     path: 'management',
                     name: 'management',
                     component: ManagementPage,
-                }
-            ]
+                },
+            ],
         },
-
     ]
 })
 
