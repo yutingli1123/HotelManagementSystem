@@ -4,7 +4,9 @@ import axios from 'axios';
 import {message} from "ant-design-vue";
 import {Ref} from "vue";
 import Cookies from "js-cookie";
-import router from "@/router";
+import {useRouter} from "vue-router";
+
+const router = useRouter()
 
 interface User {
   id: number;
@@ -12,14 +14,17 @@ interface User {
   name: string;
   username: string;
   email: string;
+  salary: number;
+  password: string;
 }
 
 const users: Ref<User[]> = ref([])
 const loading = ref(false)
+const addLoading = ref(false)
 const isEditModalVisible = ref(false)
 const isAddModalVisible = ref(false)
-const editFormData = Ref<User> = ref({})
-const addFormData = Ref<User> = ref({})
+const editFormData: Ref<User> = ref({})
+const addFormData: Ref<User> = ref({})
 
 const token: Ref<string> = ref(Cookies.get('token'))
 const refresh_token: Ref<string> = ref(Cookies.get('refresh_token'))
@@ -50,6 +55,12 @@ const columns = [
     title: 'Email',
     dataIndex: 'email',
     key: 'email',
+  },
+
+  {
+    title: 'Salary',
+    dataIndex: 'salary',
+    key: 'salary',
   },
 
   {
@@ -134,6 +145,7 @@ const openEditModal = (user: User) => {
     firstName: nameList[0],
     lastName: nameList[1],
     accountType: user.accountType,
+    salary: user.salary,
     email: user.email,
   };
   isEditModalVisible.value = true;
@@ -146,15 +158,20 @@ const openAddModal = () => {
     lastName: '',
     accountType: '',
     email: '',
+    salary: '',
+    password:'',
   };
   isAddModalVisible.value = true;
 }
 
 const handleEditUser = () => {
+  loading.value = true;
   if (editFormData.value.accountType == 'CUSTOMER') {
-    axios.put('http://localhost:8080/api/v1/customers/update', {name: editFormData.value.firstName + ' ' + editFormData.value.lastName, username: editFormData.value.username, email: editFormData.value.email}, {headers: {
+    axios.put('http://localhost:8080/api/v1/customers/update', {name: editFormData.value.firstName + ' ' + editFormData.value.lastName, username: editFormData.value.username, email: editFormData.value.email}, {
+      headers: {
         Authorization: 'Bearer ' + token.value
-      },}).then(response => {
+      },
+    }).then(response => {
       if (response.status === 200) {
         // Update the reservations array with the edited data
         fetchUsers();
@@ -164,13 +181,18 @@ const handleEditUser = () => {
       } else {
         message.error('Update Failed!')
       }
+      loading.value=false
     }).catch(() => {
       message.error('Update Failed!')
+      loading.value=false
+
     })
   } else if (editFormData.value.accountType == 'EMPLOYEE') {
-    axios.put('http://localhost:8080/api/v1/employees/update', {name: editFormData.value.firstName + ' ' + editFormData.value.lastName, username: editFormData.value.username, email: editFormData.value.email},{headers: {
+    axios.put('http://localhost:8080/api/v1/employees/update', {name: editFormData.value.firstName + ' ' + editFormData.value.lastName, username: editFormData.value.username, email: editFormData.value.email, salary: editFormData.value.salary}, {
+      headers: {
         Authorization: 'Bearer ' + token.value
-      },}).then(response => {
+      },
+    }).then(response => {
       if (response.status === 200) {
         // Update the reservations array with the edited data
         fetchUsers();
@@ -180,13 +202,18 @@ const handleEditUser = () => {
       } else {
         message.error('Update Failed!')
       }
+      loading.value=false
+
     }).catch(() => {
       message.error('Update Failed!')
+      loading.value=false
     })
   } else if (editFormData.value.accountType == 'OWNER') {
-    axios.put('http://localhost:8080/api/v1/owners/update', {name: editFormData.value.firstName + ' ' + editFormData.value.lastName, username: editFormData.value.username, email: editFormData.value.email},{headers: {
+    axios.put('http://localhost:8080/api/v1/owners/update', {name: editFormData.value.firstName + ' ' + editFormData.value.lastName, username: editFormData.value.username, email: editFormData.value.email}, {
+      headers: {
         Authorization: 'Bearer ' + token.value
-      },}).then(response => {
+      },
+    }).then(response => {
       if (response.status === 200) {
         // Update the reservations array with the edited data
         fetchUsers();
@@ -196,27 +223,35 @@ const handleEditUser = () => {
       } else {
         message.error('Update Failed!')
       }
+      loading.value=false
     }).catch(() => {
       message.error('Update Failed!')
+      loading.value=false
     })
   }
 }
 
 const handleAddUser = () => {
-  axios.post('http://localhost:8080/api/v1/users/add', {name: addFormData.value.firstName + ' ' + addFormData.value.lastName, username: addFormData.value.username, email: addFormData.value.email, accountType: addFormData.value.accountType}, {headers: {
+  addLoading.value = true
+  axios.post('http://localhost:8080/api/v1/users/add', {name: addFormData.value.firstName + ' ' + addFormData.value.lastName, username: addFormData.value.username, email: addFormData.value.email, accountType: addFormData.value.accountType, password: addFormData.value.password, salary: addFormData.value.salary}, {
+    headers: {
       Authorization: 'Bearer ' + token.value
-    },}).then(response => {
+    },
+  }).then(response => {
     if (response.status === 200) {
       // Update the users array with the edited data
       fetchUsers();
-      message.info('Update Successfully!')
+      message.info('Add Successfully!')
       isAddModalVisible.value = false;
-      AddFormData.value = {}
+      addFormData.value={}
     } else {
-      message.error('Update Failed!')
+      message.error('Add Failed!')
     }
-  }).catch(() => {
-    message.error('Update Failed!')
+    addLoading.value = false
+  }).catch((err) => {
+    console.log(err)
+    message.error('Add Failed!')
+    addLoading.value = false
   })
 }
 
@@ -245,7 +280,18 @@ onMounted(() => {
   }
 });
 const submitDisabled = computed(() => {
+  if (editFormData.value.accountType != 'EMPLOYEE') {
   return editFormData.value.firstName == '' || editFormData.value.lastName == '' || editFormData.value.email == ''
+  } else {
+    return editFormData.value.firstName == '' || editFormData.value.lastName == '' || editFormData.value.email == '' || editFormData.value.salary == ''
+  }
+})
+const addSubmitDisabled = computed(() => {
+  if (addFormData.value.accountType != 'EMPLOYEE') {
+  return addFormData.value.firstName == '' || addFormData.value.lastName == '' || addFormData.value.email == '' || addFormData.value.username == ''||addFormData.value.password == ''
+  } else {
+    return addFormData.value.firstName == '' || addFormData.value.lastName == '' || addFormData.value.email == '' || addFormData.value.username == ''||addFormData.value.password == '' || addFormData.value.salary == ''
+  }
 })
 </script>
 
@@ -280,6 +326,10 @@ const submitDisabled = computed(() => {
         <a-input v-model:value="editFormData.email"/>
       </a-form-item>
 
+      <a-form-item label="Salary" v-if="editFormData.accountType == 'EMPLOYEE'">
+        <a-input-number v-model:value="editFormData.salary"/>
+      </a-form-item>
+
 
     </a-form>
   </a-modal>
@@ -292,7 +342,7 @@ const submitDisabled = computed(() => {
   >
     <template #footer>
       <a-button key="addBack" @click="() => {isAddModalVisible = false}">Cancel</a-button>
-      <a-button key="addSubmit" type="primary" :loading="loading" :disabled="submitDisabled"
+      <a-button key="addSubmit" type="primary" :loading="addLoading" :disabled="addSubmitDisabled"
                 @click="handleAddUser">Add
       </a-button>
     </template>
@@ -311,23 +361,33 @@ const submitDisabled = computed(() => {
       </a-form-item>
 
       <a-form-item label="User Name">
-        <a-input v-model:value="addFormData.userName"></a-input>
+        <a-input v-model:value="addFormData.username"></a-input>
       </a-form-item>
 
       <a-form-item label="Account Type">
         <a-select v-model:value="addFormData.accountType">
-          <a-select-option value="Customer">Customer</a-select-option>
-          <a-select-option value="Employee">Employee</a-select-option>
-          <a-select-option value="Owner">Owner</a-select-option>
+          <a-select-option value="CUSTOMER">Customer</a-select-option>
+          <a-select-option value="EMPLOYEE">Employee</a-select-option>
+          <a-select-option value="OWNER">Owner</a-select-option>
         </a-select>
       </a-form-item>
 
       <a-form-item label="Email">
         <a-input v-model:value="addFormData.email"/>
       </a-form-item>
+
+      <a-form-item label="Password">
+        <a-input v-model:value="addFormData.password"/>
+      </a-form-item>
+
+      <a-form-item label="Salary" v-if="addFormData.accountType == 'EMPLOYEE'">
+        <a-input-number v-model:value="addFormData.salary"/>
+      </a-form-item>
     </a-form>
   </a-modal>
 
+  <a-button type="primary" @click="openAddModal()" style="margin-left: 5px">Add User</a-button>
+  <div style="height: 20px"/>
   <a-table
       :columns="columns"
       :rowKey="record => record.id"
@@ -344,7 +404,6 @@ const submitDisabled = computed(() => {
           >
             <a-button danger>Delete</a-button>
           </a-popconfirm>
-          <a-button type="primary" @click="openAddModal()">Add</a-button>
         </a-space>
       </template>
     </template>

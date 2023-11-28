@@ -11,4 +11,5 @@ public class UpdateUserDto {
     private String name;
     private String username;
     private String email;
+    private Integer salary;
 }

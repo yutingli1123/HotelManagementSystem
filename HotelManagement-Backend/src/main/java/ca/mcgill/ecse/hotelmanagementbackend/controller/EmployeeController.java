@@ -70,6 +70,7 @@ public class EmployeeController {
                     if (employee != null) {
                         employee.setName(updateUserDto.getName());
                         employee.setEmail(updateUserDto.getEmail());
+                        employee.setSalary(updateUserDto.getSalary());
                         employeeService.save(employee);
                         return ResponseEntity.ok(Boolean.TRUE);
                     }
@@ -78,6 +79,7 @@ public class EmployeeController {
                     if (employee != null) {
                         employee.setName(updateUserDto.getName());
                         employee.setEmail(updateUserDto.getEmail());
+                        employee.setSalary(updateUserDto.getSalary());
                         employeeService.save(employee);
                         return ResponseEntity.ok(Boolean.TRUE);
                     }

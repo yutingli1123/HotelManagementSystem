@@ -79,7 +79,7 @@ public class CustomerController {
                 String issuer = JWT.require(Algorithm.HMAC256(secretKey)).build().verify(formattedToken[1]).getIssuer();
                 Customer customer = customerService.findByUsername(issuer);
                 if (customer != null) {
-                    UpdateUserDto updateUserDto = new UpdateUserDto(customer.getName(), customer.getUsername(), customer.getEmail());
+                    UpdateUserDto updateUserDto = new UpdateUserDto(customer.getName(), customer.getUsername(), customer.getEmail(),null);
                     return ResponseEntity.ok(updateUserDto);
                 }
             }
