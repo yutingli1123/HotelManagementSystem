@@ -30,10 +30,10 @@ const token: Ref<string> = ref(Cookies.get('token'))
 const refresh_token: Ref<string> = ref(Cookies.get('refresh_token'))
 const isAddModalVisible = ref(false);
 const addFormData = ref({
-  id: 0,
   roomType: '',
   checkInDate: '',
   checkOutDate: '',
+  username: ''
 });
 
 const columns = [
@@ -61,6 +61,11 @@ const columns = [
     title: 'Check-Out Date',
     dataIndex: 'checkOutDate',
     key: 'checkOutDate',
+  },
+  {
+    title: 'Total Fee',
+    dataIndex: 'fee',
+    key: 'fee',
   },
   {
     title: 'Action',
@@ -116,6 +121,16 @@ const openEditModal = (reservation) => {
   isEditModalVisible.value = true;
 };
 
+const openAddModal = () => {
+  addFormData.value = {
+    roomType: 'REGULAR',
+    checkInDate: dayjs(),
+    checkOutDate: dayjs().add(1,'day'),
+    username: ''
+  };
+  isAddModalVisible.value = true;
+};
+
 const handleEditReservation = () => {
   axios.put('http://localhost:8080/api/v1/reservations/update', editFormData.value, {
     headers: {
@@ -136,7 +151,8 @@ const handleEditReservation = () => {
 };
 
 const handleAddReservation = () => {
-  axios.post('http://localhost:8080/api/v1/reservations', addFormData.value, {
+  console.log(addFormData.value)
+  axios.post('http://localhost:8080/api/v1/reservations/add', addFormData.value, {
     headers: {
       Authorization: 'Bearer ' + token.value
     },
@@ -146,7 +162,7 @@ const handleAddReservation = () => {
       message.info('Add Successfully!')
       isAddModalVisible.value = false;
     } else {
-      message.error('Unable to Add this reservation!!')
+      message.error('Add Failed!')
     }
   }).catch(() => {
     message.error('Add Failed!')
@@ -192,6 +208,24 @@ const disabled_check_out_date = (date: Dayjs) => {
 const date_checker = (date: Dayjs) => {
   if (date.add(1, 'day').isAfter(dayjs(editFormData.value.checkOutDate))) {
     editFormData.value.checkOutDate = date.add(1, 'day')
+  }
+}
+
+const add_disabled_check_in_date = (date: Dayjs) => {
+  if (date.isBefore(dayjs())) {
+    return true
+  }
+}
+
+const add_disabled_check_out_date = (date: Dayjs) => {
+  if (date.subtract(1, 'day').isBefore(dayjs(addFormData.value.checkInDate))) {
+    return true
+  }
+}
+
+const add_date_checker = (date: Dayjs) => {
+  if (date.add(1, 'day').isAfter(dayjs(addFormData.value.checkOutDate))) {
+    addFormData.value.checkOutDate = date.add(1, 'day')
   }
 }
 </script>
@@ -249,7 +283,7 @@ const date_checker = (date: Dayjs) => {
       :mask-closable="false"
   >
     <template #footer>
-      <a-button key="addBack" @click="() => {isEditModalVisible = false}">Cancel</a-button>
+      <a-button key="addBack" @click="() => {isAddModalVisible = false}">Cancel</a-button>
       <a-button key="addSubmit" type="primary" :loading="loading"
                 @click="handleAddReservation">Add
       </a-button>
@@ -259,8 +293,8 @@ const date_checker = (date: Dayjs) => {
         :label-col="{ span: 6 }"
         :wrapper-col="{ span: 8 }"
     >
-      <a-form-item label="User ID">
-        <a-input-number v-model:value="addFormData.id" placeholder="Enter user ID" />
+      <a-form-item label="Username">
+        <a-input v-model:value="addFormData.username" placeholder="Enter user name" />
       </a-form-item>
 
       <a-form-item label="Room Type">
@@ -276,7 +310,7 @@ const date_checker = (date: Dayjs) => {
             v-model:value="addFormData.checkInDate"
             format="MMM / DD / YYYY"
             placeholder="Select check-in date"
-            :disabled-date="disabled_check_in_date" @change="date_checker"
+            :disabled-date="add_disabled_check_in_date" @change="add_date_checker"
         />
       </a-form-item>
 
@@ -285,12 +319,14 @@ const date_checker = (date: Dayjs) => {
             v-model:value="addFormData.checkOutDate"
             format="MMM / DD / YYYY"
             placeholder="Select check-out date"
-            :disabled-date="disabled_check_out_date"
+            :disabled-date="add_disabled_check_out_date"
         />
       </a-form-item>
     </a-form>
   </a-modal>
 
+  <a-button type="primary" style="margin-left: 5px" @click="openAddModal">Add</a-button>
+<div style="height: 20px"/>
   <a-table
       :columns="columns"
       :rowKey="record => record.id"

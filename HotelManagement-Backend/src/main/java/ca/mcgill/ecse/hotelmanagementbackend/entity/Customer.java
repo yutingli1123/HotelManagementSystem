@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = false)
@@ -14,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 public class Customer extends User {
     @OneToMany(mappedBy = "customer")
-    private List<Reservation> reservationsForCustomer;
+    private List<Reservation> reservationsForCustomer = new ArrayList<>();
 
     public Customer(String name, String username, String email, String password) {
         super(name, username, email, password);

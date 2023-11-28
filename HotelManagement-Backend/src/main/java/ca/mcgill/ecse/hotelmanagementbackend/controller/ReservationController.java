@@ -12,6 +12,7 @@ import ca.mcgill.ecse.hotelmanagementbackend.service.RoomService;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -43,7 +44,7 @@ public class ReservationController {
     public List<ReservationDto> getAllReservations() {
         List<Reservation> reservationList = reservationService.findAll();
         List<ReservationDto> reservationDtos = new ArrayList<>();
-        reservationList.forEach(reservation -> reservationDtos.add(new ReservationDto(reservation.getId(), reservation.getCheckInDate(), reservation.getCheckOutDate(), reservation.getRoom().getType(), reservation.getRoom().getFee(), reservation.getCustomer().getUsername())));
+        reservationList.forEach(reservation -> reservationDtos.add(new ReservationDto(reservation.getId(), reservation.getCheckInDate(), reservation.getCheckOutDate(), reservation.getRoom().getType(), reservation.getTotalFee(), reservation.getCustomer().getUsername())));
         return reservationDtos;
     }
 
@@ -60,7 +61,7 @@ public class ReservationController {
                         if (customer != null) {
                             List<Reservation> reservationList = reservationService.findAllByCustomer(customer);
                             List<ReservationDto> reservationDtos = new ArrayList<>();
-                            reservationList.forEach(reservation -> reservationDtos.add(new ReservationDto(reservation.getId(), reservation.getCheckInDate(), reservation.getCheckOutDate(), reservation.getRoom().getType(), reservation.getRoom().getFee(), reservation.getCustomer().getUsername())));
+                            reservationList.forEach(reservation -> reservationDtos.add(new ReservationDto(reservation.getId(), reservation.getCheckInDate(), reservation.getCheckOutDate(), reservation.getRoom().getType(), reservation.getTotalFee(), reservation.getCustomer().getUsername())));
                             return ResponseEntity.ok(reservationDtos);
                         } else {
                             return ResponseEntity.notFound().build();
@@ -73,7 +74,7 @@ public class ReservationController {
                     if (customer != null) {
                         List<Reservation> reservationList = reservationService.findAllByCustomer(customer);
                         List<ReservationDto> reservationDtos = new ArrayList<>();
-                        reservationList.forEach(reservation -> reservationDtos.add(new ReservationDto(reservation.getId(), reservation.getCheckInDate(), reservation.getCheckOutDate(), reservation.getRoom().getType(), reservation.getRoom().getFee(), reservation.getCustomer().getUsername())));
+                        reservationList.forEach(reservation -> reservationDtos.add(new ReservationDto(reservation.getId(), reservation.getCheckInDate(), reservation.getCheckOutDate(), reservation.getRoom().getType(), reservation.getTotalFee(), reservation.getCustomer().getUsername())));
                         return ResponseEntity.ok(reservationDtos);
                     } else {
                         return ResponseEntity.notFound().build();
@@ -187,6 +188,7 @@ public class ReservationController {
         List<Reservation> customerReservations = customer.getReservationsForCustomer();
         customerReservations.add(reservationByDto);
         customer.setReservationsForCustomer(customerReservations);
+        reservationByDto.setCustomer(customer);
         reservationService.save(reservationByDto);
         customerService.save(customer);
         return ResponseEntity.ok(Boolean.TRUE);

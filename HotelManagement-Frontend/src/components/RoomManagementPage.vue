@@ -238,7 +238,7 @@ onMounted(() => {
     </a-form>
   </a-modal>
 
-  <a-button type="primary" @click="openAddModal()" style="margin-left: 5px">Add</a-button>
+  <a-button type="primary" @click="openAddModal" style="margin-left: 5px">Add</a-button>
   <div style="height: 20px"/>
 
   <a-table

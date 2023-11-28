@@ -79,7 +79,7 @@ const fetchUsers = () => {
     if (response.status == 200) {
       users.value = response.data;
     }
-    users.value.sort((a,b)=>{
+    users.value.sort((a, b) => {
       return a.id - b.id
     })
     loading.value = false
@@ -162,7 +162,7 @@ const openAddModal = () => {
     accountType: '',
     email: '',
     salary: '',
-    password:'',
+    password: '',
   };
   isAddModalVisible.value = true;
 }
@@ -184,10 +184,10 @@ const handleEditUser = () => {
       } else {
         message.error('Update Failed!')
       }
-      loading.value=false
+      loading.value = false
     }).catch(() => {
       message.error('Update Failed!')
-      loading.value=false
+      loading.value = false
 
     })
   } else if (editFormData.value.accountType == 'EMPLOYEE') {
@@ -205,11 +205,11 @@ const handleEditUser = () => {
       } else {
         message.error('Update Failed!')
       }
-      loading.value=false
+      loading.value = false
 
     }).catch(() => {
       message.error('Update Failed!')
-      loading.value=false
+      loading.value = false
     })
   } else if (editFormData.value.accountType == 'OWNER') {
     axios.put('http://localhost:8080/api/v1/owners/update', {name: editFormData.value.firstName + ' ' + editFormData.value.lastName, username: editFormData.value.username, email: editFormData.value.email}, {
@@ -226,10 +226,10 @@ const handleEditUser = () => {
       } else {
         message.error('Update Failed!')
       }
-      loading.value=false
+      loading.value = false
     }).catch(() => {
       message.error('Update Failed!')
-      loading.value=false
+      loading.value = false
     })
   }
 }
@@ -246,7 +246,7 @@ const handleAddUser = () => {
       fetchUsers();
       message.info('Add Successfully!')
       isAddModalVisible.value = false;
-      addFormData.value={}
+      addFormData.value = {}
     } else {
       message.error('Add Failed!')
     }
@@ -284,21 +284,124 @@ onMounted(() => {
 });
 const submitDisabled = computed(() => {
   if (editFormData.value.accountType != 'EMPLOYEE') {
-  return editFormData.value.firstName == '' || editFormData.value.lastName == '' || editFormData.value.email == ''
+    return editFormData.value.firstName == '' || editFormData.value.lastName == '' || editFormData.value.email == ''
   } else {
     return editFormData.value.firstName == '' || editFormData.value.lastName == '' || editFormData.value.email == '' || editFormData.value.salary == ''
   }
 })
 const addSubmitDisabled = computed(() => {
   if (addFormData.value.accountType != 'EMPLOYEE') {
-  return addFormData.value.firstName == '' || addFormData.value.lastName == '' || addFormData.value.email == '' || addFormData.value.username == ''||addFormData.value.password == ''
+    return addFormData.value.firstName == '' || addFormData.value.lastName == '' || addFormData.value.email == '' || addFormData.value.username == '' || addFormData.value.password == ''
   } else {
-    return addFormData.value.firstName == '' || addFormData.value.lastName == '' || addFormData.value.email == '' || addFormData.value.username == ''||addFormData.value.password == '' || addFormData.value.salary == ''
+    return addFormData.value.firstName == '' || addFormData.value.lastName == '' || addFormData.value.email == '' || addFormData.value.username == '' || addFormData.value.password == '' || addFormData.value.salary == ''
   }
+})
+
+const changePassData = ref({})
+const isChangePassModalVisible = ref(false)
+const changePassLoading = ref(false)
+const openChangePassModal = () => {
+  changePassData.value = {
+    username: editFormData.value.username,
+    newPass: ''
+  }
+  isChangePassModalVisible.value = true;
+}
+
+const handleChangePass = () => {
+  changePassLoading.value = true;
+  if (editFormData.value.accountType == 'CUSTOMER') {
+    axios.put('http://localhost:8080/api/v1/customers/update/password', changePassData.value, {
+      headers: {
+        Authorization: 'Bearer ' + token.value
+      },
+    }).then(response => {
+      if (response.status === 200) {
+        // Update the reservations array with the edited data
+        message.info('Update Successfully!')
+        isChangePassModalVisible.value = false;
+        changePassData.value = {}
+      } else {
+        message.error('Update Failed!')
+      }
+      changePassLoading.value = false
+    }).catch(() => {
+      message.error('Update Failed!')
+      changePassLoading.value = false
+    })
+  } else if (editFormData.value.accountType == 'EMPLOYEE') {
+    axios.put('http://localhost:8080/api/v1/employees/update/password', changePassData.value, {
+      headers: {
+        Authorization: 'Bearer ' + token.value
+      },
+    }).then(response => {
+      if (response.status === 200) {
+        // Update the reservations array with the edited data
+        message.info('Update Successfully!')
+        isChangePassModalVisible.value = false;
+        changePassData.value = {}
+      } else {
+        message.error('Update Failed!')
+      }
+      changePassLoading.value = false
+    }).catch(() => {
+      message.error('Update Failed!')
+      changePassLoading.value = false
+    })
+  } else if (editFormData.value.accountType == 'OWNER') {
+    axios.put('http://localhost:8080/api/v1/owners/update/password', changePassData.value, {
+      headers: {
+        Authorization: 'Bearer ' + token.value
+      },
+    }).then(response => {
+      if (response.status === 200) {
+        // Update the reservations array with the edited data
+        message.info('Update Successfully!')
+        isChangePassModalVisible.value = false;
+        changePassData.value = {}
+      } else {
+        message.error('Update Failed!')
+      }
+      changePassLoading.value = false
+    }).catch(() => {
+      message.error('Update Failed!')
+      changePassLoading.value = false
+    })
+  }
+}
+
+const changePassSubmitDisabled = computed(() => {
+  return changePassData.value.newPass == ''
 })
 </script>
 
 <template>
+
+  <a-modal
+      v-model:open="isChangePassModalVisible"
+      title="Change Password"
+      :closable="false"
+      :mask-closable="false"
+  >
+    <template #footer>
+      <a-button key="changePassBack" @click="() => {isChangePassModalVisible = false}">Cancel</a-button>
+      <a-button key="changePassSubmit" type="primary" :loading="changePassLoading" :disabled="changePassSubmitDisabled"
+                @click="handleChangePass">Update
+      </a-button>
+    </template>
+    <a-form
+        :model="changePassData"
+        :label-col="{ span: 6 }"
+        :wrapper-col="{ span: 8 }"
+    >
+
+      <a-form-item label="New Password">
+        <a-input v-model:value="changePassData.newPass"></a-input>
+      </a-form-item>
+
+    </a-form>
+
+  </a-modal>
   <a-modal
       v-model:open="isEditModalVisible"
       title="Edit User"
@@ -333,8 +436,9 @@ const addSubmitDisabled = computed(() => {
         <a-input-number v-model:value="editFormData.salary"/>
       </a-form-item>
 
-
     </a-form>
+    <a-button style="margin-left: 30px" @click="openChangePassModal">Change Password</a-button>
+
   </a-modal>
 
   <a-modal
