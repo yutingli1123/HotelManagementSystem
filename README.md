@@ -23,7 +23,7 @@ The Hotel Management System is a comprehensive web application designed to strea
 | No 	| Team Member 	| Responsibilities 	| Individual Efforts(hr) 	|
 |---	|---	|---	|---	|
 | 1 	| Clara, Jabbour 	| Testing & Modeling 	| 32 hours 	|
-| 2 	| Hing, Hong Way 	| Testing & Recording 	| 32 hours 	|
+| 2 	| Hing, Hong Way 	| Testing & Recording 	| 0 hours 	|
 | 3 	| Cao, Simon 	| Testing & Modeling 	| 33 hours 	|
 | 4 	| Li, Yuting 	| Testing & Modeling & Recording 	| 35 hours 	|
 | 5 	| Rao, Simiao 	| Testing & Modeling & Recording 	| 35 hours 	|
