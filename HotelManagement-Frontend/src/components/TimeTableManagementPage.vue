@@ -16,7 +16,9 @@ interface TimeTable {
 const timeTables: Ref<TimeTable[]> = ref([])
 const loading = ref(false)
 const isEditModalVisible = ref(false)
+const isAddModalVisible = ref(false)
 const editFormData: Ref<TimeTable> = ref({})
+const addFormData: Ref<TimeTable> = ref({})
 
 const token: Ref<string> = ref(Cookies.get('token'))
 const refresh_token: Ref<string> = ref(Cookies.get('refresh_token'))
@@ -93,15 +95,23 @@ const openEditModal = (timeTable: TimeTable) => {
   isEditModalVisible.value = true;
 };
 
+const openAddModal = () => {
+  addFormData.value = {
+    id: 0,
+    timeTableName: '',
+    taskIds: [],
+    employeeIds: [],
+  };
+  isAddModalVisible.value = true;
+};
 const handleEditTimeTable = () => {
-  console.log(editFormData.value)
   axios.put('http://localhost:8080/api/v1/timeTables/update', editFormData.value, {
     headers: {
       Authorization: 'Bearer ' + token.value
     },
   }).then(response => {
     if (response.status === 200) {
-      // Update the reservations array with the edited data
+      // Update the timetables array with the edited data
       fetchTimeTables();
       message.info('Update Successfully!')
       isEditModalVisible.value = false;
@@ -111,6 +121,26 @@ const handleEditTimeTable = () => {
     }
   }).catch(() => {
     message.error('Update Failed!')
+  })
+}
+
+const handleAddTimeTable = () => {
+  axios.post('http://localhost:8080/api/v1/timeTables', {timeTableName: addFormData.value.timeTableName}, {
+    headers: {
+      Authorization: 'Bearer ' + token.value
+    },
+  }).then(response => {
+    if (response.status === 200) {
+      // Update the timetables array with the edited data
+      fetchTimeTables();
+      message.info('Add Successfully!')
+      isEditModalVisible.value = false;
+      editFormData.value = {}
+    } else {
+      message.error('Add Failed!')
+    }
+  }).catch(() => {
+    message.error('Add Failed!')
   })
 }
 
@@ -177,7 +207,7 @@ const fetchAllTaskIds = () => {
 <template>
   <a-modal
       v-model:open="isEditModalVisible"
-      title="Edit Reservation"
+      title="Edit TimeTable"
       :closable="false"
       :mask-closable="false"
   >
@@ -215,6 +245,29 @@ const fetchAllTaskIds = () => {
     </a-form>
   </a-modal>
 
+  <a-modal
+      v-model:open="isAddModalVisible"
+      title="Add Timetable"
+      :closable="false"
+      :mask-closable="false"
+  >
+    <template #footer>
+      <a-button key="addBack" @click="() => {isAddModalVisible = false}">Cancel</a-button>
+      <a-button key="addSubmit" type="primary" :loading="loading"
+                @click="handleAddTimeTable">Add
+      </a-button>
+    </template>
+    <a-form
+        :model="addFormData"
+        :label-col="{ span: 6 }"
+        :wrapper-col="{ span: 20 }"
+        layout="vertical"
+    >
+      <a-form-item label="TimeTable Name">
+        <a-input v-model:value="addFormData.timeTableName"></a-input>
+      </a-form-item>
+    </a-form>
+  </a-modal>
 
   <a-table
       :columns="columns"
@@ -238,6 +291,7 @@ const fetchAllTaskIds = () => {
           >
             <a-button danger>Delete</a-button>
           </a-popconfirm>
+          <a-button type="primary" @click="openAddModal()">Add</a-button>
         </a-space>
       </template>
     </template>
