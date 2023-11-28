@@ -19,7 +19,10 @@ interface Task {
 const tasks: Ref<Task[]> = ref([])
 const loading = ref(false)
 const isEditModalVisible = ref(false)
+const isAddModalVisible = ref(false)
 const editFormData: Ref<Task> = ref({})
+const addFormData: Ref<Task> = ref({})
+
 
 const token: Ref<string> = ref(Cookies.get('token'))
 const refresh_token: Ref<string> = ref(Cookies.get('refresh_token'))
@@ -111,6 +114,16 @@ const openEditModal = (task: Task) => {
   isEditModalVisible.value = true;
 };
 
+const openAddModal = () => {
+  addFormData.value = {
+    startTime: dayjs(),
+    endTime: dayjs(),
+    dayOfTheWeek: '',
+    taskName: '',
+    taskDescription: '',
+  }
+}
+
 const handleEditTask = () => {
   axios.put('http://localhost:8080/api/v1/tasks/update', {
     id: editFormData.value.id,
@@ -125,7 +138,7 @@ const handleEditTask = () => {
     },
   }).then(response => {
     if (response.status === 200) {
-      // Update the reservations array with the edited data
+      // Update the tasks array with the edited data
       fetchTasks();
       message.info('Update Successfully!')
       isEditModalVisible.value = false;
@@ -135,6 +148,26 @@ const handleEditTask = () => {
     }
   }).catch(() => {
     message.error('Update Failed!')
+  })
+}
+
+const handleAddTask = () => {
+  axios.post('http://localhost:8080/api/v1/tasks', addFormData.value, {
+    headers: {
+      Authorization: 'Bearer ' + token.value
+    },
+  }).then(response => {
+    if (response.status === 200) {
+      // Update the tasks array with the edited data
+      fetchTasks();
+      message.info('Update Successfully!')
+      isEditModalVisible.value = false;
+      editFormData.value = {}
+    } else {
+      message.error('Add Failed!')
+    }
+  }).catch(() => {
+    message.error('Add Failed!')
   })
 }
 
@@ -201,7 +234,7 @@ const disabledEndTime = () => {
 <template>
   <a-modal
       v-model:open="isEditModalVisible"
-      title="Edit Reservation"
+      title="Edit Task"
       :closable="false"
       :mask-closable="false"
   >
@@ -216,6 +249,9 @@ const disabledEndTime = () => {
         :label-col="{ span: 6 }"
         :wrapper-col="{ span: 16 }"
     >
+      <a-form-item label="Task Id">
+        <a-input-number v-model:value="editFormData.taskName" disabled></a-input-number>
+      </a-form-item>
 
       <a-form-item label="Start Time">
         <a-time-picker v-model:value="editFormData.startTime" format="HH:mm A" :use12-hours="true"
@@ -249,6 +285,56 @@ const disabledEndTime = () => {
     </a-form>
   </a-modal>
 
+  <a-modal
+      v-model:open="isAddModalVisible"
+      title="Add Task"
+      :closable="false"
+      :mask-closable="false"
+  >
+    <template #footer>
+      <a-button key="addBack" @click="() => {isAddModalVisible = false}">Cancel</a-button>
+      <a-button key="addSubmit" type="primary" :loading="loading" :disabled="submitDisabled"
+                @click="handleAddTask">Add
+      </a-button>
+    </template>
+    <a-form
+        :model="addFormData"
+        :label-col="{ span: 6 }"
+        :wrapper-col="{ span: 16 }"
+    >
+
+      <a-form-item label="Start Time">
+        <a-time-picker v-model:value="addFormData.startTime" format="HH:mm A" :use12-hours="true"
+                       @change="date_checker"/>
+      </a-form-item>
+
+      <a-form-item label="End Time">
+        <a-time-picker v-model:value="addFormData.endTime" format="HH:mm A" :disabled-time="disabledEndTime"
+                       :use12-hours="true"/>
+      </a-form-item>
+      <a-form-item label="Day">
+        <a-select v-model:value="addFormData.dayOfTheWeek">
+          <a-select-option value="Mon">Mon</a-select-option>
+          <a-select-option value="Tue">Tue</a-select-option>
+          <a-select-option value="Wen">Wen</a-select-option>
+          <a-select-option value="Thu">Thu</a-select-option>
+          <a-select-option value="Fri">Fri</a-select-option>
+          <a-select-option value="Sat">Sat</a-select-option>
+          <a-select-option value="Sun">Sun</a-select-option>
+        </a-select>
+      </a-form-item>
+
+      <a-form-item label="Task Name">
+        <a-input v-model:value="addFormData.taskName"></a-input>
+      </a-form-item>
+
+      <a-form-item label="Task Description">
+        <a-input v-model:value="addFormData.taskDescription"></a-input>
+      </a-form-item>
+
+    </a-form>
+  </a-modal>
+
 
   <a-table
       :columns="columns"
@@ -266,6 +352,7 @@ const disabledEndTime = () => {
           >
             <a-button danger>Delete</a-button>
           </a-popconfirm>
+          <a-button type="primary" @click="openAddModal()">Add</a-button>
         </a-space>
       </template>
     </template>
