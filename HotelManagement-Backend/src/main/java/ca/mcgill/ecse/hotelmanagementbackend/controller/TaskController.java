@@ -31,6 +31,14 @@ public class TaskController {
         return taskDtos;
     }
 
+    @GetMapping("/ids")
+    public List<Long> getAllTaskIds() {
+        List<Task> taskList = taskService.findAll();
+        List<Long> taskIds = new ArrayList<>();
+        taskList.forEach(task -> taskIds.add(task.getId()));
+        return taskIds;
+    }
+
     @GetMapping("/by-time/start")
     public List<Task> getAllTasksByStartDate(@RequestParam LocalTime startTime) {
         return taskService.findAllByStartTime(startTime);
@@ -58,6 +66,13 @@ public class TaskController {
 
     @PostMapping
     public Long saveTask(@Valid @RequestBody Task task) {
+        taskService.save(task);
+        return task.getId();
+    }
+
+    @PostMapping("/add")
+    public Long addeTask(@Valid @RequestBody TaskDto taskDto) {
+        Task task = new Task(taskDto.getStartTime(),taskDto.getEndTime(),taskDto.getDayOfTheWeek(),taskDto.getTaskName(),taskDto.getTaskDescription());
         taskService.save(task);
         return task.getId();
     }

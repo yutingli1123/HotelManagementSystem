@@ -1,7 +1,7 @@
 package ca.mcgill.ecse.hotelmanagementbackend.controller;
 
-import ca.mcgill.ecse.hotelmanagementbackend.dto.UpdateUserDto;
 import ca.mcgill.ecse.hotelmanagementbackend.dto.PasswordDto;
+import ca.mcgill.ecse.hotelmanagementbackend.dto.UpdateUserDto;
 import ca.mcgill.ecse.hotelmanagementbackend.entity.Customer;
 import ca.mcgill.ecse.hotelmanagementbackend.entity.Reservation;
 import ca.mcgill.ecse.hotelmanagementbackend.enumeration.Role;

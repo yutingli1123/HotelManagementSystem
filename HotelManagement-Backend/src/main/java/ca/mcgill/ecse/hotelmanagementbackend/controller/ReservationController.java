@@ -156,6 +156,42 @@ public class ReservationController {
         return reservation.getId();
     }
 
+    @PostMapping("/add")
+    public ResponseEntity<Boolean> addReservation(@Valid @RequestBody ReservationDto reservationDto) {
+        List<Room> rooms = roomService.findAllByRoomType(reservationDto.getRoomType());
+        Iterator<Room> roomIterator = rooms.iterator();
+
+        while (roomIterator.hasNext()) {
+            Room room = roomIterator.next();
+            List<Reservation> reservations = room.getReservations();
+            for (Reservation reservation : reservations) {
+                if (!(reservation.getCheckOutDate().before(reservationDto.getCheckInDate())
+                        || reservation.getCheckInDate().after(reservationDto.getCheckOutDate()))) {
+                    roomIterator.remove();
+                    break;
+                }
+            }
+        }
+        Room room = rooms.get(0);
+        Date checkIn = reservationDto.getCheckInDate();
+        Date checkOut = reservationDto.getCheckOutDate();
+        long diffInMillies = checkOut.getTime() - checkIn.getTime();
+        long diffInDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+        Reservation reservationByDto = new Reservation();
+        reservationByDto.setCheckInDate(reservationDto.getCheckInDate());
+        reservationByDto.setCheckOutDate(reservationDto.getCheckOutDate());
+        reservationByDto.setRoom(room);
+        reservationByDto.setTotalFee((int) diffInDays * room.getFee());
+
+        Customer customer = customerService.findByUsername(reservationDto.getUsername());
+        List<Reservation> customerReservations = customer.getReservationsForCustomer();
+        customerReservations.add(reservationByDto);
+        customer.setReservationsForCustomer(customerReservations);
+        reservationService.save(reservationByDto);
+        customerService.save(customer);
+        return ResponseEntity.ok(Boolean.TRUE);
+    }
+
     @PutMapping("/update")
     public ResponseEntity<Boolean> updateReservation(@Valid @RequestBody ReservationDto reservationDto) {
         Reservation reservationByDto = reservationService.findById(reservationDto.getId());
@@ -188,6 +224,7 @@ public class ReservationController {
         reservationByDto.setCheckOutDate(reservationDto.getCheckOutDate());
         reservationByDto.setRoom(room);
         reservationByDto.setTotalFee((int) diffInDays * room.getFee());
+
         customerReservations.add(reservationByDto);
         customer.setReservationsForCustomer(customerReservations);
         reservationService.save(reservationByDto);

@@ -57,6 +57,13 @@ public class TimeTableController {
         return timeTable.getId();
     }
 
+    @PostMapping("/add")
+    public Long addTimeTable(@Valid @RequestBody TimeTableDto timeTableDto) {
+        TimeTable timeTable = new TimeTable(timeTableDto.getTimeTableName());
+        timeTableService.save(timeTable);
+        return timeTable.getId();
+    }
+
     @PutMapping("/update")
     public ResponseEntity<Boolean> updateTimeTable(@Valid @RequestBody TimeTableDto timeTableDto) {
         TimeTable timeTable = timeTableService.findById(timeTableDto.getId());

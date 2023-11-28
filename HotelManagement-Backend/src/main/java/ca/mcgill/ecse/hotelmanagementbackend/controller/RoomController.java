@@ -72,6 +72,13 @@ public class RoomController {
         return room.getId();
     }
 
+    @PostMapping("/add")
+    public Long addRoom(@Valid @RequestBody RoomDto roomDto) {
+        Room room = new Room(roomDto.getType(),roomDto.getFee());
+        roomService.save(room);
+        return room.getId();
+    }
+
     @PutMapping("/update")
     public ResponseEntity<Boolean> saveRoom(@Valid @RequestBody RoomDto roomDto) {
         Room room = roomService.findById(roomDto.getId());

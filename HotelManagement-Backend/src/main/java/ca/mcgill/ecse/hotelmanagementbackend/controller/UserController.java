@@ -9,13 +9,9 @@ import ca.mcgill.ecse.hotelmanagementbackend.service.CustomerService;
 import ca.mcgill.ecse.hotelmanagementbackend.service.EmployeeService;
 import ca.mcgill.ecse.hotelmanagementbackend.service.OwnerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,15 +37,33 @@ public class UserController {
         List<Employee> employeeList = employeeService.findAll();
         List<Owner> ownerList = ownerService.findAll();
         List<UserDto> userDtos = new ArrayList<>();
-        for (Customer customer: customerList) {
-            userDtos.add(new UserDto(customer.getId(),AccountType.CUSTOMER,customer.getName(),customer.getUsername(),customer.getEmail()));
+        for (Customer customer : customerList) {
+            userDtos.add(new UserDto(customer.getId(), AccountType.CUSTOMER, customer.getName(), customer.getUsername(), customer.getEmail(), null, null));
         }
-        for (Employee employee: employeeList) {
-            userDtos.add(new UserDto(employee.getId(),AccountType.EMPLOYEE,employee.getName(),employee.getUsername(),employee.getEmail()));
+        for (Employee employee : employeeList) {
+            userDtos.add(new UserDto(employee.getId(), AccountType.EMPLOYEE, employee.getName(), employee.getUsername(), employee.getEmail(), null, employee.getSalary()));
         }
-        for (Owner owner: ownerList) {
-            userDtos.add(new UserDto(owner.getId(),AccountType.OWNER,owner.getName(),owner.getUsername(),owner.getEmail()));
+        for (Owner owner : ownerList) {
+            userDtos.add(new UserDto(owner.getId(), AccountType.OWNER, owner.getName(), owner.getUsername(), owner.getEmail(), null, null));
         }
         return userDtos;
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<Long> addUser(@RequestBody UserDto userDto) {
+        if (userDto.getAccountType() == AccountType.CUSTOMER) {
+            Customer customer = new Customer(userDto.getName(), userDto.getUsername(), userDto.getEmail(), passwordEncoder.encode(userDto.getPassword()));
+            customerService.save(customer);
+            return ResponseEntity.ok(customer.getId());
+        } else if (userDto.getAccountType() == AccountType.EMPLOYEE) {
+            Employee employee = new Employee(userDto.getName(), userDto.getUsername(), userDto.getEmail(), passwordEncoder.encode(userDto.getPassword()), userDto.getSalary());
+            employeeService.save(employee);
+            return ResponseEntity.ok(employee.getId());
+        } else if (userDto.getAccountType() == AccountType.OWNER) {
+            Owner owner = new Owner(userDto.getName(), userDto.getUsername(), userDto.getEmail(), passwordEncoder.encode(userDto.getPassword()));
+            ownerService.save(owner);
+            return ResponseEntity.ok(owner.getId());
+        }
+        return ResponseEntity.badRequest().build();
     }
 }
