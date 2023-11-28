@@ -17,7 +17,9 @@ interface User {
 const users: Ref<User[]> = ref([])
 const loading = ref(false)
 const isEditModalVisible = ref(false)
-const editFormData = ref({})
+const isAddModalVisible = ref(false)
+const editFormData = Ref<User> = ref({})
+const addFormData = Ref<User> = ref({})
 
 const token: Ref<string> = ref(Cookies.get('token'))
 const refresh_token: Ref<string> = ref(Cookies.get('refresh_token'))
@@ -137,6 +139,17 @@ const openEditModal = (user: User) => {
   isEditModalVisible.value = true;
 };
 
+const openAddModal = () => {
+  addFormData.value = {
+    username: '',
+    firstName: '',
+    lastName: '',
+    accountType: '',
+    email: '',
+  };
+  isAddModalVisible.value = true;
+}
+
 const handleEditUser = () => {
   if (editFormData.value.accountType == 'CUSTOMER') {
     axios.put('http://localhost:8080/api/v1/customers/update', {name: editFormData.value.firstName + ' ' + editFormData.value.lastName, username: editFormData.value.username, email: editFormData.value.email}, {headers: {
@@ -189,6 +202,24 @@ const handleEditUser = () => {
   }
 }
 
+const handleAddUser = () => {
+  axios.post('http://localhost:8080/api/v1/users/add', {name: addFormData.value.firstName + ' ' + addFormData.value.lastName, username: addFormData.value.username, email: addFormData.value.email, accountType: addFormData.value.accountType}, {headers: {
+      Authorization: 'Bearer ' + token.value
+    },}).then(response => {
+    if (response.status === 200) {
+      // Update the users array with the edited data
+      fetchUsers();
+      message.info('Update Successfully!')
+      isAddModalVisible.value = false;
+      AddFormData.value = {}
+    } else {
+      message.error('Update Failed!')
+    }
+  }).catch(() => {
+    message.error('Update Failed!')
+  })
+}
+
 onMounted(() => {
   if (token.value == null) {
     if (refresh_token.value != null) {
@@ -221,7 +252,7 @@ const submitDisabled = computed(() => {
 <template>
   <a-modal
       v-model:open="isEditModalVisible"
-      title="Edit Reservation"
+      title="Edit User"
       :closable="false"
       :mask-closable="false"
   >
@@ -253,6 +284,49 @@ const submitDisabled = computed(() => {
     </a-form>
   </a-modal>
 
+  <a-modal
+      v-model:open="isAddModalVisible"
+      title="Add User"
+      :closable="false"
+      :mask-closable="false"
+  >
+    <template #footer>
+      <a-button key="addBack" @click="() => {isAddModalVisible = false}">Cancel</a-button>
+      <a-button key="addSubmit" type="primary" :loading="loading" :disabled="submitDisabled"
+                @click="handleAddUser">Add
+      </a-button>
+    </template>
+    <a-form
+        :model="addFormData"
+        :label-col="{ span: 6 }"
+        :wrapper-col="{ span: 8 }"
+    >
+
+      <a-form-item label="First Name">
+        <a-input v-model:value="addFormData.firstName"></a-input>
+      </a-form-item>
+
+      <a-form-item label="Last Name">
+        <a-input v-model:value="addFormData.lastName"></a-input>
+      </a-form-item>
+
+      <a-form-item label="User Name">
+        <a-input v-model:value="addFormData.userName"></a-input>
+      </a-form-item>
+
+      <a-form-item label="Account Type">
+        <a-select v-model:value="addFormData.accountType">
+          <a-select-option value="Customer">Customer</a-select-option>
+          <a-select-option value="Employee">Employee</a-select-option>
+          <a-select-option value="Owner">Owner</a-select-option>
+        </a-select>
+      </a-form-item>
+
+      <a-form-item label="Email">
+        <a-input v-model:value="addFormData.email"/>
+      </a-form-item>
+    </a-form>
+  </a-modal>
 
   <a-table
       :columns="columns"
@@ -270,6 +344,7 @@ const submitDisabled = computed(() => {
           >
             <a-button danger>Delete</a-button>
           </a-popconfirm>
+          <a-button type="primary" @click="openAddModal()">Add</a-button>
         </a-space>
       </template>
     </template>
