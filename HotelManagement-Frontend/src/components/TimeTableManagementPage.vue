@@ -15,6 +15,7 @@ interface TimeTable {
 
 const timeTables: Ref<TimeTable[]> = ref([])
 const loading = ref(false)
+const addLoading = ref(false)
 const isEditModalVisible = ref(false)
 const isAddModalVisible = ref(false)
 const editFormData: Ref<TimeTable> = ref({})
@@ -77,7 +78,7 @@ const deleteTimeTable = (id) => {
       .then((response) => {
         if (response.status == 200) {
           message.info('Delete Successfully!')
-          fetchTasks()
+          fetchTimeTables()
         } else {
           message.error("Delete Failed!")
         }
@@ -105,6 +106,7 @@ const openAddModal = () => {
   isAddModalVisible.value = true;
 };
 const handleEditTimeTable = () => {
+  loading.value = true
   axios.put('http://localhost:8080/api/v1/timeTables/update', editFormData.value, {
     headers: {
       Authorization: 'Bearer ' + token.value
@@ -119,13 +121,16 @@ const handleEditTimeTable = () => {
     } else {
       message.error('Update Failed!')
     }
+    loading.value = false
   }).catch(() => {
     message.error('Update Failed!')
+    loading.value = false
   })
 }
 
 const handleAddTimeTable = () => {
-  axios.post('http://localhost:8080/api/v1/timeTables', {timeTableName: addFormData.value.timeTableName}, {
+  addLoading.value = true
+  axios.post('http://localhost:8080/api/v1/timeTables/add', {timeTableName: addFormData.value.timeTableName}, {
     headers: {
       Authorization: 'Bearer ' + token.value
     },
@@ -134,13 +139,15 @@ const handleAddTimeTable = () => {
       // Update the timetables array with the edited data
       fetchTimeTables();
       message.info('Add Successfully!')
-      isEditModalVisible.value = false;
-      editFormData.value = {}
+      isAddModalVisible.value = false;
+      addFormData.value = {}
     } else {
       message.error('Add Failed!')
     }
+    addLoading.value = false
   }).catch(() => {
     message.error('Add Failed!')
+    addLoading.value = false
   })
 }
 
@@ -253,7 +260,7 @@ const fetchAllTaskIds = () => {
   >
     <template #footer>
       <a-button key="addBack" @click="() => {isAddModalVisible = false}">Cancel</a-button>
-      <a-button key="addSubmit" type="primary" :loading="loading"
+      <a-button key="addSubmit" type="primary" :loading="addLoading"
                 @click="handleAddTimeTable">Add
       </a-button>
     </template>
@@ -268,7 +275,8 @@ const fetchAllTaskIds = () => {
       </a-form-item>
     </a-form>
   </a-modal>
-
+  <a-button type="primary" @click="openAddModal()" style="margin-left: 5px">Add</a-button>
+  <div style="height: 20px"/>
   <a-table
       :columns="columns"
       :rowKey="record => record.id"
@@ -291,7 +299,6 @@ const fetchAllTaskIds = () => {
           >
             <a-button danger>Delete</a-button>
           </a-popconfirm>
-          <a-button type="primary" @click="openAddModal()">Add</a-button>
         </a-space>
       </template>
     </template>

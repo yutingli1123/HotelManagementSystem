@@ -15,6 +15,7 @@ interface Room {
 
 const rooms: Ref<Room[]> = ref([])
 const loading = ref(false)
+const addLoading =ref(false)
 const isEditModalVisible = ref(false)
 const isAddModalVisible = ref(false)
 const editFormData: Ref<Room> = ref({})
@@ -56,6 +57,7 @@ const fetchRooms = () => {
     if (response.status == 200) {
       rooms.value = response.data;
     }
+    rooms.value.sort((a, b)=>a.id-b.id)
     loading.value = false
   }).catch(() => {
     loading.value = false
@@ -91,7 +93,6 @@ const openEditModal = (task: Room) => {
 
 const openAddModal = () => {
   addFormData.value = {
-    id: null,
     type: '',
     fee: 0,
   }
@@ -99,6 +100,7 @@ const openAddModal = () => {
 }
 
 const handleEditRoom = () => {
+  loading.value = true
   axios.put('http://localhost:8080/api/v1/rooms/update', editFormData.value, {
     headers: {
       Authorization: 'Bearer ' + token.value
@@ -109,16 +111,20 @@ const handleEditRoom = () => {
       fetchRooms();
       message.info('Update Successfully!')
       isEditModalVisible.value = false;
+      editFormData.value = {}
     } else {
       message.error('Update Failed!')
     }
+    loading.value = false
   }).catch(() => {
     message.error('Update Failed!')
+    loading.value = false
   })
 }
 
 const handleAddRoom = () => {
-  axios.post('http://localhost:8080/api/v1/rooms', addFormData.value, {
+  addLoading.value = true
+  axios.post('http://localhost:8080/api/v1/rooms/add', addFormData.value, {
     headers: {
       Authorization: 'Bearer ' + token.value
     },
@@ -127,12 +133,15 @@ const handleAddRoom = () => {
       // Update the rooms array with the edited data
       fetchRooms();
       message.info('Add Successfully!')
-      isEditModalVisible.value = false;
+      isAddModalVisible.value = false;
+      addFormData.value = {}
     } else {
       message.error('Add Failed!')
     }
+    addLoading.value = false
   }).catch(() => {
     message.error('Add Failed!')
+    addLoading.value = false
   })
 }
 
@@ -229,6 +238,9 @@ onMounted(() => {
     </a-form>
   </a-modal>
 
+  <a-button type="primary" @click="openAddModal()" style="margin-left: 5px">Add</a-button>
+  <div style="height: 20px"/>
+
   <a-table
       :columns="columns"
       :rowKey="record => record.id"
@@ -245,7 +257,7 @@ onMounted(() => {
           >
             <a-button danger>Delete</a-button>
           </a-popconfirm>
-          <a-button type="primary" @click="openAddModal()">Add</a-button>
+
         </a-space>
       </template>
     </template>

@@ -18,6 +18,7 @@ interface Task {
 
 const tasks: Ref<Task[]> = ref([])
 const loading = ref(false)
+const addLoading = ref(false)
 const isEditModalVisible = ref(false)
 const isAddModalVisible = ref(false)
 const editFormData: Ref<Task> = ref({})
@@ -77,6 +78,7 @@ const fetchTasks = () => {
         task.startTime = dayjs(task.startTime, 'HH:mm:ss').format('hh:mm A')
         task.endTime = dayjs(task.endTime, 'HH:mm:ss').format('hh:mm A')
       })
+      tasks.value.sort((a, b) => a.id - b.id)
     }
     loading.value = false
   }).catch(() => {
@@ -117,14 +119,16 @@ const openEditModal = (task: Task) => {
 const openAddModal = () => {
   addFormData.value = {
     startTime: dayjs(),
-    endTime: dayjs(),
-    dayOfTheWeek: '',
+    endTime: dayjs().add(1,'minute'),
+    dayOfTheWeek: 'Mon',
     taskName: '',
     taskDescription: '',
   }
+  isAddModalVisible.value = true
 }
 
 const handleEditTask = () => {
+  loading.value = true
   axios.put('http://localhost:8080/api/v1/tasks/update', {
     id: editFormData.value.id,
     startTime: editFormData.value.startTime.format('HH:mm:ss'),
@@ -146,13 +150,22 @@ const handleEditTask = () => {
     } else {
       message.error('Update Failed!')
     }
+    loading.value = false
   }).catch(() => {
     message.error('Update Failed!')
+    loading.value = false
   })
 }
 
 const handleAddTask = () => {
-  axios.post('http://localhost:8080/api/v1/tasks', addFormData.value, {
+  addLoading.value = true
+  axios.post('http://localhost:8080/api/v1/tasks/add', {
+    startTime: addFormData.value.startTime.format('HH:mm:ss'),
+    endTime: addFormData.value.endTime.format('HH:mm:ss'),
+    dayOfTheWeek: addFormData.value.dayOfTheWeek,
+    taskName: addFormData.value.taskName,
+    taskDescription: addFormData.value.taskDescription,
+  }, {
     headers: {
       Authorization: 'Bearer ' + token.value
     },
@@ -161,13 +174,15 @@ const handleAddTask = () => {
       // Update the tasks array with the edited data
       fetchTasks();
       message.info('Update Successfully!')
-      isEditModalVisible.value = false;
-      editFormData.value = {}
+      isAddModalVisible.value = false;
+      addFormData.value = {}
     } else {
       message.error('Add Failed!')
     }
+    addLoading.value = false
   }).catch(() => {
     message.error('Add Failed!')
+    addLoading.value = false
   })
 }
 
@@ -199,6 +214,10 @@ const submitDisabled = computed(() => {
   return editFormData.value.taskDescription == '' || editFormData.value.taskName == ''
 })
 
+const addSubmitDisabled = computed(() => {
+  return addFormData.value.taskDescription == '' || addFormData.value.taskName == ''
+})
+
 const date_checker = (time: Dayjs) => {
   if (time.add(1, 'minute').isAfter(editFormData.value.endTime)) {
     editFormData.value.endTime = time.add(1, 'minute')
@@ -207,6 +226,37 @@ const date_checker = (time: Dayjs) => {
 
 const disabledEndTime = () => {
   const selectedStartTime = editFormData.value.startTime;
+  const selectedHour = selectedStartTime.hour();
+  const selectedMinute = selectedStartTime.minute();
+
+  return {
+    disabledHours: () => {
+      const hours = [];
+      for (let i = 0; i < selectedHour; i++) {
+        hours.push(i);
+      }
+      return hours;
+    },
+    disabledMinutes: (selectedHour) => {
+      const minutes = [];
+      if (selectedHour === selectedStartTime.hour()) {
+        for (let i = 0; i < selectedMinute + 1; i++) {
+          minutes.push(i);
+        }
+      }
+      return minutes;
+    },
+  };
+}
+
+const add_date_checker = (time: Dayjs) => {
+  if (time.add(1, 'minute').isAfter(addFormData.value.endTime)) {
+    addFormData.value.endTime = time.add(1, 'minute')
+  }
+}
+
+const addDisabledEndTime = () => {
+  const selectedStartTime = addFormData.value.startTime;
   const selectedHour = selectedStartTime.hour();
   const selectedMinute = selectedStartTime.minute();
 
@@ -293,7 +343,7 @@ const disabledEndTime = () => {
   >
     <template #footer>
       <a-button key="addBack" @click="() => {isAddModalVisible = false}">Cancel</a-button>
-      <a-button key="addSubmit" type="primary" :loading="loading" :disabled="submitDisabled"
+      <a-button key="addSubmit" type="primary" :loading="addLoading" :disabled="addSubmitDisabled"
                 @click="handleAddTask">Add
       </a-button>
     </template>
@@ -305,11 +355,11 @@ const disabledEndTime = () => {
 
       <a-form-item label="Start Time">
         <a-time-picker v-model:value="addFormData.startTime" format="HH:mm A" :use12-hours="true"
-                       @change="date_checker"/>
+                       @change="add_date_checker"/>
       </a-form-item>
 
       <a-form-item label="End Time">
-        <a-time-picker v-model:value="addFormData.endTime" format="HH:mm A" :disabled-time="disabledEndTime"
+        <a-time-picker v-model:value="addFormData.endTime" format="HH:mm A" :disabled-time="addDisabledEndTime"
                        :use12-hours="true"/>
       </a-form-item>
       <a-form-item label="Day">
@@ -335,7 +385,8 @@ const disabledEndTime = () => {
     </a-form>
   </a-modal>
 
-
+  <a-button type="primary" @click="openAddModal" style="margin-left: 5px">Add</a-button>
+  <div style="height: 20px"/>
   <a-table
       :columns="columns"
       :rowKey="record => record.id"
@@ -352,7 +403,7 @@ const disabledEndTime = () => {
           >
             <a-button danger>Delete</a-button>
           </a-popconfirm>
-          <a-button type="primary" @click="openAddModal()">Add</a-button>
+
         </a-space>
       </template>
     </template>

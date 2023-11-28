@@ -79,6 +79,9 @@ const fetchUsers = () => {
     if (response.status == 200) {
       users.value = response.data;
     }
+    users.value.sort((a,b)=>{
+      return a.id - b.id
+    })
     loading.value = false
   }).catch(() => {
     loading.value = false
