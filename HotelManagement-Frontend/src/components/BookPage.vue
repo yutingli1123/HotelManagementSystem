@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {useRoute, useRouter} from "vue-router";
-import {computed, reactive, ref, Ref} from "vue";
+import {reactive, ref} from "vue";
+import type {Ref} from 'vue'
 import {message} from "ant-design-vue";
 import {useStore} from "@/stores/stateStore";
 import axios from "axios";
@@ -67,7 +68,7 @@ const registerFormState = reactive<RegisterFormState>({
 });
 
 const store = useStore()
-const login = computed(() => store.login)
+const login = ref(store.login)
 const onLogin = (value) => {
   loginLoading.value = true
   axios
@@ -77,11 +78,15 @@ const onLogin = (value) => {
       })
       .then((response) => {
         if (response.status == 200) {
-          const token = response.data['token']
-          Cookies.set('token', token, {expires: new Date(new Date().getTime() + 15 * 60 * 1000)});
-          Cookies.set('refresh_token', response.data['refresh_token'], {expires: new Date(new Date().getTime() + 20 * 60 * 1000)});
+          const tokenObtain = response.data['token']
+          const refreshTokenObtain = response.data['refresh_token']
+          Cookies.set('token', tokenObtain, {expires: new Date(new Date().getTime() + 15 * 60 * 1000)});
+          Cookies.set('refresh_token', refreshTokenObtain, {expires: new Date(new Date().getTime() + 20 * 60 * 1000)});
           loginFormState.username = ''
           loginFormState.password = ''
+          token.value = tokenObtain
+          refresh_token.value = refreshTokenObtain
+          login.value = true
           store.changeToLogin()
         } else {
           message.error('Login Failed!')
@@ -116,9 +121,10 @@ const onRegister = (value) => {
               })
               .then((response) => {
                 if (response.status == 200) {
-                  const token = response.data['token']
-                  Cookies.set('token', token, {expires: new Date(new Date().getTime() + 15 * 60 * 1000)});
-                  Cookies.set('refresh_token', response.data['refresh_token'], {expires: new Date(new Date().getTime() + 20 * 60 * 1000)});
+                  const tokenObtain = response.data['token']
+                  const refreshTokenObtain = response.data['refresh_token']
+                  Cookies.set('token', tokenObtain, {expires: new Date(new Date().getTime() + 15 * 60 * 1000)});
+                  Cookies.set('refresh_token', refreshTokenObtain, {expires: new Date(new Date().getTime() + 20 * 60 * 1000)});
                   registerFormState.password = ''
                   registerFormState.username = ''
                   registerFormState.email = ''
@@ -126,6 +132,9 @@ const onRegister = (value) => {
                   registerFormState.firstName = ''
                   registerFormState.confirmPassword = ''
                   store.changeToLogin()
+                  token.value = tokenObtain
+                  refresh_token.value = refreshTokenObtain
+                  login.value = true
                 } else {
                   message.error('Login Failed!')
                 }

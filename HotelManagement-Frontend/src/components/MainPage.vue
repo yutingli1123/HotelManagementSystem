@@ -101,8 +101,8 @@ const submit = () => {
         <img class="img-welcome" src="/reception.jpg" alt="Reception Image">
       </a-col>
       <a-col class="message">
-        <div class="banner"><p>Welcome To <span style="font-style: italic">The<span
-            class="text-primary">Hotel</span></span>
+        <div class="banner"><p>Welcome To <span style="font-style: italic">Marwan<span
+            class="text-primary">Continental</span></span>
         </p></div>
         <a-typography>
           <a-typography-paragraph class="welcome-message">

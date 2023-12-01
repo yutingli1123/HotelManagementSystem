@@ -18,6 +18,7 @@
     "@mdi/js": "^7.3.67",
     "ant-design-vue": "^4.0.7",
     "axios": "^1.6.2",
+    "dayjs": "^1.11.10",
     "js-cookie": "^3.0.5",
     "jwt-decode": "^4.0.0",
     "pinia": "^2.1.7",

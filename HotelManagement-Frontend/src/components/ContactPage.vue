@@ -4,7 +4,7 @@
 
 <template>
   <div style="position: relative">
-    <img class="background_image" src="/contact_background.jpg"/>
+    <img class="background_image" src="/contact_background.jpg" alt="Background Image"/>
     <div class="overlayer">
       <div class="img-info">Contact</div>
     </div>
@@ -38,7 +38,7 @@
             <a-divider type="vertical" style="height: 65px;margin-left: 80px;margin-right: 20px"/>
             <a-col>
               <a-row class="info-title">
-                Tele
+                Telephone
               </a-row>
               <a-row class="info">
                 <a href="tel:(438) 123-4567">(438) 123-4567</a>

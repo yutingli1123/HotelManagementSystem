@@ -2,6 +2,7 @@
 import {useRoute, useRouter} from 'vue-router';
 import axios from 'axios'
 import {onMounted, ref} from "vue";
+import type {Ref} from 'vue'
 
 interface Room {
   roomType: string,
@@ -17,7 +18,7 @@ const guests = route.query.guests
 
 const loading = ref<boolean>(true)
 
-const roomData: Room[] = ref<Room[]>([])
+const roomData: Ref<Room[]> = ref<Room[]>([])
 
 const queryData = (checkInDate, checkOutDate) => {
   axios.get('http://localhost:8080/api/v1/rooms/available/type', {params: {checkInDate: checkInDate, checkOutDate: checkOutDate}})
@@ -46,10 +47,10 @@ onMounted(() => {
     <a-list :data-source="roomData" style="display: flex;justify-content: center">
       <template #renderItem="{ item }">
         <a-list-item>
-          <a-card>
+          <a-card style="width: 1000px">
             <a-row>
               <a-col>
-                <img style="width: 320px;border-radius: 10px" alt="Room Image"
+                <img style="width: 320px;border-radius: 10px;margin-top: 20px" alt="Room Image"
                      :src="item.roomType == 'REGULAR'? 'regular.jpg': item.roomType == 'DELUXE'? 'deluxe.jpg':item.roomType == 'DOUBLE'? 'double.jpg':''"/>
               </a-col>
               <a-col style="margin-left: 30px">
@@ -60,8 +61,8 @@ onMounted(() => {
                     }}
                   </div>
                 </a-row>
-                <a-row>
-                  <div style="font-size: 16px">
+                <a-row style="margin-bottom: 160px">
+                  <div style="font-size: 16px;width: 500px">
                     {{
                       item.roomType == 'REGULAR' ? 'Room with one queen bed. Amenities include a private washroom with shower.' : item.roomType == 'DELUXE' ? 'Larger room with one queen bed. Amenities include a private washroom with shower, a sofa, a working desk with chair.' : item.roomType == 'DOUBLE' ? 'Room with two queen beds. Amenities include a private washroom with shower and a sofa.' : ''
                     }}

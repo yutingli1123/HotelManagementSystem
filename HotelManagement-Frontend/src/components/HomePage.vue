@@ -305,7 +305,7 @@ onMounted(() => {
     <a-layout-header class="header">
       <a-space :size=50>
         <a-space :size=30>
-          <router-link :to="{name:'main'}" class="logo">The<span class="text-primary">Hotel</span></router-link>
+          <router-link :to="{name:'main'}" class="logo">Marwan<span class="text-primary">Continental</span></router-link>
           <a-menu mode="horizontal" :style="{lineHeight:'80px'}" v-model:selectedKeys="current" :items="items"
                   @click="goto"/>
         </a-space>
@@ -337,7 +337,7 @@ onMounted(() => {
       <RouterView :key="$route.fullPath"/>
     </a-layout-content>
     <a-layout-footer class="footer">
-      ©2023 TheHotel
+      ©2023 MarwanContinental
     </a-layout-footer>
   </a-layout>
 </template>

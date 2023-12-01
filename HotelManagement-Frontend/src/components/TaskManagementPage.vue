@@ -75,8 +75,8 @@ const fetchTasks = () => {
     if (response.status == 200) {
       tasks.value = response.data;
       tasks.value.forEach(task => {
-        task.startTime = dayjs(task.startTime, 'HH:mm:ss').format('hh:mm A')
-        task.endTime = dayjs(task.endTime, 'HH:mm:ss').format('hh:mm A')
+        task.startTime = dayjs(task.startTime, 'HH:mm:ss').format('h:mm A')
+        task.endTime = dayjs(task.endTime, 'HH:mm:ss').format('h:mm A')
       })
       tasks.value.sort((a, b) => a.id - b.id)
     }
@@ -107,8 +107,8 @@ const deleteTask = (id) => {
 const openEditModal = (task: Task) => {
   editFormData.value = {
     id: task.id,
-    startTime: dayjs(task.startTime, 'HH:mm A'),
-    endTime: dayjs(task.endTime, 'HH:mm A'),
+    startTime: dayjs(task.startTime, 'h:mm A'),
+    endTime: dayjs(task.endTime, 'h:mm A'),
     dayOfTheWeek: task.dayOfTheWeek,
     taskName: task.taskName,
     taskDescription: task.taskDescription,
@@ -304,12 +304,12 @@ const addDisabledEndTime = () => {
       </a-form-item>
 
       <a-form-item label="Start Time">
-        <a-time-picker v-model:value="editFormData.startTime" format="HH:mm A" :use12-hours="true"
+        <a-time-picker v-model:value="editFormData.startTime" format="h:mm A" :use12-hours="true"
                        @change="date_checker"/>
       </a-form-item>
 
       <a-form-item label="End Time">
-        <a-time-picker v-model:value="editFormData.endTime" format="HH:mm A" :disabled-time="disabledEndTime"
+        <a-time-picker v-model:value="editFormData.endTime" format="h:mm A" :disabled-time="disabledEndTime"
                        :use12-hours="true"/>
       </a-form-item>
       <a-form-item label="Day">
@@ -354,12 +354,12 @@ const addDisabledEndTime = () => {
     >
 
       <a-form-item label="Start Time">
-        <a-time-picker v-model:value="addFormData.startTime" format="HH:mm A" :use12-hours="true"
+        <a-time-picker v-model:value="addFormData.startTime" format="h:mm A" :use12-hours="true"
                        @change="add_date_checker"/>
       </a-form-item>
 
       <a-form-item label="End Time">
-        <a-time-picker v-model:value="addFormData.endTime" format="HH:mm A" :disabled-time="addDisabledEndTime"
+        <a-time-picker v-model:value="addFormData.endTime" format="h:mm A" :disabled-time="addDisabledEndTime"
                        :use12-hours="true"/>
       </a-form-item>
       <a-form-item label="Day">

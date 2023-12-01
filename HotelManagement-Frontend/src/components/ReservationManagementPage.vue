@@ -2,10 +2,11 @@
 import {onMounted, ref} from 'vue';
 import axios from 'axios';
 import {message} from "ant-design-vue";
-import {Ref} from "vue";
+import type {Ref} from "vue";
 import Cookies from "js-cookie";
 import router from "@/router";
 import dayjs, {Dayjs} from "dayjs";
+import {useStore} from "@/stores/stateStore";
 
 interface Reservation {
   id: number;
@@ -15,6 +16,8 @@ interface Reservation {
   roomType: string;
   fee: number;
 }
+
+const store = useStore()
 
 const reservations: Ref<Reservation[]> = ref([]);
 const loading = ref(false);
@@ -115,8 +118,8 @@ const openEditModal = (reservation) => {
   editFormData.value = {
     id: reservation.id,
     roomType: reservation.roomType,
-    checkInDate: dayjs(reservation.checkInDate),
-    checkOutDate: dayjs(reservation.checkOutDate),
+    checkInDate: dayjs(reservation.checkInDate,'MMM / DD / YYYY'),
+    checkOutDate: dayjs(reservation.checkOutDate,'MMM / DD / YYYY'),
   };
   isEditModalVisible.value = true;
 };

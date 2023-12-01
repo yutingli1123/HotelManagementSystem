@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import {computed, onMounted, ref} from 'vue';
+import {onMounted, ref} from 'vue';
 import axios from 'axios';
 import {message} from "ant-design-vue";
-import {Ref} from "vue";
+import type {Ref} from "vue";
 import Cookies from "js-cookie";
 import router from "@/router";
-import dayjs, {Dayjs} from "dayjs";
+import {useStore} from "@/stores/stateStore";
 
 interface Room {
   id: number;
@@ -13,16 +13,27 @@ interface Room {
   fee: number;
 }
 
+interface RoomBatch {
+  roomType: string;
+  fee: number;
+  number: number;
+}
+
 const rooms: Ref<Room[]> = ref([])
 const loading = ref(false)
 const addLoading =ref(false)
+const addBatchLoading =ref(false)
 const isEditModalVisible = ref(false)
 const isAddModalVisible = ref(false)
+const isAddBatchModalVisible = ref(false)
 const editFormData: Ref<Room> = ref({})
 const addFormData: Ref<Room> = ref({})
+const addBatchFormData: Ref<RoomBatch> = ref({})
 
 const token: Ref<string> = ref(Cookies.get('token'))
 const refresh_token: Ref<string> = ref(Cookies.get('refresh_token'))
+
+const store = useStore()
 
 const columns = [
   {
@@ -94,9 +105,18 @@ const openEditModal = (task: Room) => {
 const openAddModal = () => {
   addFormData.value = {
     type: '',
-    fee: 0,
+    fee: null,
   }
   isAddModalVisible.value = true;
+}
+
+const openAddBatchModal = () => {
+  addBatchFormData.value = {
+    roomType: '',
+    fee: null,
+    number: null,
+  }
+  isAddBatchModalVisible.value = true;
 }
 
 const handleEditRoom = () => {
@@ -144,6 +164,29 @@ const handleAddRoom = () => {
     addLoading.value = false
   })
 }
+const handleAddRoomBatch = () => {
+  addBatchLoading.value = true
+  axios.post('http://localhost:8080/api/v1/rooms/batch', addBatchFormData.value, {
+    headers: {
+      Authorization: 'Bearer ' + token.value
+    },
+  }).then(response => {
+    if (response.status === 200) {
+      // Update the rooms array with the edited data
+      fetchRooms();
+      message.info('Add Successfully!')
+      isAddBatchModalVisible.value = false;
+      addBatchFormData.value = {}
+    } else {
+      message.error('Add Failed!')
+    }
+    addBatchLoading.value = false
+  }).catch(() => {
+    message.error('Add Failed!')
+    addBatchLoading.value = false
+  })
+}
+
 
 
 onMounted(() => {
@@ -183,7 +226,7 @@ onMounted(() => {
   >
     <template #footer>
       <a-button key="registerBack" @click="() => {isEditModalVisible = false}">Cancel</a-button>
-      <a-button key="registerSubmit" type="primary" @click="handleEditRoom">Update</a-button>
+      <a-button key="registerSubmit" type="primary" @click="handleEditRoom" :disabled="editFormData.fee == null|| addFormData.fee == 0" :loading="loading">Update</a-button>
     </template>
     <a-form
         :model="editFormData"
@@ -217,7 +260,7 @@ onMounted(() => {
   >
     <template #footer>
       <a-button key="addBack" @click="() => {isAddModalVisible = false}">Cancel</a-button>
-      <a-button key="addSubmit" type="primary" @click="handleAddRoom">Add</a-button>
+      <a-button key="addSubmit" type="primary" @click="handleAddRoom" :disabled="addFormData.fee == null || addFormData.fee == 0 || addFormData.type == ''" :loading="addLoading">Add</a-button>
     </template>
     <a-form
         :model="addFormData"
@@ -238,7 +281,41 @@ onMounted(() => {
     </a-form>
   </a-modal>
 
+  <a-modal
+      v-model:open="isAddBatchModalVisible"
+      title="Add Rooms"
+      :closable="false"
+      :mask-closable="false"
+  >
+    <template #footer>
+      <a-button key="addBack" @click="() => {isAddBatchModalVisible = false}">Cancel</a-button>
+      <a-button key="addSubmit" type="primary" @click="handleAddRoomBatch" :disabled="addBatchFormData.roomType == '' || addBatchFormData.fee == null || addBatchFormData.fee == 0||addBatchFormData.number == null || addBatchFormData.number == 0" :loading="addBatchLoading">Add</a-button>
+    </template>
+    <a-form
+        :model="addBatchFormData"
+        :label-col="{ span: 6 }"
+        :wrapper-col="{ span: 12 }"
+    >
+      <a-form-item label="Room Type">
+        <a-select v-model:value="addBatchFormData.roomType">
+          <a-select-option value="REGULAR">Regular</a-select-option>
+          <a-select-option value="DELUXE">Deluxe</a-select-option>
+          <a-select-option value="DOUBLE">Double</a-select-option>
+        </a-select>
+      </a-form-item>
+
+      <a-form-item label="Fee">
+        <a-input-number v-model:value="addBatchFormData.fee"></a-input-number>
+      </a-form-item>
+
+      <a-form-item label="Number">
+        <a-input-number v-model:value="addBatchFormData.number"></a-input-number>
+      </a-form-item>
+    </a-form>
+  </a-modal>
+
   <a-button type="primary" @click="openAddModal" style="margin-left: 5px">Add</a-button>
+  <a-button type="primary" @click="openAddBatchModal" style="margin-left: 5px">Add Batch</a-button>
   <div style="height: 20px"/>
 
   <a-table
