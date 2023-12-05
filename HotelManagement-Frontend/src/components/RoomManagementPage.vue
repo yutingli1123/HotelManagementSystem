@@ -187,8 +187,6 @@ const handleAddRoomBatch = () => {
   })
 }
 
-
-
 onMounted(() => {
   if (token.value == null) {
     if (refresh_token.value != null) {
@@ -213,8 +211,6 @@ onMounted(() => {
     fetchRooms();
   }
 });
-
-
 </script>
 
 <template>
