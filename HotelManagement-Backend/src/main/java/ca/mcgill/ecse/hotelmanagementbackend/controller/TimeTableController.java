@@ -104,10 +104,15 @@ public class TimeTableController {
     @DeleteMapping("/by-id/{id}")
     public void deleteTimeTable(@PathVariable Long id) {
         TimeTable timeTable = timeTableService.findById(id);
+        List<Employee> employees = timeTable.getEmployees();
         List<Task> tasks = timeTable.getTasks();
         tasks.forEach(task -> {
             task.setTimeTable(null);
             taskService.save(task);
+        });
+        employees.forEach(employee -> {
+            employee.setTimeTable(null);
+            employeeService.save(employee);
         });
         timeTableService.deleteById(id);
     }
