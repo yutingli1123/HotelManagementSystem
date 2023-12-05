@@ -280,7 +280,7 @@ onMounted(() => {
       <a-form-item
           label="Password"
           name="password"
-          :rules="[{ required: true, message: 'Please input your password!' }]"
+          :rules="[{ required: true, message: 'Please input your password!' },{min:8,message: 'Password must be at least 8 characters!'},{max:16, message: 'Password can only be at most 16 characters!'}]"
       >
         <a-input-password v-model:value="registerFormState.password"/>
       </a-form-item>
