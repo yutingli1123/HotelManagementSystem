@@ -173,7 +173,7 @@ const handleAddTask = () => {
     if (response.status === 200) {
       // Update the tasks array with the edited data
       fetchTasks();
-      message.info('Update Successfully!')
+      message.info('Add Successfully!')
       isAddModalVisible.value = false;
       addFormData.value = {}
     } else {

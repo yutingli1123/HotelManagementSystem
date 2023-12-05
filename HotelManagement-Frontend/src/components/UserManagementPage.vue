@@ -484,7 +484,7 @@ const changePassSubmitDisabled = computed(() => {
       </a-form-item>
 
       <a-form-item label="Password">
-        <a-input v-model:value="addFormData.password"/>
+        <a-input-password v-model:value="addFormData.password"/>
       </a-form-item>
 
       <a-form-item label="Salary" v-if="addFormData.accountType == 'EMPLOYEE'">
