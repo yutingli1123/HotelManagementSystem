@@ -287,5 +287,31 @@ public class ReservationController {
     public void deleteReservation(@PathVariable Long id) {
         reservationService.deleteById(id);
     }
+
+    @DeleteMapping("/cancel/{id}")
+    public ResponseEntity<Boolean> cancelReservation(@PathVariable Long id, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        if (token != null) {
+            String[] formattedToken = token.split(" ");
+            if (formattedToken[0].equals("Bearer")) {
+                String issuer = JWT.require(Algorithm.HMAC256(secretKey)).build().verify(formattedToken[1]).getIssuer();
+
+                Customer customer = customerService.findByUsername(issuer);
+                if (customer != null) {
+                    Reservation reservation = reservationService.findById(id);
+                    Date expireDate = new Date(reservation.getCheckInDate().getTime() - 72 * 60 * 60 * 1000);
+                    Date today = new Date();
+                    if (today.before(expireDate) && reservation.getCustomer().equals(customer)) {
+                        reservationService.deleteById(id);
+                        return ResponseEntity.ok(Boolean.TRUE);
+                    } else {
+                        return ResponseEntity.badRequest().build();
+                    }
+                } else {
+                    return ResponseEntity.notFound().build();
+                }
+            }
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
 }
 

@@ -87,6 +87,8 @@ public class SecurityConfig {
                         .authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/v1/reservations/book")
                         .authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/reservations/cancel/**")
+                        .authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/v1/rooms/available")
                         .permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/rooms/available/type")
