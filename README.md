@@ -15,9 +15,6 @@ The Hotel Management System is a comprehensive web application designed to strea
 | 4 	| Li, Yuting 	| 1. Write rough draft of requirements<br>2. Design domain model<br>3. Persistence Layer & Usecase<br>4. Write detailed use-case specification for the booking use-case<br>5. Help teammates set up their development environment<br>6. Review other teammates' code 	| 16.5 hours 	|
 | 5 	| Rao, Simiao 	| 1. Design domain model<br>2. Review requirements and domain model<br>3. Entities & Enumerations & Usecase<br>4. Write detailed use-case specification for the checkout use-case<br>5. Write final draft of project report 1<br>6. Review all the use-case specifications 	| 14 hours 	|
 | 6 	| Sami, Bayoud 	| 1. Write final draft of project report 1<br>2. Write detailed use-case specification<br>3. Review all the use-case specifications<br>4. Review Pull Requests<br>5. Adjust the code according to the reviews of the teammates 	| 14 hours 	|
-## Project Documentation
-- Project Report [Project Report ‐ Deliverable 1](https://github.com/McGill-ECSE321-Fall2023/project-group-06/wiki/Deliverable-1:-Report)
-- Meeting Minutes [Meeting Minutes - Deliverable 1](https://github.com/McGill-ECSE321-Fall2023/project-group-06/wiki/Deliverable-1%3A-Meeting-minutes)
 -------------------------------------------
 ## Deliverable 2: 
 | No 	| Team Member 	| Responsibilities 	| Individual Efforts(hr) 	|
@@ -28,9 +25,6 @@ The Hotel Management System is a comprehensive web application designed to strea
 | 4 	| Li, Yuting 	| Testing & Modeling & Recording 	| 35 hours 	|
 | 5 	| Rao, Simiao 	| Testing & Modeling & Recording 	| 35 hours 	|
 | 6 	| Sami, Bayoud 	| Managing & Testing 	| 30 hours 	|
-## Project Documentation
-- Project Report [Project Report ‐ Deliverable 2](https://github.com/McGill-ECSE321-Fall2023/project-group-06/wiki/Deliverable-2:-Report#welcome-page)
-- Meeting Minutes [Meeting Minutes ‐ Deliverable 2](https://github.com/McGill-ECSE321-Fall2023/project-group-06/wiki/Deliverable-2%3A-Meeting-minutes) 
 -------------------------------------------
 ## Deliverable 3: 
 | No 	| Team Member 	| Responsibilities 	| Individual Efforts(hr) 	|
@@ -41,7 +35,3 @@ The Hotel Management System is a comprehensive web application designed to strea
 | 4 	| Li, Yuting 	| Implementation of web frontend GUI &Fixing bugs 	| 35 hours 	|
 | 5 	| Rao, Simiao 	| Backend test Updating & Controller Updating & Report	| 21 hours 	|
 | 6 	| Sami, Bayoud 	|  Architectural modeling & Report  	| 20 hours 	|
-
-## Project Documentation 
-- Project Report [Project Report - Deliverable 3](https://github.com/McGill-ECSE321-Fall2023/project-group-06/wiki/Deliverable-3:-Report)
-- Meeting Minutes [Meeting Minutes - Deliverable 3](https://github.com/McGill-ECSE321-Fall2023/project-group-06/wiki/Deliverable-3%3A-Meeting-Minutes)
